@@ -24,29 +24,42 @@ class HGNNLayer(nn.Module):
         stdv = 1. / math.sqrt(self.theta_att.size(1))
         self.theta_att.data.uniform_(-stdv, stdv)
 
+    # def forward(self, incident_mat, degree_v, degree_e, x, e_masks):
+    #
+    #     x_w = self.mlp(x)
+    #     ht_x_w = torch.bmm(incident_mat.transpose(1, 2), x_w)
+    #     x_theta = torch.matmul(x, self.theta_att)
+    #     ht_x_theta = torch.bmm(incident_mat.transpose(1, 2), x_theta).squeeze(2)
+    #     ht_x_theta = ht_x_theta.masked_fill(e_masks.eq(0), -1e9)
+    #     hyper_edge_attn = F.softmax(ht_x_theta, dim=1)
+    #     hyper_edge_attn = torch.diag_embed(hyper_edge_attn)
+    #
+    #     h1 = torch.bmm(hyper_edge_attn, ht_x_w)
+    #     h1 = torch.bmm(incident_mat, h1)
+    #     h1 = torch.bmm(degree_v, h1)
+    #     h1 = torch.bmm(incident_mat.transpose(1, 2), h1)
+    #     h1 = torch.bmm(degree_e, h1)
+    #
+    #     h2 = self.eps * ht_x_w
+    #
+    #     h = h1 + h2
+    #
+    #     h = torch.bmm(incident_mat, h)
+    #     h = self.activation(h)
+    #     h = self.dropout(h)
+    #     h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
+    #
+    #     return h
+
     def forward(self, incident_mat, degree_v, degree_e, x, e_masks):
-
+        degree_v_root = degree_v ** .5
         x_w = self.mlp(x)
-        ht_x_w = torch.bmm(incident_mat.transpose(1, 2), x_w)
-        x_theta = torch.matmul(x, self.theta_att)
-        ht_x_theta = torch.bmm(incident_mat.transpose(1, 2), x_theta).squeeze(2)
-        ht_x_theta = ht_x_theta.masked_fill(e_masks.eq(0), -1e9)
-        hyper_edge_attn = F.softmax(ht_x_theta, dim=1)
-        hyper_edge_attn = torch.diag_embed(hyper_edge_attn)
-
-        h1 = torch.bmm(hyper_edge_attn, ht_x_w)
-        h1 = torch.bmm(incident_mat, h1)
-        h1 = torch.bmm(degree_v, h1)
-        h1 = torch.bmm(incident_mat.transpose(1, 2), h1)
-        h1 = torch.bmm(degree_e, h1)
-
-        h2 = self.eps * ht_x_w
-
-        h = h1 + h2
-
+        h = torch.bmm(degree_v_root, x_w)
+        h = torch.bmm(incident_mat.transpose(1, 2), h)
+        h = torch.bmm(degree_e, h)
         h = torch.bmm(incident_mat, h)
+        h = torch.bmm(degree_v_root, h)
         h = self.activation(h)
         h = self.dropout(h)
         h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
-
         return h

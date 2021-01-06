@@ -68,9 +68,7 @@ def test(epoch, model, train_data, dev_data, test_data):
     model.eval()
 
     acc_train = pass_data_iteratively(model, train_data)
-
     acc_dev = pass_data_iteratively(model, dev_data)
-
     acc_test = pass_data_iteratively(model, test_data)
 
     print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test), flush=True)
@@ -80,7 +78,8 @@ def test(epoch, model, train_data, dev_data, test_data):
         max_acc_epoch = epoch
         test_accuracy = acc_test
 
-    print('max validation accuracy : ', max_val_accuracy, 'max acc epoch : ', max_acc_epoch, flush=True)
+    print('max validation accuracy :', max_val_accuracy, 'max acc epoch :', max_acc_epoch,
+          'test accuracy :', test_accuracy, flush=True)
 
 
 def main():
@@ -101,9 +100,9 @@ def main():
                         help='number of layers INCLUDING the input one (default: 5)')
     parser.add_argument('--num_mlp_layers', type=int, default=2,
                         help='number of layers for MLP EXCLUDING the input one (default: 2). 1 means linear model.')
-    parser.add_argument('--hidden_dim', type=int, default=300,
+    parser.add_argument('--hidden_dim', type=int, default=200,
                         help='number of hidden units (default: 64)')
-    parser.add_argument('--dropout', type=float, default=0.5,
+    parser.add_argument('--dropout', type=float, default=0.4,
                         help='dropout (default: 0.5)')
     parser.add_argument('--dataset', type=str, default="R52",
                         help='dataset')
