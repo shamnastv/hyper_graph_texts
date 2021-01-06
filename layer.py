@@ -37,9 +37,10 @@ class HGNNLayer(nn.Module):
         self.mlp = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
         self.theta_att = nn.Parameter(torch.zeros(input_dim, 1), requires_grad=True)
         self.eps = nn.Parameter(torch.rand(1), requires_grad=True)
-        self.reset_parameters()
-
         self.batch_norms = nn.BatchNorm1d(output_dim)
+        self.gru = GRUCellMod(output_dim, output_dim)
+
+        self.reset_parameters()
 
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.theta_att.size(1))
@@ -80,7 +81,10 @@ class HGNNLayer(nn.Module):
         h = torch.bmm(degree_e, h)
         h = torch.bmm(incident_mat, h)
         h = torch.bmm(degree_v_root, h)
-        h = self.activation(h)
+
+        h = self.gru(h, x_w)
+        # h = self.activation(h)
         h = self.dropout(h)
         h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
-        return h + self.eps * x_w
+
+        return h
