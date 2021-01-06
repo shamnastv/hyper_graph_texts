@@ -8,6 +8,27 @@ import numpy as np
 from mlp import MLP
 
 
+class GRUCellMod(nn.Module):
+    """
+    ref https://pytorch.org/docs/stable/generated/torch.nn.GRU.html
+    """
+    def __init__(self, input_dim, hidden_dim):
+        super(GRUCellMod, self).__init__()
+        self.W_ir = nn.Linear(input_dim, hidden_dim)
+        self.W_hr = nn.Linear(hidden_dim, hidden_dim)
+        self.W_in = nn.Linear(input_dim, hidden_dim)
+        self.W_hn = nn.Linear(hidden_dim, hidden_dim)
+        self.W_iz = nn.Linear(input_dim, hidden_dim)
+        self.W_hz = nn.Linear(hidden_dim, hidden_dim)
+
+    def forward(self, inp, ht_1):
+        r_t = torch.sigmoid(self.W_ir(inp) + self.W_hr(ht_1))
+        z_t = torch.sigmoid(self.W_iz(inp) + self.W_hz(ht_1))
+        n_t = torch.tanh(self.W_in(inp) + r_t * self.W_hn(ht_1))
+        h_t = z_t * n_t + (1 - z_t) * ht_1
+        return h_t
+
+
 class HGNNLayer(nn.Module):
     def __init__(self, args, input_dim, output_dim):
         super(HGNNLayer, self).__init__()
@@ -62,4 +83,4 @@ class HGNNLayer(nn.Module):
         h = self.activation(h)
         h = self.dropout(h)
         h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
-        return h
+        return h + self.eps * x_w
