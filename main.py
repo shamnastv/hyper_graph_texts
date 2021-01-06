@@ -27,8 +27,8 @@ def train(args, epoch, model, optimizer, train_data):
         batch_data = [train_data[idx] for idx in selected_idx]
         output, targets = model(batch_data)
 
-        loss = F.cross_entropy(output, targets)
         optimizer.zero_grad()
+        loss = F.cross_entropy(output, targets)
         loss.backward()
         optimizer.step()
 
@@ -43,8 +43,9 @@ def pass_data_iteratively(model, data, minibatch_size=128):
     outputs = []
     targets = []
 
-    full_idx = np.arange(len(data))
-    for i in range(0, len(data), minibatch_size):
+    data_size = len(data)
+    full_idx = np.arange(data_size)
+    for i in range(0, data_size, minibatch_size):
         selected_idx = full_idx[i:i + minibatch_size]
         if len(selected_idx) == 0:
             continue

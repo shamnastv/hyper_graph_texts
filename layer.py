@@ -28,7 +28,7 @@ class HGNNLayer(nn.Module):
         ht_x_w = torch.bmm(incident_mat.transpose(1, 2), x_w)
         x_theta = torch.matmul(x, self.theta_att)
         ht_x_theta = torch.bmm(incident_mat.transpose(1, 2), x_theta).squeeze(2)
-        ht_x_theta = ht_x_theta.masked_fill(e_masks.eq(0), -np.inf)
+        ht_x_theta = ht_x_theta.masked_fill(e_masks.eq(0), -1e9)
         hyper_edge_attn = F.softmax(ht_x_theta, dim=1)
         hyper_edge_attn = torch.diag_embed(hyper_edge_attn)
 
