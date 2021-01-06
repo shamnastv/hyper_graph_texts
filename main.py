@@ -12,10 +12,9 @@ from preprocess import get_embedding
 
 
 start_time = time.time()
-max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
 
 
-def train(args, epoch, model, optimizer, train_data):
+def train(args, model, optimizer, train_data):
     model.train()
 
     train_size = len(train_data)
@@ -35,7 +34,6 @@ def train(args, epoch, model, optimizer, train_data):
         loss = loss.detach().cpu().numpy()
         loss_accum += loss
 
-    print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
     return loss_accum
 
 
@@ -64,22 +62,14 @@ def pass_data_iteratively(model, data, minibatch_size=128):
     return acc
 
 
-def test(epoch, model, train_data, dev_data, test_data):
+def test(model, train_data, dev_data, test_data):
     model.eval()
 
     acc_train = pass_data_iteratively(model, train_data)
     acc_dev = pass_data_iteratively(model, dev_data)
     acc_test = pass_data_iteratively(model, test_data)
 
-    print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test), flush=True)
-    global max_acc_epoch, max_val_accuracy, test_accuracy
-    if acc_dev > max_val_accuracy:
-        max_val_accuracy = acc_dev
-        max_acc_epoch = epoch
-        test_accuracy = acc_test
-
-    print('max validation accuracy :', max_val_accuracy, 'max acc epoch :', max_acc_epoch,
-          'test accuracy :', test_accuracy, flush=True)
+    return acc_train, acc_dev, acc_test
 
 
 def main():
@@ -132,10 +122,33 @@ def main():
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
+    acc_test = 0
+    max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
     for epoch in range(1, args.epochs + 1):
-        train(args, epoch, model, optimizer, train_data)
-        test(epoch, model, train_data, dev_data, test_data)
+
+        loss_accum = train(args, model, optimizer, train_data)
+        print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
+
+        acc_train, acc_dev, acc_test = test(model, train_data, dev_data, test_data)
+        print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test), flush=True)
+        if acc_dev > max_val_accuracy:
+            max_val_accuracy = acc_dev
+            max_acc_epoch = epoch
+            test_accuracy = acc_test
+
+        print('max validation accuracy :', max_val_accuracy, 'max acc epoch :', max_acc_epoch,
+              'test accuracy :', test_accuracy, flush=True)
+
         print('')
+        if epoch > max_acc_epoch + args.early_stop:
+            break
+
+    print('=' * 200)
+    print('max acc epoch : ', max_acc_epoch)
+    print('max validation accuracy : ', max_val_accuracy)
+    print('test accuracy : ', test_accuracy)
+    print('latest_test_accuracy : ', acc_test)
+    print('=' * 200 + '\n')
 
 
 if __name__ == '__main__':
