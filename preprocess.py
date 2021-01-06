@@ -98,7 +98,7 @@ def read_file(dataset, LDA=True):
 
     train_set_y = [j for i, j in doc_train_list]
 
-    class_weights = class_weight.compute_class_weight('balanced', np.unique(train_set_y), train_set_y)
+    class_weights = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(train_set_y), y=train_set_y)
 
     return doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights
 

@@ -131,7 +131,7 @@ def split_validation(train_set, valid_portion, SEED):
     train_set_y = [j for i, j in train_set]
 
     if valid_portion == 0.0:
-        return (train_set_x, train_set_y)
+        return train_set_x, train_set_y
 
     n_samples = len(train_set_x)
     sidx = np.arange(n_samples, dtype='int32')
