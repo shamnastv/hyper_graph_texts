@@ -139,6 +139,7 @@ def main():
     for epoch in range(1, args.epochs + 1):
         train(args, epoch, model, optimizer, train_data)
         test(epoch, model, train_data, dev_data, test_data)
+        print('')
 
 
 if __name__ == '__main__':
