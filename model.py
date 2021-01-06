@@ -97,6 +97,8 @@ class HGNNModel(nn.Module):
 
         pred = 0
         for layer, h in enumerate(h_cat):
+            if layer == 0:
+                continue
             attn = self.attention[layer](h)
             attn = F.softmax(attn.masked_fill(v_masks.eq(0).unsqueeze(2), -1e9), dim=1)
             doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
