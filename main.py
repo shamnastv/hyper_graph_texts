@@ -14,7 +14,7 @@ from preprocess import get_embedding
 start_time = time.time()
 
 
-def train(args, model, optimizer, train_data):
+def train(args, model, optimizer, train_data, class_weights):
     model.train()
 
     train_size = len(train_data)
@@ -27,7 +27,8 @@ def train(args, model, optimizer, train_data):
         output, targets = model(batch_data)
 
         optimizer.zero_grad()
-        loss = F.cross_entropy(output, targets)
+        # loss = F.cross_entropy(output, targets)
+        loss = F.cross_entropy(output, targets, class_weights)
         loss.backward()
         optimizer.step()
 
@@ -115,6 +116,7 @@ def main():
 
     train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors = get_data(args.dataset)
 
+    class_weights = torch.from_numpy(class_weights).float().to(device)
     # word_vectors = get_embedding(vocab_dic)
     input_dim = word_vectors.shape[1]
     num_classes = len(labels_dic)
@@ -126,7 +128,7 @@ def main():
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
     for epoch in range(1, args.epochs + 1):
 
-        loss_accum = train(args, model, optimizer, train_data)
+        loss_accum = train(args, model, optimizer, train_data, class_weights)
         print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
         acc_train, acc_dev, acc_test = test(model, train_data, dev_data, test_data)
