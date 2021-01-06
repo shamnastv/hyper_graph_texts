@@ -63,7 +63,7 @@ class HGNNModel(nn.Module):
 
         self.word_embeddings = nn.Embedding(word_vectors.shape[0], word_vectors.shape[1], padding_idx=0)
         self.word_embeddings.weight.data.copy_(torch.from_numpy(word_vectors).float())
-        self.word_embeddings.weight.requires_grad = False
+        self.word_embeddings.weight.requires_grad = True
 
         self.h_gnn_layers = nn.ModuleList()
         self.linears_prediction = torch.nn.ModuleList()

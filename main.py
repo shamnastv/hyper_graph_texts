@@ -55,26 +55,23 @@ def pass_data_iteratively(model, data, minibatch_size=128):
         outputs.append(output)
         targets.append(target)
 
-    return torch.cat(outputs, 0), torch.cat(targets, 0)
+    outputs, targets = torch.cat(outputs, 0), torch.cat(targets, 0)
+
+    pred = outputs.max(1, keepdim=True)[1]
+    correct = pred.eq(targets.view_as(pred)).sum().cpu().item()
+    acc = correct / float(len(data))
+
+    return acc
 
 
 def test(epoch, model, train_data, dev_data, test_data):
     model.eval()
 
-    output_train, target_train = pass_data_iteratively(model, train_data)
-    pred_train = output_train.max(1, keepdim=True)[1]
-    correct = pred_train.eq(target_train.view_as(pred_train)).sum().cpu().item()
-    acc_train = correct / float(len(train_data))
+    acc_train = pass_data_iteratively(model, train_data)
 
-    output_dev, target_dev = pass_data_iteratively(model, dev_data)
-    pred_dev = output_dev.max(1, keepdim=True)[1]
-    correct = pred_dev.eq(target_dev.view_as(pred_dev)).sum().cpu().item()
-    acc_dev = correct / float(len(dev_data))
+    acc_dev = pass_data_iteratively(model, dev_data)
 
-    output_test, target_test = pass_data_iteratively(model, test_data)
-    pred_test = output_test.max(1, keepdim=True)[1]
-    correct = pred_test.eq(target_test.view_as(pred_test)).sum().cpu().item()
-    acc_test = correct / float(len(test_data))
+    acc_test = pass_data_iteratively(model, test_data)
 
     print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test), flush=True)
     global max_acc_epoch, max_val_accuracy, test_accuracy
