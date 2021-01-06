@@ -103,6 +103,7 @@ def main():
                         help='early_stop')
     parser.add_argument('--debug', action="store_true",
                         help='run in debug mode')
+    parser.add_argument('--weight_decay', type=float, default=1e-6, help='weight decay (default: 0.3)')
     args = parser.parse_args()
 
     print(args)
@@ -122,7 +123,7 @@ def main():
     num_classes = len(labels_dic)
 
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
     acc_test = 0
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
