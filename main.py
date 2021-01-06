@@ -113,9 +113,9 @@ def main():
         torch.cuda.manual_seed_all(0)
     print('device : ', device, flush=True)
 
-    train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights = get_data(args.dataset)
+    train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors = get_data(args.dataset)
 
-    word_vectors = get_embedding(vocab_dic)
+    # word_vectors = get_embedding(vocab_dic)
     input_dim = word_vectors.shape[1]
     num_classes = len(labels_dic)
 

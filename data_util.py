@@ -1,4 +1,7 @@
-from preprocess import read_file
+import os
+import pickle
+
+from preprocess import read_file, get_embedding
 import numpy as np
 
 
@@ -52,6 +55,10 @@ class Data:
 
 
 def get_data(dataset, vla_prop=.2):
+    pickle_file = './data/%s_dump.pkl' % dataset
+    if os.path.exists(pickle_file):
+        return pickle.load(open(pickle_file, 'rb'))
+
     doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights = read_file(
         dataset)
 
@@ -80,5 +87,10 @@ def get_data(dataset, vla_prop=.2):
     for i in dev_idx:
         dev_data.append(train_dev_data[i])
 
-    return train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights
+    word_vectors = get_embedding(vocab_dic)
+
+    data = train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors
+    pickle.dump(data, open(pickle_file, 'wb'))
+
+    return train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors
 
