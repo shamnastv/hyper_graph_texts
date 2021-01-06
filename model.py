@@ -104,6 +104,6 @@ class HGNNModel(nn.Module):
             masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])
             doc_embed2 = torch.max(h.masked_fill(masks, -1e9), dim=1)[0]
 
-            pred += self.linears_prediction[layer](doc_embed1)
+            pred += self.linears_prediction[layer](doc_embed2)
 
         return pred, targets
