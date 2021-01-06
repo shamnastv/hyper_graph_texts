@@ -74,14 +74,17 @@ class HGNNModel(nn.Module):
         for layer in range(self.num_layers - 1):
             if layer == 0:
                 self.h_gnn_layers.append(HGNNLayer(args, input_dim, args.hidden_dim))
-                self.linears_prediction.append(nn.Linear(2 * input_dim, num_classes))
+                # self.linears_prediction.append(nn.Linear(2 * input_dim, num_classes))
+                self.linears_prediction.append(nn.Linear(input_dim, num_classes))
                 self.attention.append(Attention(input_dim))
             else:
                 self.h_gnn_layers.append(HGNNLayer(args, args.hidden_dim, args.hidden_dim))
-                self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
+                # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
+                self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
                 self.attention.append(Attention(args.hidden_dim))
 
-        self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
+        # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
+        self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
         self.attention.append(Attention(args.hidden_dim))
 
     def forward(self, data):
@@ -103,9 +106,10 @@ class HGNNModel(nn.Module):
             attn = F.softmax(attn.masked_fill(v_masks.eq(0).unsqueeze(2), -1e9), dim=1)
             doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
 
-            masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])
-            doc_embed2 = torch.max(h.masked_fill(masks, -1e9), dim=1)[0]
+            # masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])
+            # doc_embed2 = torch.max(h.masked_fill(masks, -1e9), dim=1)[0]
 
-            pred += self.linears_prediction[layer](torch.cat((doc_embed1, doc_embed2), dim=1))
+            # pred += self.linears_prediction[layer](torch.cat((doc_embed1, doc_embed2), dim=1))
+            pred += self.linears_prediction[layer](doc_embed1)
 
         return pred, targets

@@ -28,7 +28,7 @@ class MLP(nn.Module):
     def forward(self, h):
         for layer in range(self.num_layers - 1):
             h = self.linears[layer](h)
-            h = self.batch_norms[layer](h.transpose(1, 2)).transpose(1, 2)
             h = F.relu(h)
             h = F.dropout(h, self.dropout, self.training)
+            h = self.batch_norms[layer](h.transpose(1, 2)).transpose(1, 2)
         return self.linears[self.num_layers - 1](h)
