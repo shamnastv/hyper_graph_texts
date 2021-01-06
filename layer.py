@@ -18,6 +18,8 @@ class HGNNLayer(nn.Module):
         self.eps = nn.Parameter(torch.rand(1), requires_grad=True)
         self.reset_parameters()
 
+        self.batch_norms = nn.BatchNorm1d(output_dim)
+
     def reset_parameters(self):
         stdv = 1. / math.sqrt(self.theta_att.size(1))
         self.theta_att.data.uniform_(-stdv, stdv)
@@ -45,5 +47,6 @@ class HGNNLayer(nn.Module):
         h = torch.bmm(incident_mat, h)
         h = self.activation(h)
         h = self.dropout(h)
+        h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
 
         return h
