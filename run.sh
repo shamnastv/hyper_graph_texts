@@ -5,4 +5,4 @@
 #SBATCH --output=test_job%j.out # Standard output and error log
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
-python3 main.py --dropout .5
+python3 main.py --lr .0001 --num_mlp_layers 1
