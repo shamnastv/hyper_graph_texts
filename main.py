@@ -5,7 +5,7 @@ import torch
 import numpy as np
 from torch import optim
 import torch.nn.functional as F
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 from data_util import get_data
 from model import HGNNModel
@@ -63,6 +63,7 @@ def pass_data_iteratively(model, data, minibatch_size=128):
     pred = pred.squeeze().detach().cpu().numpy()
     targets = targets.detach().cpu().numpy()
     acc = accuracy_score(targets, pred)
+    print(classification_report(targets, pred))
 
     return acc
 
@@ -89,7 +90,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
-    parser.add_argument('--lr', type=float, default=0.0005,
+    parser.add_argument('--lr', type=float, default=0.0008,
                         help='learning rate (default: 0.01)')
     parser.add_argument('--seed', type=int, default=0,
                         help='random seed for splitting the dataset into 10 (default: 0)')
