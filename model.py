@@ -101,7 +101,15 @@ class HGNNModel(nn.Module):
             # if layer == 0:
             #     continue
             attn = self.attention[layer](h)
-            attn = F.softmax(attn.masked_fill(v_masks.eq(0).unsqueeze(2), -np.inf), dim=1)
+            attn = attn.masked_fill(v_masks.eq(0).unsqueeze(2), -np.inf)
+
+            attn = torch.sigmoid(attn)
+            ones = torch.ones(size=attn.shape, device=self.device)
+            row_sum = torch.bmm(ones.transpose(1, 2), attn) + .0000001
+            attn = torch.div(attn, row_sum)
+
+            # attn = F.softmax(attn, dim=1)
+
             doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
 
             # masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])

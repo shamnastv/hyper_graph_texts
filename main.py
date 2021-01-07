@@ -113,11 +113,11 @@ def main():
 
     print(args)
 
-    torch.manual_seed(0)
-    np.random.seed(0)
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
     device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
     if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(0)
+        torch.cuda.manual_seed_all(args.seed)
     print('device : ', device, flush=True)
 
     train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors = get_data(args.dataset)
