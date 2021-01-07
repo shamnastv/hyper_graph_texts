@@ -53,7 +53,7 @@ class Data:
         self.degrees_v = [1/i if i != 0 else 0 for i in self.degrees_v]
 
 
-def get_data(dataset, val_prop=.2):
+def get_data(dataset, val_prop=.1):
     pickle_file = './data/%s_dump.pkl' % dataset
     if os.path.exists(pickle_file):
         return pickle.load(open(pickle_file, 'rb'))
