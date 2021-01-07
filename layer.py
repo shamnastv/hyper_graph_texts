@@ -83,7 +83,8 @@ class HGNNLayer(nn.Module):
         h = torch.bmm(incident_mat, h)
         h = torch.bmm(degree_v_root, h)
 
-        h = self.gru(h, x_w)
+        # h = self.gru(h, x_w)
+        h = h + self.eps * x_w
         h = self.activation(h)
         h = self.dropout(h)
         h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
