@@ -78,6 +78,8 @@ def main():
         description='PyTorch graph convolutional neural net for whole-graph classification')
     parser.add_argument('--device', type=int, default=0,
                         help='which gpu to use if any (default: 0)')
+    parser.add_argument('--dataset', type=str, default="R52",
+                        help='dataset')
     parser.add_argument('--batch_size', type=int, default=8,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
@@ -94,8 +96,6 @@ def main():
                         help='number of hidden units (default: 64)')
     parser.add_argument('--dropout', type=float, default=0.4,
                         help='dropout (default: 0.5)')
-    parser.add_argument('--dataset', type=str, default="R52",
-                        help='dataset')
     parser.add_argument('--filename', type=str, default="",
                         help='output file')
     parser.add_argument('--early_stop', type=int, default=30,
@@ -123,7 +123,7 @@ def main():
 
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.1)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.5)
 
     acc_test = 0
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
