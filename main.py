@@ -28,8 +28,8 @@ def train(args, model, optimizer, train_data, class_weights):
         optimizer.zero_grad()
         output, targets = model(batch_data)
 
-        # loss = F.cross_entropy(output, targets)
-        loss = F.cross_entropy(output, targets, class_weights)
+        loss = F.cross_entropy(output, targets)
+        # loss = F.cross_entropy(output, targets, class_weights)
         loss.backward()
         optimizer.step()
 
@@ -63,7 +63,7 @@ def pass_data_iteratively(model, data, minibatch_size=128):
     pred = pred.squeeze().detach().cpu().numpy()
     targets = targets.detach().cpu().numpy()
     acc = accuracy_score(targets, pred)
-    print(classification_report(targets, pred))
+    # print(classification_report(targets, pred))
 
     return acc
 
