@@ -6,7 +6,7 @@ import numpy as np
 
 
 class Data:
-    def __init__(self, data, vocab_dic):
+    def __init__(self, data):
         self.label = data[1]
         doc = data[0]
 
@@ -16,19 +16,18 @@ class Data:
                 vocab_set.add(word)
 
         vocab_list = list(vocab_set)
+        self.node_ids = vocab_list
+
         word_to_id = {}
         for i, w in enumerate(vocab_list):
             word_to_id[w] = i
 
-        self.node_ids = vocab_list
-        # for w in vocab_list:
-        #     self.node_ids.append(vocab_dic[w])
-
         self.data = []
         for sent in doc:
-            temp = []
+            temp = set()
             for word in sent:
-                temp.append(word_to_id[word])
+                temp.add(word_to_id[word])
+            temp = list(temp)
             if temp:
                 self.data.append(temp)
 
@@ -54,27 +53,26 @@ class Data:
         self.degrees_v = [1/i if i != 0 else 0 for i in self.degrees_v]
 
 
-def get_data(dataset, vla_prop=.2):
+def get_data(dataset, val_prop=.2):
     pickle_file = './data/%s_dump.pkl' % dataset
     if os.path.exists(pickle_file):
         return pickle.load(open(pickle_file, 'rb'))
 
-    doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights = read_file(
-        dataset)
+    doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights = read_file(dataset)
 
     train_dev_data = []
     for d in doc_train_list:
-        train_dev_data.append(Data(d, vocab_dic))
+        train_dev_data.append(Data(d))
 
     test_data = []
     for d in doc_test_list:
-        test_data.append(Data(d, vocab_dic))
+        test_data.append(Data(d))
 
     total_size = len(train_dev_data)
-    val_size = int(vla_prop * total_size)
+    val_size = int(val_prop * total_size)
     train_size = total_size - val_size
 
-    idx = np.random.permutation(len(train_dev_data))
+    idx = np.random.permutation(total_size)
     train_idx = idx[:train_size]
     dev_idx = idx[train_size:]
 
@@ -92,5 +90,4 @@ def get_data(dataset, vla_prop=.2):
     data = train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors
     pickle.dump(data, open(pickle_file, 'wb'))
 
-    return train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors
-
+    return data

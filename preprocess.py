@@ -13,7 +13,7 @@ from nltk import tokenize
 from sklearn.utils import class_weight
 
 
-def read_file(dataset, LDA=True):
+def read_file(dataset):
     doc_content_list = []
     doc_sentence_list = []
     f = open('data/' + dataset + '_corpus.txt', 'rb')
@@ -88,14 +88,6 @@ def read_file(dataset, LDA=True):
             temp_doc.append(temp)
         doc_test_list.append((temp_doc, labels_dic[label]))
 
-    # keywords_dic = {}
-    # if LDA:
-    #     keywords_dic_original = pickle.load(open('data/' + dataset + '_LDA.p', "rb"))
-    #
-    #     for i in keywords_dic_original:
-    #         if i in vocab_dic:
-    #             keywords_dic[vocab_dic[i]] = keywords_dic_original[i]
-
     train_set_y = [j for i, j in doc_train_list]
 
     class_weights = class_weight.compute_class_weight(class_weight='balanced',
@@ -108,6 +100,8 @@ def get_embedding(word_to_id):
     filename = '../glove.840B.300d.txt'
     dim = 300
 
+    print('vocab size :', len(word_to_id))
+    count = 0
     embeddings = np.random.uniform(-0.25, 0.25, (len(word_to_id), dim))
     with open(filename, encoding='utf-8') as fp:
         for line in fp:
@@ -116,8 +110,9 @@ def get_embedding(word_to_id):
             if word in word_to_id:
                 try:
                     embeddings[word_to_id[word]] = [float(v) for v in elements[1:]]
+                    count += 1
                 except ValueError:
                     pass
-
+    print('got embeddings of :', count)
     embeddings[0] = np.zeros(dim, dtype='float32')
     return embeddings
