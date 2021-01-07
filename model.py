@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import scipy.sparse as sp
+import numpy as np
 
 from attention import Attention
 from layer import HGNNLayer
