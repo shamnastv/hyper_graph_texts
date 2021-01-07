@@ -5,4 +5,8 @@
 #SBATCH --output=test_job%j.out # Standard output and error log
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
-python3 main.py
+python3 main.py --lr 1e-3
+python3 main.py --lr 8e-4
+python3 main.py --lr 4e-4
+python3 main.py --lr 1e-4
+python3 main.py --lr 5e-5
