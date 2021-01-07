@@ -5,6 +5,7 @@ import torch
 import numpy as np
 from torch import optim
 import torch.nn.functional as F
+from sklearn.metrics import accuracy_score, f1_score
 
 from data_util import get_data
 from model import HGNNModel
@@ -23,9 +24,10 @@ def train(args, model, optimizer, train_data, class_weights):
     for i in range(0, train_size, args.batch_size):
         selected_idx = idx_train[i:i + args.batch_size]
         batch_data = [train_data[idx] for idx in selected_idx]
-        output, targets = model(batch_data)
 
         optimizer.zero_grad()
+        output, targets = model(batch_data)
+
         # loss = F.cross_entropy(output, targets)
         loss = F.cross_entropy(output, targets, class_weights)
         loss.backward()
@@ -56,8 +58,11 @@ def pass_data_iteratively(model, data, minibatch_size=128):
     outputs, targets = torch.cat(outputs, 0), torch.cat(targets, 0)
 
     pred = outputs.max(1, keepdim=True)[1]
-    correct = pred.eq(targets.view_as(pred)).sum().cpu().item()
-    acc = correct / float(len(data))
+    # correct = pred.eq(targets.view_as(pred)).sum().cpu().item()
+    # acc = correct / float(len(data))
+    pred = pred.squeeze().detach().cpu().numpy()
+    targets = targets.detach().cpu().numpy()
+    acc = accuracy_score(targets, pred)
 
     return acc
 
@@ -124,6 +129,8 @@ def main():
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.5)
+
+    print(model)
 
     acc_test = 0
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
