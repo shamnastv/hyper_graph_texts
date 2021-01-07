@@ -19,12 +19,12 @@ class Attention(nn.Module):
             raise ValueError("number of layers should be positive!")
         elif num_layers == 1:
             # Linear model
-            self.linears.append(nn.Linear(input_dim, output_dim))
+            self.linears.append(nn.Linear(input_dim, output_dim, bias=False))
         else:
-            self.linears.append(nn.Linear(input_dim, hidden_dim))
+            self.linears.append(nn.Linear(input_dim, hidden_dim, bias=False))
             for layer in range(num_layers - 2):
-                self.linears.append(nn.Linear(hidden_dim, hidden_dim))
-            self.linears.append(nn.Linear(hidden_dim, output_dim))
+                self.linears.append(nn.Linear(hidden_dim, hidden_dim, bias=False))
+            self.linears.append(nn.Linear(hidden_dim, output_dim, bias=False))
 
             # for layer in range(num_layers - 1):
             #     self.batch_norms.append(nn.BatchNorm1d(hidden_dim))
