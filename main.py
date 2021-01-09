@@ -86,7 +86,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R52",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=8,
+    parser.add_argument('--batch_size', type=int, default=16,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -104,7 +104,7 @@ def main():
                         help='dropout (default: 0.5)')
     parser.add_argument('--filename', type=str, default="",
                         help='output file')
-    parser.add_argument('--early_stop', type=int, default=30,
+    parser.add_argument('--early_stop', type=int, default=20,
                         help='early_stop')
     parser.add_argument('--debug', action="store_true",
                         help='run in debug mode')
