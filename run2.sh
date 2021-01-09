@@ -5,4 +5,4 @@
 #SBATCH --output=test_job%j.out # Standard output and error log
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
-python3 main.py --hidden_dim 100
+python3 main.py --num_mlp_layers 1
