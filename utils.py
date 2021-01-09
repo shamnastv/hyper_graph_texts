@@ -93,7 +93,7 @@ def clean_document(doc_sentence_list, dataset):
             doc_words = []
             for word in words:
                 if dataset == 'mr':
-                    if not word in stop_words:
+                    if word not in stop_words:
                         doc_words.append(word)
                 elif (word not in stop_words) and (word_freq[word] >= 5) and (word_freq[word] < highbar):
                     doc_words.append(word)

@@ -103,12 +103,12 @@ class HGNNModel(nn.Module):
             attn = self.attention[layer](h)
             attn = attn.masked_fill(v_masks.eq(0).unsqueeze(2), -np.inf)
 
-            attn = torch.sigmoid(attn)
-            ones = torch.ones(size=attn.shape, device=self.device)
-            row_sum = torch.bmm(ones.transpose(1, 2), attn) + .0000001
-            attn = torch.div(attn, row_sum)
+            # attn = torch.sigmoid(attn)
+            # ones = torch.ones(size=attn.shape, device=self.device)
+            # row_sum = torch.bmm(ones.transpose(1, 2), attn) + .0000001
+            # attn = torch.div(attn, row_sum)
 
-            # attn = F.softmax(attn, dim=1)
+            attn = F.softmax(attn, dim=1)
 
             doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
 
