@@ -80,15 +80,17 @@ class HGNNLayer(nn.Module):
 
     # def forward(self, incident_mat, degree_v, degree_e, x, e_masks):
     #     degree_v_root = degree_v ** .5
-    #     x_w = self.mlp(x)
-    #     h = torch.bmm(degree_v_root, x_w)
+    #
+    #     h = torch.bmm(degree_v_root, x)
     #     h = torch.bmm(incident_mat.transpose(1, 2), h)
     #     h = torch.bmm(degree_e, h)
     #     h = torch.bmm(incident_mat, h)
     #     h = torch.bmm(degree_v_root, h)
     #
     #     # h = self.gru(h, x_w)
-    #     h = h + self.eps * x_w
+    #     h = h + self.eps * x
+    #
+    #     h = self.mlp(h)
     #     h = self.activation(h)
     #     h = self.dropout(h)
     #     h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
