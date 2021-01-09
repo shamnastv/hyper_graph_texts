@@ -108,6 +108,8 @@ def main():
                         help='early_stop')
     parser.add_argument('--debug', action="store_true",
                         help='run in debug mode')
+    parser.add_argument('--random_vec', action="store_true",
+                        help='run in debug mode')
     parser.add_argument('--weight_decay', type=float, default=1e-6, help='weight decay (default: 0.3)')
     args = parser.parse_args()
 
