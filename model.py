@@ -113,11 +113,11 @@ class HGNNModel(nn.Module):
 
             doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
 
-            # masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])
-            # doc_embed2 = torch.max(h.masked_fill(masks, -1e9), dim=1)[0]
+            masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])
+            doc_embed2 = torch.max(h.masked_fill(masks, -1e9), dim=1)[0]
 
             # pred += self.linears_prediction[layer](torch.cat((doc_embed1, doc_embed2), dim=1))
-            pred += self.linears_prediction[layer](doc_embed1)
+            pred += self.linears_prediction[layer](doc_embed2)
 
         # attn = self.attention[self.num_layers - 1](h)
         # attn = F.softmax(attn.masked_fill(v_masks.eq(0).unsqueeze(2), -1e9), dim=1)
