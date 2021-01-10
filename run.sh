@@ -6,8 +6,8 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
 
-python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 2
-python3 main.py --lr 1e-4 --hidden_dim 200 --num_layers 2
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 2 --dropout .5
+python3 main.py --lr 8e-4 --hidden_dim 200 --num_layers 2 --dropout .5
 
-python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 2 --num_mlp_layers 2
-python3 main.py --lr 1e-4 --hidden_dim 200 --num_layers 2 --num_mlp_layers 2
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 2 --num_mlp_layers 2 --dropout .5
+python3 main.py --lr 8e-4 --hidden_dim 200 --num_layers 2 --num_mlp_layers 2 --dropout .5
