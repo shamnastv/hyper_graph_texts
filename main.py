@@ -152,7 +152,7 @@ def main():
         print('max validation accuracy :', max_val_accuracy, 'max acc epoch :', max_acc_epoch,
               'test accuracy :', test_accuracy, flush=True)
 
-        scheduler.step()
+        # scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
             break
