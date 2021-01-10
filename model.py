@@ -97,31 +97,31 @@ class HGNNModel(nn.Module):
             h_n = self.h_gnn_layers[layer](incident_mat, degree_v, degree_e, h, e_masks, layer)
             h_cat.append(h_n)
 
-        # pred = 0
-        # for layer, h in enumerate(h_cat):
-        #     # if layer == 0:
-        #     #     continue
-        #     attn = self.attention[layer](h)
-        #     attn = attn.masked_fill(v_masks.eq(0).unsqueeze(2), -np.inf)
-        #
-        #     # attn = torch.sigmoid(attn)
-        #     # ones = torch.ones(size=attn.shape, device=self.device)
-        #     # row_sum = torch.bmm(ones.transpose(1, 2), attn) + .0000001
-        #     # attn = torch.div(attn, row_sum)
-        #
-        #     attn = F.softmax(attn, dim=1)
-        #
-        #     doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
-        #
-        #     # masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])
-        #     # doc_embed2 = torch.max(h.masked_fill(masks, -1e9), dim=1)[0]
-        #
-        #     # pred += self.linears_prediction[layer](torch.cat((doc_embed1, doc_embed2), dim=1))
-        #     pred += self.linears_prediction[layer](doc_embed1)
+        pred = 0
+        for layer, h in enumerate(h_cat):
+            # if layer == 0:
+            #     continue
+            attn = self.attention[layer](h)
+            attn = attn.masked_fill(v_masks.eq(0).unsqueeze(2), -np.inf)
 
-        attn = self.attention[self.num_layers - 1](h)
-        attn = F.softmax(attn.masked_fill(v_masks.eq(0).unsqueeze(2), -1e9), dim=1)
-        doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
-        pred = self.linears_prediction[self.num_layers - 1](doc_embed1)
+            # attn = torch.sigmoid(attn)
+            # ones = torch.ones(size=attn.shape, device=self.device)
+            # row_sum = torch.bmm(ones.transpose(1, 2), attn) + .0000001
+            # attn = torch.div(attn, row_sum)
+
+            attn = F.softmax(attn, dim=1)
+
+            doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
+
+            # masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])
+            # doc_embed2 = torch.max(h.masked_fill(masks, -1e9), dim=1)[0]
+
+            # pred += self.linears_prediction[layer](torch.cat((doc_embed1, doc_embed2), dim=1))
+            pred += self.linears_prediction[layer](doc_embed1)
+
+        # attn = self.attention[self.num_layers - 1](h)
+        # attn = F.softmax(attn.masked_fill(v_masks.eq(0).unsqueeze(2), -1e9), dim=1)
+        # doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
+        # pred = self.linears_prediction[self.num_layers - 1](doc_embed1)
 
         return pred, targets
