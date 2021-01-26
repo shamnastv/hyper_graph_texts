@@ -68,6 +68,8 @@ class Data:
                         self.degrees_e[i] += 1
                     self.degrees_v[j] += len(temp)
 
+        self.edge_num = len(self.degrees_e)
+
         self.degrees_e = [1/i if i != 0 else 0 for i in self.degrees_e]
         self.degrees_v = [1/i if i != 0 else 0 for i in self.degrees_v]
 
