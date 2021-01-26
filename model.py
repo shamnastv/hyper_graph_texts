@@ -60,9 +60,10 @@ class HGNNModel(nn.Module):
         self.device = device
 
         self.word_embeddings = nn.Embedding(word_vectors.shape[0], word_vectors.shape[1], padding_idx=0)
+        self.word_embeddings.weight.requires_grad = True
         if not args.random_vec:
             self.word_embeddings.weight.data.copy_(torch.from_numpy(word_vectors).float())
-        self.word_embeddings.weight.requires_grad = True
+            self.word_embeddings.weight.requires_grad = False
 
         self.h_gnn_layers = nn.ModuleList()
         self.linears_prediction = torch.nn.ModuleList()
@@ -94,8 +95,8 @@ class HGNNModel(nn.Module):
         h_cat = [h]
 
         for layer in range(self.num_layers - 1):
-            h_n = self.h_gnn_layers[layer](incident_mat, degree_v, degree_e, h, e_masks, layer)
-            h_cat.append(h_n)
+            h = self.h_gnn_layers[layer](incident_mat, degree_v, degree_e, h, e_masks, layer)
+            h_cat.append(h)
 
         pred = 0
         for layer, h in enumerate(h_cat):

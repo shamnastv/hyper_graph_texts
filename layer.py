@@ -49,12 +49,13 @@ class HGNNLayer(nn.Module):
 
     def forward(self, incident_mat, degree_v, degree_e, x, e_masks, layer):
 
-        if layer == 1:
-            h = self.message_passing_1(incident_mat, x, degree_v, degree_e, e_masks)
-        # for i in range(layer + 1):
-        if layer == 0:
-            h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
+        # if layer == 1:
+        #     h = self.message_passing_1(incident_mat, x, degree_v, degree_e, e_masks)
+        # # for i in range(layer + 1):
+        # if layer == 0:
+        #     h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
 
+        h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
         h = self.mlp(h)
         h = self.activation(h)
         h = self.dropout(h)
