@@ -31,15 +31,12 @@ class Data:
             if temp:
                 self.data.append(temp)
 
-        self.node_num = len(self.node_ids)
-        self.edge_num = len(self.data)
-
         self.rows = []
         self.cols = []
         self.vals = []
 
-        self.degrees_e = [0] * self.edge_num
-        self.degrees_v = [0] * self.node_num
+        self.degrees_e = [0] * len(self.data)
+        self.degrees_v = [0] * len(self.node_ids)
 
         for i, sent in enumerate(self.data):
             for j in sent:
@@ -69,6 +66,7 @@ class Data:
                     self.degrees_v[j] += len(temp)
 
         self.edge_num = len(self.degrees_e)
+        self.node_num = len(self.degrees_v)
 
         self.degrees_e = [1/i if i != 0 else 0 for i in self.degrees_e]
         self.degrees_v = [1/i if i != 0 else 0 for i in self.degrees_v]
