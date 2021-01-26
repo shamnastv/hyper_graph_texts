@@ -86,13 +86,14 @@ class HGNNModel(nn.Module):
         # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
         self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
         self.attention.append(Attention(args.hidden_dim, activation=torch.tanh))
+        self.dropout = nn.Dropout(args.dropout)
 
     def forward(self, data):
 
         incident_mat, degree_v, degree_e, x, e_masks, v_masks, targets = get_features(data, self.device)
 
         h = self.word_embeddings(x)
-        h_cat = [h]
+        h_cat = [self.dropout(h)]
 
         for layer in range(self.num_layers - 1):
             h = self.h_gnn_layers[layer](incident_mat, degree_v, degree_e, h, e_masks, layer)
