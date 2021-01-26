@@ -6,7 +6,7 @@ import numpy as np
 
 
 class Data:
-    def __init__(self, data):
+    def __init__(self, data, keywords, lda=True):
         self.label = data[1]
         doc = data[0]
 
@@ -49,24 +49,47 @@ class Data:
                 self.cols.append(i)
                 self.vals.append(1.0)
 
+        if len(self.cols) == 0:
+            s = 0
+        else:
+            s = max(self.cols) + 1
+
+        if lda:
+            for w in vocab_list:
+                if w in keywords:
+                    temp = keywords[w]
+                    j = word_to_id[w]
+                    self.rows += [j] * len(temp)
+                    cols = [topic + s for topic in temp]
+                    self.cols += cols
+                    self.vals += [1.0] * len(temp)
+                    self.degrees_e += [0] * (max(cols) - len(self.degrees_e) + 1)
+                    for i in cols:
+                        self.degrees_e[i] += 1
+                    self.degrees_v[j] += len(temp)
+
         self.degrees_e = [1/i if i != 0 else 0 for i in self.degrees_e]
         self.degrees_v = [1/i if i != 0 else 0 for i in self.degrees_v]
 
 
-def get_data(dataset, val_prop=.1):
-    pickle_file = './data/%s_dump.pkl' % dataset
+def get_data(dataset, lda=True, val_prop=.1):
+    lda_str = ''
+    if lda:
+        lda_str = '_lda'
+    pickle_file = './data/%s%s_dump.pkl' % (dataset, lda_str)
     if os.path.exists(pickle_file):
         return pickle.load(open(pickle_file, 'rb'))
 
-    doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights = read_file(dataset)
+    doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights, keywords_dic\
+        = read_file(dataset, lda)
 
     train_dev_data = []
     for d in doc_train_list:
-        train_dev_data.append(Data(d))
+        train_dev_data.append(Data(d, keywords_dic, lda))
 
     test_data = []
     for d in doc_test_list:
-        test_data.append(Data(d))
+        test_data.append(Data(d, keywords_dic, lda))
 
     total_size = len(train_dev_data)
     val_size = int(val_prop * total_size)
@@ -91,3 +114,8 @@ def get_data(dataset, val_prop=.1):
     pickle.dump(data, open(pickle_file, 'wb'))
 
     return data
+
+
+if __name__ == '__main__':
+    train_data = get_data(dataset='R8', lda=True)[0]
+    print(train_data[100].rows, train_data[100].cols)

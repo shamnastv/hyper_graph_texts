@@ -13,7 +13,7 @@ from nltk import tokenize
 from sklearn.utils import class_weight
 
 
-def read_file(dataset):
+def read_file(dataset, lda=True):
     doc_content_list = []
     doc_sentence_list = []
     f = open('data/' + dataset + '_corpus.txt', 'rb')
@@ -88,12 +88,20 @@ def read_file(dataset):
             temp_doc.append(temp)
         doc_test_list.append((temp_doc, labels_dic[label]))
 
+    keywords_dic = {}
+    if lda:
+        keywords_dic_original = pickle.load(open('data/' + dataset + '_LDA.p', "rb"))
+
+        for i in keywords_dic_original:
+            if i in vocab_dic:
+                keywords_dic[vocab_dic[i]] = keywords_dic_original[i]
+
     train_set_y = [j for i, j in doc_train_list]
 
     class_weights = class_weight.compute_class_weight(class_weight='balanced',
                                                       classes=np.unique(train_set_y), y=train_set_y)
 
-    return doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights
+    return doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights, keywords_dic
 
 
 def get_embedding(word_to_id):

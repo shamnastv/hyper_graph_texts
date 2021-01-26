@@ -110,6 +110,8 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--random_vec', action="store_true",
                         help='run in debug mode')
+    parser.add_argument('--lda', action="store_true",
+                        help='lda')
     parser.add_argument('--weight_decay', type=float, default=1e-6, help='weight decay (default: 0.3)')
     args = parser.parse_args()
 
@@ -122,7 +124,8 @@ def main():
         torch.cuda.manual_seed_all(args.seed)
     print('device : ', device, flush=True)
 
-    train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors = get_data(args.dataset)
+    train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors\
+        = get_data(args.dataset, args.lda)
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     # word_vectors = get_embedding(vocab_dic)
