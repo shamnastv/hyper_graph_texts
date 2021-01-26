@@ -8,4 +8,4 @@
 
 #python3 main.py --lr 1e-5 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 2
 #python3 main.py --lr 5e-5 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 2
-python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 1
+python3 main.py --lr 5e-4 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 1
