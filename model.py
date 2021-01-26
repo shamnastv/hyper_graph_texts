@@ -78,7 +78,7 @@ class HGNNModel(nn.Module):
                 self.linears_prediction.append(nn.Linear(input_dim, num_classes))
                 self.attention.append(Attention(input_dim, activation=torch.tanh))
             else:
-                self.h_gnn_layers.append(HGNNLayer(args, input_dim, args.hidden_dim))
+                self.h_gnn_layers.append(HGNNLayer(args, args.hidden_dim, args.hidden_dim))
                 # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
                 self.attention.append(Attention(args.hidden_dim, activation=torch.tanh))
