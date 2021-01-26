@@ -36,9 +36,11 @@ class HGNNLayer(nn.Module):
         self.dropout = nn.Dropout(args.dropout)
         self.activation = F.leaky_relu
         self.mlp = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
+        self.mlp2 = MLP(args.num_mlp_layers, args.hidden_dim, args.hidden_dim, output_dim, args.dropout)
         self.theta_att = nn.Parameter(torch.zeros(input_dim, 1), requires_grad=True)
         self.eps = nn.Parameter(torch.rand(1), requires_grad=True)
         self.batch_norms = nn.BatchNorm1d(output_dim)
+        self.batch_norms2 = nn.BatchNorm1d(output_dim)
         self.gru = GRUCellMod(output_dim, output_dim)
 
         self.reset_parameters()
@@ -56,11 +58,21 @@ class HGNNLayer(nn.Module):
         #     h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
 
         h = self.mlp(h)
-
-        h = self.message_passing_2(incident_mat, h, degree_v, degree_e)
+        h = self.message_passing_3_1(incident_mat, h, degree_v)
         h = self.activation(h)
         h = self.dropout(h)
         h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
+
+        h = self.mlp2(h)
+        h = self.message_passing_3_2(incident_mat, h, degree_e)
+        h = self.activation(h)
+        h = self.dropout(h)
+        h = self.batch_norms2(h.transpose(1, 2)).transpose(1, 2)
+
+        # h = self.message_passing_2(incident_mat, h, degree_v, degree_e)
+        # h = self.activation(h)
+        # h = self.dropout(h)
+        # h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
 
         return h
 
@@ -92,4 +104,14 @@ class HGNNLayer(nn.Module):
         h = torch.bmm(degree_v_root, h)
         # h = self.gru(h, x_w)
         h = h + self.eps * x
+        return h
+
+    def message_passing_3_1(self, incident_mat, h, degree_v):
+        h = torch.bmm(degree_v, h)
+        h = torch.bmm(incident_mat.transpose(1, 2), h)
+        return h
+
+    def message_passing_3_2(self, incident_mat, h, degree_e):
+        h = torch.bmm(degree_e, h)
+        h = torch.bmm(incident_mat, h)
         return h
