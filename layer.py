@@ -47,7 +47,7 @@ class HGNNLayer(nn.Module):
         stdv = 1. / math.sqrt(self.theta_att.size(1))
         self.theta_att.data.uniform_(-stdv, stdv)
 
-    def forward(self, incident_mat, degree_v, degree_e, x, e_masks, layer):
+    def forward(self, incident_mat, degree_v, degree_e, h, e_masks, layer):
 
         # if layer == 1:
         #     h = self.message_passing_1(incident_mat, x, degree_v, degree_e, e_masks)
@@ -55,8 +55,9 @@ class HGNNLayer(nn.Module):
         # if layer == 0:
         #     h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
 
-        h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
         h = self.mlp(h)
+
+        h = self.message_passing_2(incident_mat, h, degree_v, degree_e)
         h = self.activation(h)
         h = self.dropout(h)
         h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
