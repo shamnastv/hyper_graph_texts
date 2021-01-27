@@ -57,24 +57,24 @@ class HGNNLayer(nn.Module):
         # if layer == 0:
         #     h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
 
-        h = self.mlp(h)
-        h = self.message_passing_3_1(incident_mat, h, degree_v)
-        h = self.activation(h)
-        h = self.dropout(h)
-        h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
+        h_n = self.mlp(h)
+        h_n = self.message_passing_3_1(incident_mat, h_n, degree_v)
+        h_n = self.activation(h_n)
+        h_n = self.dropout(h_n)
+        h_n = self.batch_norms(h_n.transpose(1, 2)).transpose(1, 2)
 
-        h = self.mlp2(h)
-        h = self.message_passing_3_2(incident_mat, h, degree_e)
-        h = self.activation(h)
-        h = self.dropout(h)
-        h = self.batch_norms2(h.transpose(1, 2)).transpose(1, 2)
-
+        h_n = self.mlp2(h_n)
+        h_n = self.message_passing_3_2(incident_mat, h_n, degree_e)
+        h_n = self.activation(h_n)
+        h_n = self.dropout(h_n)
+        h_n = self.batch_norms2(h_n.transpose(1, 2)).transpose(1, 2)
+        h_n = h_n + self.eps * h
         # h = self.message_passing_2(incident_mat, h, degree_v, degree_e)
         # h = self.activation(h)
         # h = self.dropout(h)
         # h = self.batch_norms(h.transpose(1, 2)).transpose(1, 2)
 
-        return h
+        return h_n
 
     def message_passing_1(self, incident_mat, x, degree_v, degree_e, e_masks):
         ht_x = torch.bmm(incident_mat.transpose(1, 2), x)
