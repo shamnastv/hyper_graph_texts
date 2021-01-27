@@ -58,7 +58,7 @@ class HGNNLayer(nn.Module):
         #     h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
 
         h = self.mlp(h)
-        h_n = self.message_passing_3_1(incident_mat, h_n, degree_v)
+        h_n = self.message_passing_3_1(incident_mat, h, degree_v)
         h_n = self.activation(h_n)
         h_n = self.dropout(h_n)
         h_n = self.batch_norms(h_n.transpose(1, 2)).transpose(1, 2)
