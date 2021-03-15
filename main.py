@@ -161,7 +161,7 @@ def main():
         print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
         acc_train, acc_dev, acc_test = test(model, train_data, dev_data, test_data)
-        print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test), flush=True)
+        print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
         if acc_dev > max_val_accuracy:
             max_val_accuracy = acc_dev
             max_acc_epoch = epoch
@@ -170,7 +170,7 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        scheduler.step()
+        # scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
             break
@@ -179,7 +179,7 @@ def main():
     print('max acc epoch : ', max_acc_epoch)
     print('max validation accuracy : ', max_val_accuracy)
     print('test accuracy : ', test_accuracy)
-    print('latest_test_accuracy : ', acc_test)
+    print('last test_accuracy : ', acc_test)
     print('=' * 200 + '\n')
 
 
