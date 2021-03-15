@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import scipy.sparse as sp
 import numpy as np
+from torch_sparse import spmm
 
 from attention import Attention
 from layer import HGNNLayer
@@ -14,43 +15,115 @@ def get_features(data, device):
     max_e = max(edge_nums)
     max_v = max(node_nums)
 
-    incident_mat = []
-    degrees_v = []
-    degrees_e = []
-    e_masks = []
-    v_masks = []
     targets = []
     x = []
 
-    for d in data:
-        h = sp.coo_matrix((d.vals, (d.rows, d.cols)), shape=(max_v, max_e))
-        incident_mat.append(torch.from_numpy(h.todense()).float())
+    # vals = []
+    # rows = []
+    # cols = []
+    incident_mat = []
+    v_start = 0
+    e_start = 0
+    graph_pool = []
+    word_dict = {}
 
-        v_mask_size = max_v - d.node_num
-        e_mask_size = max_e - d.edge_num
+    for i, d in enumerate(data):
+        for j in range(len(d.vals)):
+            # vals.append(d.vals[j])
+            # rows.append(d.rows[j] + v_start)
+            # cols.append(d.cols[j] + e_start)
+            incident_mat.append([d.rows[j] + v_start, d.cols[j] + e_start, d.vals[j]])
+        for j, w in enumerate(d.node_ids):
+            if w != 1:
+                if w in word_dict:
+                    word_dict[w].append(v_start + j)
+                else:
+                    word_dict[w] = [v_start + j]
 
-        degree_v = d.degrees_v + [0] * v_mask_size
-        degree_e = d.degrees_e + [0] * e_mask_size
-
-        degrees_v.append(torch.diag(torch.tensor(degree_v).float()))
-        degrees_e.append(torch.diag(torch.tensor(degree_e).float()))
-
-        v_masks.append(torch.tensor([1] * d.node_num + [0] * v_mask_size).float())
-        e_masks.append(torch.tensor([1] * d.edge_num + [0] * e_mask_size).float())
-
+        graph_pool.extend([[i, j, 1/d.node_num] for j in range(v_start, v_start + d.node_num, 1)])
+        v_start += d.node_num
+        e_start += d.edge_num
+        x.extend(d.node_ids)
         targets.append(d.label)
 
-        x.append(torch.tensor(d.node_ids + [0] * v_mask_size).long())
+    for w in word_dict:
+        if len(word_dict[w]) > 1:
+            for i in word_dict[w]:
+                # vals.append(1)
+                # rows.append(i)
+                # cols.append(e_start)
+                incident_mat.append([i, e_start, 1])
+            e_start += 1
 
-    incident_mat = torch.stack(incident_mat).to(device)
-    degrees_v = torch.stack(degrees_v).to(device)
-    degrees_e = torch.stack(degrees_e).to(device)
-    x = torch.stack(x).to(device)
-    e_masks = torch.stack(e_masks).to(device)
-    v_masks = torch.stack(v_masks).to(device)
+    num_v = v_start
+    num_e = e_start
+
+    degrees_v = [0] * num_v
+    degrees_e = [0] * num_e
+
+    for e in incident_mat:
+        degrees_v[e[0]] += 1
+        degrees_e[e[1]] += 1
+
+    degrees_e = [1 / i if i != 0 else 0 for i in degrees_e]
+    degrees_v = [1 / i if i != 0 else 0 for i in degrees_v]
+
+    degrees_e = torch.tensor(degrees_e).float().to(device)
+    degrees_e_shape = len(degrees_e)
+    degrees_e_idx_0 = torch.arange(degrees_e_shape).long()
+    degrees_e_idx_1 = torch.arange(degrees_e_shape).long()
+    degrees_e_idx = torch.stack((degrees_e_idx_0, degrees_e_idx_1), dim=0).to(device)
+    degrees_e_full = (degrees_e_idx, degrees_e, torch.Size([degrees_e_shape, degrees_e_shape]))
+
+    degrees_v = torch.tensor(degrees_v).float().to(device)
+    degrees_v_shape = len(degrees_v)
+    degrees_v_idx_0 = torch.arange(degrees_v_shape).long()
+    degrees_v_idx_1 = torch.arange(degrees_v_shape).long()
+    degrees_v_idx = torch.stack((degrees_v_idx_0, degrees_v_idx_1), dim=0).to(device)
+    degrees_v_full = (degrees_v_idx, degrees_v, torch.Size([degrees_v_shape, degrees_v_shape]))
+
     targets = torch.tensor(targets).long().to(device)
 
-    return incident_mat, degrees_v, degrees_e, x, e_masks, v_masks, targets
+    x = torch.tensor(x).long().to(device)
+    graph_pool = torch.tensor(graph_pool).float().transpose(0, 1).to(device)
+    graph_pool_shape = torch.Size([len(data), len(x)])
+    graph_pool_idx = graph_pool[:2].long()
+    graph_pool = graph_pool[2]
+    graph_pool_full = (graph_pool_idx, graph_pool, graph_pool_shape)
+
+    incident_mat = torch.tensor(incident_mat).long().transpose(0, 1).to(device)
+    incident_mat_shape = torch.Size([v_start, e_start])
+    incident_mat_full = (incident_mat[:2], incident_mat[2].float(), incident_mat_shape)
+
+    # for d in data:
+    #     h = sp.coo_matrix((d.vals, (d.rows, d.cols)), shape=(max_v, max_e))
+    #     incident_mat.append(torch.from_numpy(h.todense()).float())
+    #
+    #     v_mask_size = max_v - d.node_num
+    #     e_mask_size = max_e - d.edge_num
+    #
+    #     degree_v = d.degrees_v + [0] * v_mask_size
+    #     degree_e = d.degrees_e + [0] * e_mask_size
+    #
+    #     degrees_v.append(torch.diag(torch.tensor(degree_v).float()))
+    #     degrees_e.append(torch.diag(torch.tensor(degree_e).float()))
+    #
+    #     v_masks.append(torch.tensor([1] * d.node_num + [0] * v_mask_size).float())
+    #     e_masks.append(torch.tensor([1] * d.edge_num + [0] * e_mask_size).float())
+    #
+    #     targets.append(d.label)
+    #
+    #     x.append(torch.tensor(d.node_ids + [0] * v_mask_size).long())
+
+    # incident_mat = torch.stack(incident_mat).to(device)
+    # degrees_v = torch.stack(degrees_v).to(device)
+    # degrees_e = torch.stack(degrees_e).to(device)
+    # x = torch.stack(x).to(device)
+    # e_masks = torch.stack(e_masks).to(device)
+    # v_masks = torch.stack(v_masks).to(device)
+    # targets = torch.tensor(targets).long().to(device)
+
+    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets
 
 
 class HGNNModel(nn.Module):
@@ -90,36 +163,21 @@ class HGNNModel(nn.Module):
 
     def forward(self, data):
 
-        incident_mat, degree_v, degree_e, x, e_masks, v_masks, targets = get_features(data, self.device)
+        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets = get_features(data, self.device)
 
         h = self.word_embeddings(x)
         h_cat = [self.dropout(h)]
 
         for layer in range(self.num_layers - 1):
-            h = self.h_gnn_layers[layer](incident_mat, degree_v, degree_e, h, e_masks, layer)
+            h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer)
             h_cat.append(h)
 
         pred = 0
         for layer, h in enumerate(h_cat):
             # if layer == 0:
             #     continue
-            attn = self.attention[layer](h)
-            attn = attn.masked_fill(v_masks.eq(0).unsqueeze(2), -np.inf)
-
-            # attn = torch.sigmoid(attn)
-            # ones = torch.ones(size=attn.shape, device=self.device)
-            # row_sum = torch.bmm(ones.transpose(1, 2), attn) + .0000001
-            # attn = torch.div(attn, row_sum)
-
-            attn = F.softmax(attn, dim=1)
-
-            doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
-
-            # masks = v_masks.eq(0).unsqueeze(2).repeat(1, 1, h.shape[2])
-            # doc_embed2 = torch.max(h.masked_fill(masks, -1e9), dim=1)[0]
-
-            # pred += self.linears_prediction[layer](torch.cat((doc_embed1, doc_embed2), dim=1))
-            pred += self.linears_prediction[layer](doc_embed1)
+            pooled_h = spmm(graph_pool_full[0], graph_pool_full[1], graph_pool_full[2][0], graph_pool_full[2][1], h)
+            pred += self.linears_prediction[layer](pooled_h)
 
         # attn = self.attention[self.num_layers - 1](h)
         # attn = F.softmax(attn.masked_fill(v_masks.eq(0).unsqueeze(2), -1e9), dim=1)

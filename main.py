@@ -9,51 +9,53 @@ from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 from data_util import get_data
 from model import HGNNModel
-
+from nn_util import get_init_embd, clustering, split_data
 
 start_time = time.time()
 
 
-def train(args, model, optimizer, train_data, class_weights):
+def train(args, model, optimizer, train_data_full, class_weights):
     model.train()
-
-    train_size = len(train_data)
-    idx_train = np.random.permutation(train_size)
-
     loss_accum = 0
-    for i in range(0, train_size, args.batch_size):
-        selected_idx = idx_train[i:i + args.batch_size]
-        batch_data = [train_data[idx] for idx in selected_idx]
 
-        optimizer.zero_grad()
-        output, targets = model(batch_data)
+    for train_data in train_data_full:
+        train_size = len(train_data)
+        idx_train = np.random.permutation(train_size)
 
-        loss = F.cross_entropy(output, targets)
-        # loss = F.cross_entropy(output, targets, class_weights)
-        loss.backward()
-        optimizer.step()
+        for i in range(0, train_size, args.batch_size):
+            selected_idx = idx_train[i:i + args.batch_size]
+            batch_data = [train_data[idx] for idx in selected_idx]
 
-        loss = loss.detach().cpu().numpy()
-        loss_accum += loss
+            optimizer.zero_grad()
+            output, targets = model(batch_data)
+
+            loss = F.cross_entropy(output, targets)
+            # loss = F.cross_entropy(output, targets, class_weights)
+            loss.backward()
+            optimizer.step()
+
+            loss = loss.detach().cpu().numpy()
+            loss_accum += loss
 
     return loss_accum
 
 
-def pass_data_iteratively(model, data, minibatch_size=128):
+def pass_data_iteratively(model, data_full, minibatch_size=128):
     outputs = []
     targets = []
 
-    data_size = len(data)
-    full_idx = np.arange(data_size)
-    for i in range(0, data_size, minibatch_size):
-        selected_idx = full_idx[i:i + minibatch_size]
-        if len(selected_idx) == 0:
-            continue
-        batch_data = [data[idx] for idx in selected_idx]
-        with torch.no_grad():
-            output, target = model(batch_data)
-        outputs.append(output)
-        targets.append(target)
+    for data in data_full:
+        data_size = len(data)
+        full_idx = np.arange(data_size)
+        for i in range(0, data_size, minibatch_size):
+            selected_idx = full_idx[i:i + minibatch_size]
+            if len(selected_idx) == 0:
+                continue
+            batch_data = [data[idx] for idx in selected_idx]
+            with torch.no_grad():
+                output, target = model(batch_data)
+            outputs.append(output)
+            targets.append(target)
 
     outputs, targets = torch.cat(outputs, 0), torch.cat(targets, 0)
 
@@ -84,7 +86,7 @@ def main():
         description='PyTorch graph convolutional neural net for whole-graph classification')
     parser.add_argument('--device', type=int, default=0,
                         help='which gpu to use if any (default: 0)')
-    parser.add_argument('--dataset', type=str, default="R52",
+    parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
     parser.add_argument('--batch_size', type=int, default=16,
                         help='input batch size for training (default: 64)')
@@ -127,8 +129,18 @@ def main():
     train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors\
         = get_data(args.dataset, args.lda)
 
+    init_embed = get_init_embd(train_data + dev_data + test_data, word_vectors).numpy()
+    clusters = clustering(init_embed, len(labels_dic))
+    train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
+    cluster_train = clusters[:train_size]
+    cluster_dev = clusters[train_size:train_size + dev_size]
+    cluster_test = clusters[train_size + dev_size:train_size + dev_size + test_size]
+
+    train_data = split_data(train_data, cluster_train)
+    dev_data = split_data(dev_data, cluster_dev)
+    test_data = split_data(test_data, cluster_test)
+
     class_weights = torch.from_numpy(class_weights).float().to(device)
-    # word_vectors = get_embedding(vocab_dic)
     input_dim = word_vectors.shape[1]
     num_classes = len(labels_dic)
 
