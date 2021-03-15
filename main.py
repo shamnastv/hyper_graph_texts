@@ -1,4 +1,5 @@
 import argparse
+import collections
 import time
 
 import torch
@@ -88,7 +89,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=16,
+    parser.add_argument('--batch_size', type=int, default=128,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -135,6 +136,8 @@ def main():
     cluster_train = clusters[:train_size]
     cluster_dev = clusters[train_size:train_size + dev_size]
     cluster_test = clusters[train_size + dev_size:train_size + dev_size + test_size]
+    elements_count = collections.Counter(clusters)
+    print(elements_count)
 
     train_data = split_data(train_data, cluster_train)
     dev_data = split_data(dev_data, cluster_dev)

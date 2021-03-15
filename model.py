@@ -10,11 +10,6 @@ from layer import HGNNLayer
 
 
 def get_features(data, device):
-    edge_nums = [d.edge_num for d in data]
-    node_nums = [d.node_num for d in data]
-    max_e = max(edge_nums)
-    max_v = max(node_nums)
-
     targets = []
     x = []
 
@@ -94,34 +89,6 @@ def get_features(data, device):
     incident_mat = torch.tensor(incident_mat).long().transpose(0, 1).to(device)
     incident_mat_shape = torch.Size([v_start, e_start])
     incident_mat_full = (incident_mat[:2], incident_mat[2].float(), incident_mat_shape)
-
-    # for d in data:
-    #     h = sp.coo_matrix((d.vals, (d.rows, d.cols)), shape=(max_v, max_e))
-    #     incident_mat.append(torch.from_numpy(h.todense()).float())
-    #
-    #     v_mask_size = max_v - d.node_num
-    #     e_mask_size = max_e - d.edge_num
-    #
-    #     degree_v = d.degrees_v + [0] * v_mask_size
-    #     degree_e = d.degrees_e + [0] * e_mask_size
-    #
-    #     degrees_v.append(torch.diag(torch.tensor(degree_v).float()))
-    #     degrees_e.append(torch.diag(torch.tensor(degree_e).float()))
-    #
-    #     v_masks.append(torch.tensor([1] * d.node_num + [0] * v_mask_size).float())
-    #     e_masks.append(torch.tensor([1] * d.edge_num + [0] * e_mask_size).float())
-    #
-    #     targets.append(d.label)
-    #
-    #     x.append(torch.tensor(d.node_ids + [0] * v_mask_size).long())
-
-    # incident_mat = torch.stack(incident_mat).to(device)
-    # degrees_v = torch.stack(degrees_v).to(device)
-    # degrees_e = torch.stack(degrees_e).to(device)
-    # x = torch.stack(x).to(device)
-    # e_masks = torch.stack(e_masks).to(device)
-    # v_masks = torch.stack(v_masks).to(device)
-    # targets = torch.tensor(targets).long().to(device)
 
     return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets
 

@@ -6,14 +6,14 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
 
-#python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8
-#python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8 --lda
-#python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8 --random_vec
-#
-#python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8
-#python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8 --lda
-#python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8 --random_vec
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8 --lda
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8 --random_vec
 
-python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8 --batch_size 128
-python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8 --lda --batch_size 128
-python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8 --random_vec --batch_size 128
+python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8
+python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8 --lda
+python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 1 --dataset R8 --random_vec
+
+#python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8
+#python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8 --lda
+#python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8 --random_vec
