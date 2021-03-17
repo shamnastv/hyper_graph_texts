@@ -110,6 +110,7 @@ class HGNNModel(nn.Module):
         self.attention = nn.ModuleList()
 
         self.num_layers = args.num_layers
+        self.graph_pool_layer = torch.nn.ModuleList()
 
         for layer in range(self.num_layers - 1):
             if layer == 0:
@@ -117,15 +118,19 @@ class HGNNModel(nn.Module):
                 # self.linears_prediction.append(nn.Linear(2 * input_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(input_dim, num_classes))
                 self.attention.append(Attention(input_dim, activation=torch.tanh))
+                self.graph_pool_layer.append(Attention(input_dim))
             else:
                 self.h_gnn_layers.append(HGNNLayer(args, args.hidden_dim, args.hidden_dim))
                 # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
                 self.attention.append(Attention(args.hidden_dim, activation=torch.tanh))
+                self.graph_pool_layer.append(Attention(args.hidden_dim))
 
         # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
         self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
         self.attention.append(Attention(args.hidden_dim, activation=torch.tanh))
+        self.graph_pool_layer.append(Attention(args.hidden_dim))
+
         self.dropout = nn.Dropout(args.dropout)
 
     def forward(self, data):
@@ -143,7 +148,8 @@ class HGNNModel(nn.Module):
         for layer, h in enumerate(h_cat):
             # if layer == 0:
             #     continue
-            pooled_h = spmm(graph_pool_full[0], graph_pool_full[1], graph_pool_full[2][0], graph_pool_full[2][1], h)
+            elem_gp = self.graph_pool_layer[layer](h).squeeze(1)
+            pooled_h = spmm(graph_pool_full[0], elem_gp, graph_pool_full[2][0], graph_pool_full[2][1], h)
             pred += self.linears_prediction[layer](pooled_h)
 
         # attn = self.attention[self.num_layers - 1](h)
