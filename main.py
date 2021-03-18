@@ -107,7 +107,7 @@ def main():
                         help='dropout (default: 0.5)')
     parser.add_argument('--filename', type=str, default="",
                         help='output file')
-    parser.add_argument('--early_stop', type=int, default=20,
+    parser.add_argument('--early_stop', type=int, default=100,
                         help='early_stop')
     parser.add_argument('--debug', action="store_true",
                         help='run in debug mode')
