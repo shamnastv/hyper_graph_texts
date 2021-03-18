@@ -71,12 +71,12 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
     return acc
 
 
-def test(model, train_data, dev_data, test_data):
+def test(args, model, train_data, dev_data, test_data):
     model.eval()
 
-    acc_train = pass_data_iteratively(model, train_data)
-    acc_dev = pass_data_iteratively(model, dev_data)
-    acc_test = pass_data_iteratively(model, test_data)
+    acc_train = pass_data_iteratively(model, train_data, args.batch_size)
+    acc_dev = pass_data_iteratively(model, dev_data, args.batch_size)
+    acc_test = pass_data_iteratively(model, test_data, args.batch_size)
 
     return acc_train, acc_dev, acc_test
 
@@ -160,7 +160,7 @@ def main():
         loss_accum = train(args, model, optimizer, train_data, class_weights)
         print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
-        acc_train, acc_dev, acc_test = test(model, train_data, dev_data, test_data)
+        acc_train, acc_dev, acc_test = test(args, model, train_data, dev_data, test_data)
         print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
         if acc_dev > max_val_accuracy:
             max_val_accuracy = acc_dev
