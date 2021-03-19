@@ -39,7 +39,7 @@ class HGNNLayer(nn.Module):
         self.activation = F.leaky_relu
         self.mlp = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
         self.mlp2 = MLP(args.num_mlp_layers, args.hidden_dim, args.hidden_dim, output_dim, args.dropout)
-        self.theta_att = nn.Parameter(torch.zeros(input_dim, 1), requires_grad=True)
+        self.theta_att = nn.Parameter(torch.zeros(output_dim, 1), requires_grad=True)
         self.eps = nn.Parameter(torch.rand(1), requires_grad=True)
         self.batch_norms = nn.BatchNorm1d(output_dim)
         self.batch_norms2 = nn.BatchNorm1d(output_dim)
@@ -57,19 +57,21 @@ class HGNNLayer(nn.Module):
         # # for i in range(layer + 1):
         # if layer == 0:
         #     h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
-
         h = self.mlp(h)
-        h_n = self.message_passing_3_1(incident_mat_full, h, degree_v_full)
-        h_n = self.activation(h_n)
-        h_n = self.dropout(h_n)
-        h_n = self.batch_norms(h_n)
+        h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
 
-        h_n = self.mlp2(h_n)
-        h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_e_full)
-        h_n = self.activation(h_n)
-        h_n = self.dropout(h_n)
-        h_n = self.batch_norms2(h_n)
-        h_n = h_n + self.eps * h
+        # h = self.mlp(h)
+        # h_n = self.message_passing_3_1(incident_mat_full, h, degree_v_full)
+        # h_n = self.activation(h_n)
+        # h_n = self.dropout(h_n)
+        # h_n = self.batch_norms(h_n)
+        #
+        # h_n = self.mlp2(h_n)
+        # h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_e_full)
+        # h_n = self.activation(h_n)
+        # h_n = self.dropout(h_n)
+        # h_n = self.batch_norms2(h_n)
+        # h_n = h_n + self.eps * h
 
         # h = self.mlp(h)
         # h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
@@ -79,17 +81,16 @@ class HGNNLayer(nn.Module):
 
         return h_n
 
-    def message_passing_1(self, incident_mat_full, x, degree_v_full, degree_e_full, e_masks):
+    def message_passing_1(self, incident_mat_full, x, degree_v_full, degree_e_full):
         ht_x = spmm(torch.flip(incident_mat_full[0], [0]), incident_mat_full[1],
                     incident_mat_full[2][1], incident_mat_full[2][0], x)
         ht_x = spmm(degree_e_full[0], degree_e_full[1], degree_e_full[2][0], degree_e_full[2][1], ht_x)
         x_theta = torch.matmul(x, self.theta_att)
         ht_x_theta = spmm(torch.flip(incident_mat_full[0], [0]), incident_mat_full[1],
-                          incident_mat_full[2][1], incident_mat_full[2][0], x_theta).squeeze(2)
-        ht_x_theta = ht_x_theta.masked_fill(e_masks.eq(0), -np.inf)
-        hyper_edge_attn = F.softmax(ht_x_theta, dim=1)
+                          incident_mat_full[2][1], incident_mat_full[2][0], x_theta).squeeze(1)
+        hyper_edge_attn = torch.sigmoid(ht_x_theta)
         hyper_edge_attn = torch.diag_embed(hyper_edge_attn)
-        h1 = torch.bmm(hyper_edge_attn, ht_x)
+        h1 = torch.mm(hyper_edge_attn, ht_x)
         h1 = spmm(incident_mat_full[0], incident_mat_full[1], incident_mat_full[2][0], incident_mat_full[2][1], h1)
         h1 = spmm(degree_v_full[0], degree_v_full[1], degree_v_full[2][0], degree_v_full[2][1], h1)
         h1 = spmm(torch.flip(incident_mat_full[0], [0]), incident_mat_full[1],
