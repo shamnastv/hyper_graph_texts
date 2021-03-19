@@ -145,6 +145,7 @@ class HGNNModel(nn.Module):
             h_cat.append(h)
 
         pred = 0
+        pooled_h = None
         for layer, h in enumerate(h_cat):
             # if layer == 0:
             #     continue
@@ -157,4 +158,4 @@ class HGNNModel(nn.Module):
         # doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
         # pred = self.linears_prediction[self.num_layers - 1](doc_embed1)
 
-        return pred, targets
+        return pred, targets, pooled_h

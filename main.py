@@ -28,7 +28,7 @@ def train(args, model, optimizer, train_data_full, class_weights):
             batch_data = [train_data[idx] for idx in selected_idx]
 
             optimizer.zero_grad()
-            output, targets = model(batch_data)
+            output, targets, _ = model(batch_data)
 
             loss = F.cross_entropy(output, targets)
             # loss = F.cross_entropy(output, targets, class_weights)
@@ -44,6 +44,8 @@ def train(args, model, optimizer, train_data_full, class_weights):
 def pass_data_iteratively(model, data_full, minibatch_size=128):
     outputs = []
     targets = []
+    pooled_h_ls = []
+    data_new = []
 
     for data in data_full:
         data_size = len(data)
@@ -54,31 +56,40 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
                 continue
             batch_data = [data[idx] for idx in selected_idx]
             with torch.no_grad():
-                output, target = model(batch_data)
+                output, target, pooled_h = model(batch_data)
             outputs.append(output)
             targets.append(target)
+            pooled_h_ls.append(pooled_h)
+            data_new.extend(batch_data)
 
     outputs, targets = torch.cat(outputs, 0), torch.cat(targets, 0)
 
-    pred = outputs.max(1, keepdim=True)[1]
-    # correct = pred.eq(targets.view_as(pred)).sum().cpu().item()
-    # acc = correct / float(len(data))
-    pred = pred.squeeze().detach().cpu().numpy()
+    pred = outputs.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
     targets = targets.detach().cpu().numpy()
     acc = accuracy_score(targets, pred)
     # print(classification_report(targets, pred))
 
-    return acc
+    return acc, data_new, pooled_h_ls
 
 
 def test(args, model, train_data, dev_data, test_data):
     model.eval()
 
-    acc_train = pass_data_iteratively(model, train_data, args.batch_size)
-    acc_dev = pass_data_iteratively(model, dev_data, args.batch_size)
-    acc_test = pass_data_iteratively(model, test_data, args.batch_size)
+    data_full, pooled_h_full = [], []
+    acc_train, data, pooled_h_ls = pass_data_iteratively(model, train_data, args.batch_size)
+    data_full += data
+    pooled_h_full += pooled_h_ls
 
-    return acc_train, acc_dev, acc_test
+    acc_dev, data, pooled_h_ls = pass_data_iteratively(model, dev_data, args.batch_size)
+    data_full += data
+    pooled_h_full += pooled_h_ls
+
+    acc_test, data, pooled_h_ls = pass_data_iteratively(model, test_data, args.batch_size)
+    data_full += data
+    pooled_h_full += pooled_h_ls
+
+    pooled_h_full = torch.cat(pooled_h_full, dim=0).detach().cpu().numpy()
+    return acc_train, acc_dev, acc_test, data_full, pooled_h_full
 
 
 def main():
@@ -130,22 +141,16 @@ def main():
     train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors\
         = get_data(args.dataset, args.lda)
 
-    init_embed = get_init_embd(train_data + dev_data + test_data, word_vectors).numpy()
-    clusters = clustering(init_embed, len(labels_dic))
+    num_classes = len(labels_dic)
     train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
-    cluster_train = clusters[:train_size]
-    cluster_dev = clusters[train_size:train_size + dev_size]
-    cluster_test = clusters[train_size + dev_size:train_size + dev_size + test_size]
-    elements_count = collections.Counter(clusters)
-    print(elements_count)
+    data_full = train_data + dev_data + test_data
 
-    train_data = split_data(train_data, cluster_train)
-    dev_data = split_data(dev_data, cluster_dev)
-    test_data = split_data(test_data, cluster_test)
+    init_embed = get_init_embd(data_full, word_vectors).numpy()
+
+    dev_data, test_data, train_data = cluster_data(data_full, num_classes, init_embed, dev_size, train_size, test_size)
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
-    num_classes = len(labels_dic)
 
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -160,7 +165,7 @@ def main():
         loss_accum = train(args, model, optimizer, train_data, class_weights)
         print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
-        acc_train, acc_dev, acc_test = test(args, model, train_data, dev_data, test_data)
+        acc_train, acc_dev, acc_test, data_full, embed = test(args, model, train_data, dev_data, test_data)
         print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
         if acc_dev > max_val_accuracy:
             max_val_accuracy = acc_dev
@@ -170,6 +175,8 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
+        dev_data, test_data, train_data = cluster_data(data_full, num_classes, embed, dev_size, train_size,
+                                                       test_size)
         # scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
@@ -181,6 +188,19 @@ def main():
     print('test accuracy : ', test_accuracy)
     print('last test_accuracy : ', acc_test)
     print('=' * 200 + '\n')
+
+
+def cluster_data(data_full, num_classes, embed, dev_size, train_size, test_size):
+    clusters = clustering(embed, num_classes)
+    cluster_train = clusters[:train_size]
+    cluster_dev = clusters[train_size:train_size + dev_size]
+    cluster_test = clusters[train_size + dev_size:train_size + dev_size + test_size]
+    elements_count = collections.Counter(clusters)
+    print(elements_count)
+    train_data = split_data(data_full[:train_size], cluster_train)
+    dev_data = split_data(data_full[train_size:train_size + dev_size], cluster_dev)
+    test_data = split_data(data_full[train_size + dev_size:train_size + dev_size + test_size], cluster_test)
+    return dev_data, test_data, train_data
 
 
 if __name__ == '__main__':
