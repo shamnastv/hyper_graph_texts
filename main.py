@@ -175,7 +175,7 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        if epoch == 10:
+        if epoch % 10:
             dev_data, test_data, train_data = cluster_data(data_full, num_classes, embed, dev_size, train_size,
                                                            test_size)
         # scheduler.step()
