@@ -126,7 +126,8 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=1e-5, help='weight decay (default: 0.3)')
+    parser.add_argument('--weight_decay', type=float, default=1e-5,
+                        help='weight decay')
     args = parser.parse_args()
 
     print(args)
@@ -175,9 +176,9 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        if epoch % 10 == 0:
-            dev_data, test_data, train_data = cluster_data(data_full, num_classes, embed, dev_size, train_size,
-                                                           test_size)
+        if epoch % 5 == 0:
+            dev_data, test_data, train_data = cluster_data(data_full, num_classes, embed,
+                                                           dev_size, train_size, test_size)
         # scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
