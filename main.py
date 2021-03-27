@@ -143,12 +143,13 @@ def main():
         = get_data(args.dataset, args.lda)
 
     num_classes = len(labels_dic)
+    num_clusters = num_classes * 10
     train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
     init_embed = get_init_embd(data_full, word_vectors).numpy()
 
-    dev_data, test_data, train_data = cluster_data(data_full, num_classes, init_embed, dev_size, train_size, test_size)
+    dev_data, test_data, train_data = cluster_data(data_full, num_clusters, init_embed, dev_size, train_size, test_size)
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -177,7 +178,7 @@ def main():
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
         if epoch % 5 == 0:
-            dev_data, test_data, train_data = cluster_data(data_full, num_classes, embed,
+            dev_data, test_data, train_data = cluster_data(data_full, num_clusters, embed,
                                                            dev_size, train_size, test_size)
         # scheduler.step()
         print('')
