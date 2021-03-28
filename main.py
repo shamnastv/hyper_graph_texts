@@ -15,12 +15,14 @@ from nn_util import get_init_embd, clustering, split_data
 start_time = time.time()
 
 
-def train(args, model, optimizer, train_data_full, class_weights):
+def train(epoch, args, model, optimizer, train_data_full, class_weights):
     model.train()
     loss_accum = 0
 
     for train_data in train_data_full:
         train_size = len(train_data)
+        if epoch < 50 and train_size < 3:
+            continue
         idx_train = np.random.permutation(train_size)
 
         for i in range(0, train_size, args.batch_size):
@@ -164,7 +166,7 @@ def main():
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
     for epoch in range(1, args.epochs + 1):
 
-        loss_accum = train(args, model, optimizer, train_data, class_weights)
+        loss_accum = train(epoch, args, model, optimizer, train_data, class_weights)
         print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
         acc_train, acc_dev, acc_test, data_full, embed = test(args, model, train_data, dev_data, test_data)
@@ -180,6 +182,8 @@ def main():
         if epoch % 5 == 0:
             dev_data, test_data, train_data = cluster_data(data_full, num_clusters, embed,
                                                            dev_size, train_size, test_size)
+        if epoch > 60:
+            num_clusters = num_classes
         # scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
