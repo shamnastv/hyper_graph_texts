@@ -166,7 +166,7 @@ def main():
         = get_data(args.dataset, args.lda)
 
     num_classes = len(labels_dic)
-    # num_clusters = num_classes * 10
+    num_clusters = num_classes
     train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
