@@ -31,14 +31,30 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
             # batch_data = [train_data[idx] for idx in selected_idx]
             new_train_data.append([train_data[idx] for idx in selected_idx])
 
+    sz = 0
+    optimizer.zero_grad()
+    loss = torch.zeros(1, device=class_weights.device)
     idx_train = np.random.permutation(len(new_train_data))
     for i in idx_train:
         batch_data = new_train_data[i]
-        optimizer.zero_grad()
+        # optimizer.zero_grad()
         output, targets, _ = model(batch_data)
 
-        loss = F.cross_entropy(output, targets)
+        # loss = F.cross_entropy(output, targets)
         # loss = F.cross_entropy(output, targets, class_weights)
+        loss += F.cross_entropy(output, targets)
+        sz += len(batch_data)
+
+        if sz >= 4 * args.batch_size:
+            loss.backward()
+            optimizer.step()
+            loss_accum += loss.detach().cpu().numpy()
+
+            sz = 0
+            optimizer.zero_grad()
+            loss = torch.zeros(1, device=class_weights.device)
+
+    if sz > 0:
         loss.backward()
         optimizer.step()
 
@@ -107,7 +123,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=128,
+    parser.add_argument('--batch_size', type=int, default=64,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -150,7 +166,7 @@ def main():
         = get_data(args.dataset, args.lda)
 
     num_classes = len(labels_dic)
-    num_clusters = num_classes * 10
+    # num_clusters = num_classes * 10
     train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
@@ -184,7 +200,7 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        if epoch % 5 == 0:
+        if epoch % 2 == 0:
             dev_data, test_data, train_data = cluster_data(data_full, num_clusters, embed,
                                                            dev_size, train_size, test_size)
         if epoch > 60:
