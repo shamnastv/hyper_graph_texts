@@ -22,8 +22,8 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
 
     for train_data in train_data_full:
         train_size = len(train_data)
-        if epoch < 50 and train_size < 3:
-            continue
+        # if epoch < 25 and train_size > 1000:
+        #     continue
         idx_train = np.random.permutation(train_size)
 
         for i in range(0, train_size, args.batch_size):
@@ -48,7 +48,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         if sz >= 4 * args.batch_size:
             loss.backward()
             optimizer.step()
-            loss_accum += loss.detach().cpu().numpy()
+            loss_accum += loss.detach().cpu().item()
 
             sz = 0
             optimizer.zero_grad()
@@ -57,9 +57,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
     if sz > 0:
         loss.backward()
         optimizer.step()
-
-        loss = loss.detach().cpu().numpy()
-        loss_accum += loss
+        loss_accum += loss.detach().cpu().item()
 
     return loss_accum
 
@@ -200,7 +198,7 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        if epoch % 2 == 0:
+        if epoch % 1 == 0:
             dev_data, test_data, train_data = cluster_data(data_full, num_clusters, embed,
                                                            dev_size, train_size, test_size)
         if epoch > 60:
