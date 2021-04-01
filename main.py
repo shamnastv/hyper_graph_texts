@@ -18,6 +18,7 @@ start_time = time.time()
 def train(epoch, args, model, optimizer, train_data_full, class_weights):
     model.train()
     loss_accum = 0
+    new_train_data = []
 
     for train_data in train_data_full:
         train_size = len(train_data)
@@ -27,18 +28,22 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
 
         for i in range(0, train_size, args.batch_size):
             selected_idx = idx_train[i:i + args.batch_size]
-            batch_data = [train_data[idx] for idx in selected_idx]
+            # batch_data = [train_data[idx] for idx in selected_idx]
+            new_train_data.append([train_data[idx] for idx in selected_idx])
 
-            optimizer.zero_grad()
-            output, targets, _ = model(batch_data)
+    idx_train = np.random.permutation(len(new_train_data))
+    for i in idx_train:
+        batch_data = new_train_data[i]
+        optimizer.zero_grad()
+        output, targets, _ = model(batch_data)
 
-            loss = F.cross_entropy(output, targets)
-            # loss = F.cross_entropy(output, targets, class_weights)
-            loss.backward()
-            optimizer.step()
+        loss = F.cross_entropy(output, targets)
+        # loss = F.cross_entropy(output, targets, class_weights)
+        loss.backward()
+        optimizer.step()
 
-            loss = loss.detach().cpu().numpy()
-            loss_accum += loss
+        loss = loss.detach().cpu().numpy()
+        loss_accum += loss
 
     return loss_accum
 
