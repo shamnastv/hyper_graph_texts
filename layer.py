@@ -112,7 +112,7 @@ class HGNNLayer(nn.Module):
         h = spmm(degree_e_full[0], degree_e_full[1], degree_e_full[2][0], degree_e_full[2][1], h)
         h = spmm(incident_mat_full[0], incident_mat_full[1], incident_mat_full[2][0], incident_mat_full[2][1], h)
         h = spmm(degree_v_full[0], degree_v_full[1] ** .5, degree_v_full[2][0], degree_v_full[2][1], h)
-        # h = self.gru(h, x_w)
+        # h = self.gru(h, x)
         h = h + self.eps * x
         return h
 

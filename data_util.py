@@ -117,5 +117,5 @@ def get_data(dataset, lda=True, val_prop=.1):
 
 
 if __name__ == '__main__':
-    train_data = get_data(dataset='R8', lda=True)[0]
-    print(train_data[100].rows, train_data[100].cols)
+    train_data_n = get_data(dataset='R8', lda=True)[0]
+    print(train_data_n[100].rows, train_data_n[100].cols)
