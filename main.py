@@ -121,7 +121,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=64,
+    parser.add_argument('--batch_size', type=int, default=16,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -130,9 +130,9 @@ def main():
     parser.add_argument('--seed', type=int, default=0,
                         help='random seed for splitting the dataset into 10 (default: 0)')
     parser.add_argument('--num_layers', type=int, default=3,
-                        help='number of layers INCLUDING the input one (default: 5)')
+                        help='number of layers INCLUDING the input one (default: 3)')
     parser.add_argument('--num_mlp_layers', type=int, default=1,
-                        help='number of layers for MLP EXCLUDING the input one (default: 2). 1 means linear model.')
+                        help='number of layers for MLP EXCLUDING the input one (default: 1). 1 means linear model.')
     parser.add_argument('--hidden_dim', type=int, default=100,
                         help='number of hidden units (default: 64)')
     parser.add_argument('--dropout', type=float, default=0.4,
@@ -147,7 +147,7 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=1e-5,
+    parser.add_argument('--weight_decay', type=float, default=0,
                         help='weight decay')
     args = parser.parse_args()
 
