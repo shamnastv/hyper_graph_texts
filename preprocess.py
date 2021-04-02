@@ -14,6 +14,7 @@ from sklearn.utils import class_weight
 
 
 def read_file(dataset, lda=True):
+    stop_words = set(stopwords.words('english'))
     doc_content_list = []
     doc_sentence_list = []
     f = open('data/' + dataset + '_corpus.txt', 'rb')
@@ -75,7 +76,8 @@ def read_file(dataset, lda=True):
         for sentence in doc:
             temp = []
             for word in sentence:
-                temp.append(vocab_dic[word])
+                if word not in stop_words:
+                    temp.append(vocab_dic[word])
             temp_doc.append(temp)
         doc_train_list.append((temp_doc, labels_dic[label]))
 
@@ -84,7 +86,8 @@ def read_file(dataset, lda=True):
         for sentence in doc:
             temp = []
             for word in sentence:
-                temp.append(vocab_dic[word])
+                if word not in stop_words:
+                    temp.append(vocab_dic[word])
             temp_doc.append(temp)
         doc_test_list.append((temp_doc, labels_dic[label]))
 
