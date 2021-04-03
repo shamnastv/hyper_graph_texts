@@ -62,10 +62,10 @@ def read_file(dataset, lda=True):
     vocab_size = len(vocab)
 
     vocab_dic = {}
-    for i, word in enumerate(word_set):
+    for i, word in enumerate(vocab):
         vocab_dic[word] = i
 
-    print('Total_number_of_words: ' + str(len(vocab)))
+    print('Total_number_of_words: ' + str(vocab_size))
     print('Total_number_of_categories: ' + str(len(labels_dic)))
 
     doc_train_list = []

@@ -13,9 +13,6 @@ def get_features(data, device):
     targets = []
     x = []
 
-    # vals = []
-    # rows = []
-    # cols = []
     incident_mat = []
     v_start = 0
     e_start = 0
@@ -24,12 +21,10 @@ def get_features(data, device):
 
     for i, d in enumerate(data):
         for j in range(len(d.vals)):
-            # vals.append(d.vals[j])
-            # rows.append(d.rows[j] + v_start)
-            # cols.append(d.cols[j] + e_start)
             incident_mat.append([d.rows[j] + v_start, d.cols[j] + e_start, d.vals[j]])
+        print(d.node_ids)
         for j, w in enumerate(d.node_ids):
-            if w != 1:
+            if w != 0:
                 if w in word_dict:
                     word_dict[w].append(v_start + j)
                 else:
@@ -41,14 +36,11 @@ def get_features(data, device):
         x.extend(d.node_ids)
         targets.append(d.label)
 
-    for w in word_dict:
-        if len(word_dict[w]) > 1:
-            for i in word_dict[w]:
-                # vals.append(1)
-                # rows.append(i)
-                # cols.append(e_start)
-                incident_mat.append([i, e_start, 1])
-            e_start += 1
+    # for w in word_dict:
+    #     if len(word_dict[w]) > 1:
+    #         for i in word_dict[w]:
+    #             incident_mat.append([i, e_start, 1])
+    #         e_start += 1
 
     num_v = v_start
     num_e = e_start
