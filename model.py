@@ -98,7 +98,6 @@ class HGNNModel(nn.Module):
 
         self.h_gnn_layers = nn.ModuleList()
         self.linears_prediction = torch.nn.ModuleList()
-        self.attention = nn.ModuleList()
 
         self.num_layers = args.num_layers
         self.graph_pool_layer = torch.nn.ModuleList()
@@ -108,13 +107,11 @@ class HGNNModel(nn.Module):
                 self.h_gnn_layers.append(HGNNLayer(args, input_dim, args.hidden_dim))
                 # self.linears_prediction.append(nn.Linear(2 * input_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(input_dim, num_classes))
-                self.attention.append(Attention(input_dim, activation=torch.tanh))
                 self.graph_pool_layer.append(Attention(input_dim))
             else:
                 self.h_gnn_layers.append(HGNNLayer(args, args.hidden_dim, args.hidden_dim))
                 # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
-                self.attention.append(Attention(args.hidden_dim, activation=torch.tanh))
                 self.graph_pool_layer.append(Attention(args.hidden_dim))
 
         # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
@@ -143,10 +140,5 @@ class HGNNModel(nn.Module):
             elem_gp = self.graph_pool_layer[layer](h).squeeze(1)
             pooled_h = spmm(graph_pool_full[0], elem_gp, graph_pool_full[2][0], graph_pool_full[2][1], h)
             pred += self.linears_prediction[layer](pooled_h)
-
-        # attn = self.attention[self.num_layers - 1](h)
-        # attn = F.softmax(attn.masked_fill(v_masks.eq(0).unsqueeze(2), -1e9), dim=1)
-        # doc_embed1 = torch.bmm(attn.transpose(1, 2), h).squeeze(1)
-        # pred = self.linears_prediction[self.num_layers - 1](doc_embed1)
 
         return pred, targets, pooled_h
