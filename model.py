@@ -22,7 +22,6 @@ def get_features(data, device):
     for i, d in enumerate(data):
         for j in range(len(d.vals)):
             incident_mat.append([d.rows[j] + v_start, d.cols[j] + e_start, d.vals[j]])
-        print(d.node_ids)
         for j, w in enumerate(d.node_ids):
             if w != 0:
                 if w in word_dict:
