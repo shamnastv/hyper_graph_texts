@@ -127,3 +127,7 @@ def get_embedding(word_to_id):
     print('got embeddings of :', count)
     embeddings[0] = np.zeros(dim, dtype='float32')
     return embeddings
+
+
+if __name__ == '__main__':
+    read_file('R8', False)
