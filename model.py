@@ -116,7 +116,6 @@ class HGNNModel(nn.Module):
 
         # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
         self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
-        self.attention.append(Attention(args.hidden_dim, activation=torch.tanh))
         self.graph_pool_layer.append(Attention(args.hidden_dim))
 
         self.dropout = nn.Dropout(args.dropout)
