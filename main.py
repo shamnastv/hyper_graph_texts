@@ -46,7 +46,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         # loss += F.cross_entropy(output, targets, class_weights)
         sz += len(batch_data)
 
-        if sz >= 4 * args.batch_size:
+        if sz >= 2 * args.batch_size:
             loss.backward()
             optimizer.step()
             loss_accum += loss.detach().cpu().item()
@@ -122,7 +122,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=16,
+    parser.add_argument('--batch_size', type=int, default=8,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -148,7 +148,7 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=0,
+    parser.add_argument('--weight_decay', type=float, default=1e-05,
                         help='weight decay')
     args = parser.parse_args()
 
