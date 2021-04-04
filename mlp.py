@@ -30,5 +30,5 @@ class MLP(nn.Module):
             h = self.linears[layer](h)
             h = F.leaky_relu(h)
             h = self.dropout(h)
-            h = self.batch_norms[layer](h)
+            # h = self.batch_norms[layer](h)
         return self.linears[self.num_layers - 1](h)

@@ -148,7 +148,7 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=1e-05,
+    parser.add_argument('--weight_decay', type=float, default=1e-7,
                         help='weight decay')
     args = parser.parse_args()
 
