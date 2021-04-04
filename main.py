@@ -165,7 +165,7 @@ def main():
         = get_data(args.dataset, args.lda)
 
     num_classes = len(labels_dic)
-    num_clusters = 1
+    num_clusters = num_classes
     train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
@@ -199,9 +199,9 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        # if epoch % 1 == 0:
-        #     dev_data, test_data, train_data = cluster_data(data_full, num_clusters, embed,
-        #                                                    dev_size, train_size, test_size)
+        if epoch % 1 == 0:
+            dev_data, test_data, train_data = cluster_data(data_full, num_clusters, embed,
+                                                           dev_size, train_size, test_size)
         if epoch > 60:
             num_clusters = num_classes
         scheduler.step()

@@ -35,11 +35,11 @@ def get_features(data, device):
         x.extend(d.node_ids)
         targets.append(d.label)
 
-    # for w in word_dict:
-    #     if len(word_dict[w]) > 1:
-    #         for i in word_dict[w]:
-    #             incident_mat.append([i, e_start, 1])
-    #         e_start += 1
+    for w in word_dict:
+        if len(word_dict[w]) > 1:
+            for i in word_dict[w]:
+                incident_mat.append([i, e_start, 1])
+            e_start += 1
 
     num_v = v_start
     num_e = e_start
@@ -149,7 +149,7 @@ class HGNNModel(nn.Module):
                            torch.ones(size=(h.shape[0], 1), device=self.device))
 
             pooled_h = spmm(graph_pool_full[0], elem_gp, graph_pool_full[2][0], graph_pool_full[2][1], h)
-            assert not torch.isnan(pooled_h).any()
+            # assert not torch.isnan(pooled_h).any()
 
             pooled_h = pooled_h.div(row_sum + 1e-10)
             assert not torch.isnan(pooled_h).any()
