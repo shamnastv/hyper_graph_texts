@@ -137,7 +137,23 @@ class HGNNModel(nn.Module):
             # if layer == 0:
             #     continue
             elem_gp = self.graph_pool_layer[layer](h).squeeze(1)
+
+            with torch.no_grad():
+                maximum = torch.max(elem_gp)
+
+            elem_gp = elem_gp - maximum
+            elem_gp = torch.exp(elem_gp)
+            assert not torch.isnan(elem_gp).any()
+
+            row_sum = spmm(graph_pool_full[0], elem_gp, graph_pool_full[2][0], graph_pool_full[2][1],
+                           torch.ones(size=(h.shape[0], 1), device=self.device))
+
             pooled_h = spmm(graph_pool_full[0], elem_gp, graph_pool_full[2][0], graph_pool_full[2][1], h)
+            assert not torch.isnan(pooled_h).any()
+
+            pooled_h = pooled_h.div(row_sum + 1e-10)
+            assert not torch.isnan(pooled_h).any()
+
             pred += self.linears_prediction[layer](pooled_h)
 
         return pred, targets, pooled_h
