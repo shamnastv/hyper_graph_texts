@@ -204,7 +204,7 @@ def main():
                                                            dev_size, train_size, test_size)
         if epoch > 60:
             num_clusters = num_classes
-        scheduler.step()
+        # scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
             break

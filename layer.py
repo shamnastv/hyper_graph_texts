@@ -57,11 +57,12 @@ class HGNNLayer(nn.Module):
         # # for i in range(layer + 1):
         # if layer == 0:
         #     h = self.message_passing_2(incident_mat, x, degree_v, degree_e)
-        # h = self.mlp(h)
-        # h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
-        # h_n = self.activation(h_n)
-        # h_n = self.dropout(h_n)
-        # h_n = self.batch_norms(h_n)
+
+        h = self.mlp(h)
+        h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
+        h_n = self.activation(h_n)
+        h_n = self.dropout(h_n)
+        h_n = self.batch_norms(h_n)
 
         # h = self.mlp(h)
         # h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
@@ -69,18 +70,18 @@ class HGNNLayer(nn.Module):
         # h = self.dropout(h)
         # h_n = self.batch_norms(h)
 
-        h = self.mlp(h)
-        h_n = self.message_passing_3_1(incident_mat_full, h, degree_v_full)
-        h_n = self.activation(h_n)
+        # h = self.mlp(h)
+        # h_n = self.message_passing_3_1(incident_mat_full, h, degree_v_full)
+        # h_n = self.activation(h_n)
+        # # h_n = self.dropout(h_n)
+        # # h_n = self.batch_norms(h_n)
+        #
+        # h_n = self.mlp2(h_n)
+        # h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_e_full)
+        # h_n = self.activation(h_n)
         # h_n = self.dropout(h_n)
-        # h_n = self.batch_norms(h_n)
-
-        h_n = self.mlp2(h_n)
-        h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_e_full)
-        h_n = self.activation(h_n)
-        h_n = self.dropout(h_n)
-        h_n = self.batch_norms2(h_n)
-        h_n = h_n + self.eps * h
+        # h_n = self.batch_norms2(h_n)
+        # h_n = h_n + self.eps * h
 
         return h_n
 
