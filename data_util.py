@@ -71,6 +71,8 @@ class Data:
         self.degrees_e = [1/i if i != 0 else 0 for i in self.degrees_e]
         self.degrees_v = [1/i if i != 0 else 0 for i in self.degrees_v]
 
+        self.d_type = 0
+
 
 def get_data(dataset, lda=True, val_prop=.1):
     lda_str = ''
@@ -107,6 +109,12 @@ def get_data(dataset, lda=True, val_prop=.1):
 
     for i in dev_idx:
         dev_data.append(train_dev_data[i])
+
+    for d in dev_data:
+        d.d_type = 1
+
+    for d in test_data:
+        d.d_type = 2
 
     word_vectors = get_embedding(vocab_dic)
 

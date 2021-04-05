@@ -37,9 +37,19 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
     idx_train = np.random.permutation(len(new_train_data))
     for i in idx_train:
         batch_data = new_train_data[i]
+        t_idxs = []
+        for j, d in enumerate(batch_data):
+            if d.d_type == 0:
+                t_idxs.append(j)
+        if len(t_idxs) == 0:
+            continue
+
         # optimizer.zero_grad()
         output, targets, _ = model(batch_data)
 
+        t_idxs = torch.tensor(t_idxs, device=output.device).long()
+        output = output[t_idxs]
+        targets = targets[t_idxs]
         # loss = F.cross_entropy(output, targets)
         # loss = F.cross_entropy(output, targets, class_weights)
         loss += F.cross_entropy(output, targets)
@@ -64,10 +74,11 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
 
 
 def pass_data_iteratively(model, data_full, minibatch_size=128):
-    outputs = []
-    targets = []
     pooled_h_ls = []
     data_new = []
+
+    outputs = [[], [], []]
+    targets = [[], [], []]
 
     for data in data_full:
         data_size = len(data)
@@ -81,36 +92,36 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
                 output, target, pooled_h = model(batch_data)
             outputs.append(output)
             targets.append(target)
+            for j, d in enumerate(batch_data):
+                outputs[d.d_type].append(output[j])
+                targets[d.d_type].append(target[j])
+
             pooled_h_ls.append(pooled_h)
             data_new.extend(batch_data)
 
-    outputs, targets = torch.cat(outputs, 0), torch.cat(targets, 0)
+    output_train, target_train = torch.stack(outputs[0]), torch.stack(targets[0])
+    output_dev, target_dev = torch.stack(outputs[1]), torch.stack(targets[1])
+    output_test, target_test = torch.stack(outputs[2]), torch.stack(targets[2])
 
-    pred = outputs.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
-    targets = targets.detach().cpu().numpy()
-    acc = accuracy_score(targets, pred)
-    # print(classification_report(targets, pred))
+    pred_train = output_train.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
+    pred_dev = output_dev.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
+    pred_test = output_test.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
 
-    return acc, data_new, pooled_h_ls
+    acc_train = accuracy_score(target_train, pred_train)
+    acc_dev = accuracy_score(target_dev, pred_dev)
+    acc_test = accuracy_score(target_test, pred_test)
+
+    return acc_train, acc_dev, acc_test, data_new, pooled_h_ls
 
 
-def test(args, model, train_data, dev_data, test_data):
+def test(args, model, data_full):
     model.eval()
 
-    data_full, pooled_h_full = [], []
-    acc_train, data, pooled_h_ls = pass_data_iteratively(model, train_data, args.batch_size)
-    data_full += data
-    pooled_h_full += pooled_h_ls
+    acc_train, acc_dev, acc_test, data, pooled_h_ls = pass_data_iteratively(model, data_full, args.batch_size)
 
-    acc_dev, data, pooled_h_ls = pass_data_iteratively(model, dev_data, args.batch_size)
-    data_full += data
-    pooled_h_full += pooled_h_ls
+    data_full = data
+    pooled_h_full = torch.cat(pooled_h_ls, dim=0).detach().cpu().numpy()
 
-    acc_test, data, pooled_h_ls = pass_data_iteratively(model, test_data, args.batch_size)
-    data_full += data
-    pooled_h_full += pooled_h_ls
-
-    pooled_h_full = torch.cat(pooled_h_full, dim=0).detach().cpu().numpy()
     return acc_train, acc_dev, acc_test, data_full, pooled_h_full
 
 
@@ -171,7 +182,7 @@ def main():
 
     init_embed = get_init_embd(data_full, word_vectors).numpy()
 
-    dev_data, test_data, train_data = cluster_data(data_full, num_clusters, init_embed, dev_size, train_size, test_size)
+    data_full = cluster_data(data_full, num_clusters, init_embed)
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -186,10 +197,10 @@ def main():
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
     for epoch in range(1, args.epochs + 1):
 
-        loss_accum = train(epoch, args, model, optimizer, train_data, class_weights)
+        loss_accum = train(epoch, args, model, optimizer, data_full, class_weights)
         print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
-        acc_train, acc_dev, acc_test, data_full, embed = test(args, model, train_data, dev_data, test_data)
+        acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full)
         print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
         if acc_dev > max_val_accuracy:
             max_val_accuracy = acc_dev
@@ -200,8 +211,7 @@ def main():
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
         if epoch % 1 == 0:
-            dev_data, test_data, train_data = cluster_data(data_full, num_clusters, embed,
-                                                           dev_size, train_size, test_size)
+            data_full = cluster_data(data_full, num_clusters, embed)
         if epoch > 60:
             num_clusters = num_classes
         # scheduler.step()
@@ -217,17 +227,12 @@ def main():
     print('=' * 200 + '\n')
 
 
-def cluster_data(data_full, num_classes, embed, dev_size, train_size, test_size):
+def cluster_data(data_full, num_classes, embed):
     clusters = clustering(embed, num_classes)
-    cluster_train = clusters[:train_size]
-    cluster_dev = clusters[train_size:train_size + dev_size]
-    cluster_test = clusters[train_size + dev_size:train_size + dev_size + test_size]
     elements_count = collections.Counter(clusters)
     print(elements_count)
-    train_data = split_data(data_full[:train_size], cluster_train)
-    dev_data = split_data(data_full[train_size:train_size + dev_size], cluster_dev)
-    test_data = split_data(data_full[train_size + dev_size:train_size + dev_size + test_size], cluster_test)
-    return dev_data, test_data, train_data
+    data_full = split_data(data_full, clusters)
+    return data_full
 
 
 if __name__ == '__main__':
