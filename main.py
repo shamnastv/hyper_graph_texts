@@ -182,7 +182,7 @@ def main():
 
     init_embed = get_init_embd(data_full, word_vectors).numpy()
 
-    data_full = cluster_data(data_full, num_clusters, init_embed)
+    data_full_split = cluster_data(data_full, num_clusters, init_embed)
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -197,10 +197,10 @@ def main():
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
     for epoch in range(1, args.epochs + 1):
 
-        loss_accum = train(epoch, args, model, optimizer, data_full, class_weights)
+        loss_accum = train(epoch, args, model, optimizer, data_full_split, class_weights)
         print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
-        acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full)
+        acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split)
         print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
         if acc_dev > max_val_accuracy:
             max_val_accuracy = acc_dev
@@ -211,7 +211,7 @@ def main():
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
         if epoch % 1 == 0:
-            data_full = cluster_data(data_full, num_clusters, embed)
+            data_full_split = cluster_data(data_full, num_clusters, embed)
         if epoch > 60:
             num_clusters = num_classes
         # scheduler.step()
@@ -231,8 +231,8 @@ def cluster_data(data_full, num_classes, embed):
     clusters = clustering(embed, num_classes)
     elements_count = collections.Counter(clusters)
     print(elements_count)
-    data_full = split_data(data_full, clusters)
-    return data_full
+    data_full_split = split_data(data_full, clusters)
+    return data_full_split
 
 
 if __name__ == '__main__':
