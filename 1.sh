@@ -10,4 +10,3 @@ python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp
 python3 main.py --lr 5e-4 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 50
 python3 main.py --lr 1e-4 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 50
 python3 main.py --lr 5e-5 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 50
-
