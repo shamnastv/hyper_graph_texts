@@ -38,7 +38,7 @@ class HGNNLayer(nn.Module):
         self.dropout = nn.Dropout(args.dropout)
         self.activation = F.leaky_relu
         self.mlp = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
-        # self.mlp2 = MLP(args.num_mlp_layers, args.hidden_dim, args.hidden_dim, output_dim, args.dropout)
+        self.mlp2 = MLP(args.num_mlp_layers, args.hidden_dim, args.hidden_dim, output_dim, args.dropout)
         self.theta_att = nn.Parameter(torch.zeros(output_dim, 1), requires_grad=True)
         self.eps = nn.Parameter(torch.rand(1), requires_grad=True)
         self.batch_norms = nn.BatchNorm1d(output_dim)
