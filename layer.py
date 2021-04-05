@@ -59,24 +59,24 @@ class HGNNLayer(nn.Module):
         # h_n = self.dropout(h_n)
         # h_n = self.batch_norms(h_n)
 
-        h = self.mlp(h)
-        h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
-        h = self.activation(h)
-        h_n = self.dropout(h)
+        # h = self.mlp(h)
+        # h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
+        # h = self.activation(h)
+        # h_n = self.dropout(h)
         # h_n = self.batch_norms(h_n)
 
-        # h = self.mlp(h)
-        # h_n = self.message_passing_3_1(incident_mat_full, h, degree_v_full)
-        # h_n = self.activation(h_n)
-        # # h_n = self.dropout(h_n)
+        h = self.mlp(h)
+        h_n = self.message_passing_3_1(incident_mat_full, h, degree_v_full)
+        h_n = self.activation(h_n)
+        h_n = self.dropout(h_n)
         # # h_n = self.batch_norms(h_n)
         #
-        # h_n = self.mlp2(h_n)
-        # h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_e_full)
-        # h_n = self.activation(h_n)
-        # h_n = self.dropout(h_n)
+        h_n = self.mlp2(h_n)
+        h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_e_full)
+        h_n = self.activation(h_n)
+        h_n = self.dropout(h_n)
         # h_n = self.batch_norms(h_n)
-        # h_n = h_n + self.eps * h
+        h_n = h_n + self.eps * h
 
         return h_n
 
