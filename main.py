@@ -99,9 +99,9 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
             pooled_h_ls.append(pooled_h)
             data_new.extend(batch_data)
 
-    output_train, target_train = torch.stack(outputs[0]), torch.stack(targets[0])
-    output_dev, target_dev = torch.stack(outputs[1]), torch.stack(targets[1])
-    output_test, target_test = torch.stack(outputs[2]), torch.stack(targets[2])
+    output_train, target_train = torch.stack(outputs[0]), torch.stack(targets[0]).detach().cpu().numpy()
+    output_dev, target_dev = torch.stack(outputs[1]), torch.stack(targets[1]).detach().cpu().numpy()
+    output_test, target_test = torch.stack(outputs[2]), torch.stack(targets[2]).detach().cpu().numpy()
 
     pred_train = output_train.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
     pred_dev = output_dev.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
