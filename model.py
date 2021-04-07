@@ -125,7 +125,8 @@ class HGNNModel(nn.Module):
         incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets = get_features(data, self.device)
 
         h = self.word_embeddings(x)
-        h_cat = [self.dropout(h)]
+        # h_cat = [self.dropout(h)]
+        h_cat = [h]
 
         for layer in range(self.num_layers - 1):
             h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer)

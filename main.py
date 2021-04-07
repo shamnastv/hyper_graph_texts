@@ -117,9 +117,8 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
 def test(args, model, data_full):
     model.eval()
 
-    acc_train, acc_dev, acc_test, data, pooled_h_ls = pass_data_iteratively(model, data_full, args.batch_size)
+    acc_train, acc_dev, acc_test, data_full, pooled_h_ls = pass_data_iteratively(model, data_full, args.batch_size)
 
-    data_full = data
     pooled_h_full = torch.cat(pooled_h_ls, dim=0).detach().cpu().numpy()
 
     return acc_train, acc_dev, acc_test, data_full, pooled_h_full
@@ -177,7 +176,7 @@ def main():
 
     num_classes = len(labels_dic)
     num_clusters = num_classes
-    train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
+    # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
     init_embed = get_init_embd(data_full, word_vectors).numpy()
