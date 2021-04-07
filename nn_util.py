@@ -26,7 +26,7 @@ def get_init_embd(data, word_vectors):
 
 
 def clustering(data, num_clusters):
-    cluster = KMeans(num_clusters)
+    cluster = KMeans(num_clusters, random_state=0)
     c = cluster.fit(data)
     return c.labels_
 
