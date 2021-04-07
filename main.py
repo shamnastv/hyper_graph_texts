@@ -176,7 +176,7 @@ def main():
         = get_data(args.dataset, args.lda)
 
     num_classes = len(labels_dic)
-    num_clusters = num_classes
+    num_clusters = num_classes * 3
     train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
@@ -212,8 +212,8 @@ def main():
 
         if epoch % 1 == 0:
             data_full_split = cluster_data(data_full, num_clusters, embed)
-        if epoch > 60:
-            num_clusters = num_classes
+        # if epoch > 60:
+        #     num_clusters = num_classes
         # scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
