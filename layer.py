@@ -53,16 +53,16 @@ class HGNNLayer(nn.Module):
 
     def forward(self, incident_mat_full, degree_v_full, degree_e_full, h, layer):
 
-        h = self.mlp(h)
-        h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
-        h_n = self.activation(h_n)
-        h_n = self.dropout(h_n)
+        # h = self.mlp(h)
+        # h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
+        # h_n = self.activation(h_n)
+        # h_n = self.dropout(h_n)
         # h_n = self.batch_norms(h_n)
 
-        # h = self.mlp(h)
-        # h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
-        # h = self.activation(h)
-        # h_n = self.dropout(h)
+        h = self.mlp(h)
+        h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
+        h = self.activation(h)
+        h_n = self.dropout(h)
         # h_n = self.batch_norms(h_n)
 
         # h = self.mlp(h)
