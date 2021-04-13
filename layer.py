@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import numpy as np
 from torch_sparse import spmm
 
+from attention import Attention
 from mlp import MLP
 
 
@@ -39,7 +40,8 @@ class HGNNLayer(nn.Module):
         self.activation = F.leaky_relu
         self.mlp = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
         self.mlp2 = MLP(args.num_mlp_layers, args.hidden_dim, args.hidden_dim, output_dim, args.dropout)
-        self.theta_att = nn.Parameter(torch.zeros(output_dim, 1), requires_grad=True)
+        # self.theta_att = nn.Parameter(torch.zeros(output_dim, 1), requires_grad=True)
+        self.theta_att = Attention(output_dim)
         self.eps = nn.Parameter(torch.rand(1), requires_grad=True)
         self.batch_norms = nn.BatchNorm1d(output_dim)
         # self.batch_norms2 = nn.BatchNorm1d(output_dim)
@@ -53,16 +55,16 @@ class HGNNLayer(nn.Module):
 
     def forward(self, incident_mat_full, degree_v_full, degree_e_full, h, layer):
 
-        # h = self.mlp(h)
-        # h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
-        # h_n = self.activation(h_n)
-        # h_n = self.dropout(h_n)
+        h = self.mlp(h)
+        h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
+        h_n = self.activation(h_n)
+        h_n = self.dropout(h_n)
         # h_n = self.batch_norms(h_n)
 
-        h = self.mlp(h)
-        h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
-        h = self.activation(h)
-        h_n = self.dropout(h)
+        # h = self.mlp(h)
+        # h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
+        # h = self.activation(h)
+        # h_n = self.dropout(h)
         # h_n = self.batch_norms(h_n)
 
         # h = self.mlp(h)
@@ -84,7 +86,8 @@ class HGNNLayer(nn.Module):
         ht_x = spmm(torch.flip(incident_mat_full[0], [0]), incident_mat_full[1],
                     incident_mat_full[2][1], incident_mat_full[2][0], x)
         ht_x = spmm(degree_e_full[0], degree_e_full[1], degree_e_full[2][0], degree_e_full[2][1], ht_x)
-        x_theta = torch.matmul(x, self.theta_att)
+        # x_theta = torch.matmul(x, self.theta_att)
+        x_theta = self.theta_att(x)
         ht_x_theta = spmm(torch.flip(incident_mat_full[0], [0]), incident_mat_full[1],
                           incident_mat_full[2][1], incident_mat_full[2][0], x_theta).squeeze(1)
         hyper_edge_attn = torch.sigmoid(ht_x_theta)

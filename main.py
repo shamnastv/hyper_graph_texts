@@ -107,6 +107,10 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
     pred_dev = output_dev.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
     pred_test = output_test.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
 
+    # print("train", target_train.shape, pred_train.shape)
+    # print("dev", target_dev.shape, pred_dev.shape)
+    # print("test", target_test.shape, pred_test.shape)
+
     acc_train = accuracy_score(target_train, pred_train)
     acc_dev = accuracy_score(target_dev, pred_dev)
     acc_test = accuracy_score(target_test, pred_test)
