@@ -41,7 +41,7 @@ class HGNNLayer(nn.Module):
         self.mlp = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
         self.mlp2 = MLP(args.num_mlp_layers, args.hidden_dim, args.hidden_dim, output_dim, args.dropout)
         self.theta_att = nn.Parameter(torch.zeros(output_dim, 1), requires_grad=True)
-        self.theta_att_mlp = Attention(output_dim)
+        self.theta_att_mlp = Attention(output_dim, activation=torch.tanh)
         self.eps = nn.Parameter(torch.rand(1), requires_grad=True)
         self.batch_norms = nn.BatchNorm1d(output_dim)
         # self.batch_norms2 = nn.BatchNorm1d(output_dim)
