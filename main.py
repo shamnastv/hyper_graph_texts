@@ -140,8 +140,8 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
-    parser.add_argument('--lr', type=float, default=0.0008,
-                        help='learning rate (default: 0.01)')
+    parser.add_argument('--lr', type=float, default=0.001,
+                        help='learning rate (default: 0.001)')
     parser.add_argument('--seed', type=int, default=0,
                         help='random seed for splitting the dataset into 10 (default: 0)')
     parser.add_argument('--num_layers', type=int, default=3,
@@ -154,7 +154,7 @@ def main():
                         help='dropout (default: 0.5)')
     parser.add_argument('--filename', type=str, default="",
                         help='output file')
-    parser.add_argument('--early_stop', type=int, default=100,
+    parser.add_argument('--early_stop', type=int, default=50,
                         help='early_stop')
     parser.add_argument('--debug', action="store_true",
                         help='run in debug mode')
