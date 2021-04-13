@@ -213,8 +213,8 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        if epoch % 5 == 0:
-            data_full_split = cluster_data(data_full, num_clusters, embed)
+        # if epoch % 5 == 0:
+        #     data_full_split = cluster_data(data_full, num_clusters, embed)
         # if epoch > 60:
         #     num_clusters = num_classes
         # scheduler.step()
