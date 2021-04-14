@@ -125,5 +125,11 @@ def get_data(dataset, lda=True, val_prop=.1):
 
 
 if __name__ == '__main__':
-    train_data_n = get_data(dataset='R8', lda=True)[0]
-    print(train_data_n[100].rows, train_data_n[100].cols)
+    # train_data_n = get_data(dataset='R8', lda=True)[0]
+    # print(train_data_n[100].rows, train_data_n[100].cols)
+    data_n = get_data(dataset='R8')
+    for j in range(3):
+        print(len(data_n[j]))
+        for d_n in data_n[j]:
+            print(d_n.d_type, end=' ')
+        print('\n')

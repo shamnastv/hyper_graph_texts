@@ -32,6 +32,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
             new_train_data.append([train_data[idx] for idx in selected_idx])
 
     sz = 0
+    # sss = 0
     optimizer.zero_grad()
     loss = torch.zeros(1, device=class_weights.device)
     idx_train = np.random.permutation(len(new_train_data))
@@ -50,6 +51,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         t_idxs = torch.tensor(t_idxs, device=output.device).long()
         output = output[t_idxs]
         targets = targets[t_idxs]
+        # sss += len(output)
         # loss = F.cross_entropy(output, targets)
         # loss = F.cross_entropy(output, targets, class_weights)
         loss += F.cross_entropy(output, targets)
@@ -70,6 +72,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         optimizer.step()
         loss_accum += loss.detach().cpu().item()
 
+    # print(sss)
     return loss_accum
 
 
