@@ -6,7 +6,9 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
 
-python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 50 --batch_size 128
-python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 50 --batch_size 128
-python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 5 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 50 --batch_size 128
-python3 main.py --lr 1e-3 --hidden_dim 100 --num_layers 4 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 50 --batch_size 128
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 20
+python3 main.py --lr 5e-4 --hidden_dim 200 --num_layers 3 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 20
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp_layers 1 --dataset R8 --early_stop 20
+python3 main.py --lr 5e-4 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp_layers 1 --dataset R8 --early_stop 20
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 20
+python3 main.py --lr 5e-4 --hidden_dim 200 --num_layers 4 --dropout .4 --num_mlp_layers 2 --dataset R8 --early_stop 20
