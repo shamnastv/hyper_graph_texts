@@ -85,7 +85,8 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
 
     for data in data_full:
         data_size = len(data)
-        full_idx = np.arange(data_size)
+        # full_idx = np.arange(data_size)
+        full_idx = np.random.permutation(data_size)
         for i in range(0, data_size, minibatch_size):
             selected_idx = full_idx[i:i + minibatch_size]
             if len(selected_idx) == 0:
@@ -93,8 +94,6 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
             batch_data = [data[idx] for idx in selected_idx]
             with torch.no_grad():
                 output, target, pooled_h = model(batch_data)
-            outputs.append(output)
-            targets.append(target)
             for j, d in enumerate(batch_data):
                 outputs[d.d_type].append(output[j])
                 targets[d.d_type].append(target[j])
@@ -110,9 +109,9 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
     pred_dev = output_dev.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
     pred_test = output_test.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
 
-    # print("train", target_train.shape, pred_train.shape)
-    # print("dev", target_dev.shape, pred_dev.shape)
-    # print("test", target_test.shape, pred_test.shape)
+    # print("train", target_train, pred_train)
+    # print("dev", target_dev, pred_dev)
+    # print("test", target_test, pred_test)
 
     acc_train = accuracy_score(target_train, pred_train)
     acc_dev = accuracy_score(target_dev, pred_dev)
@@ -235,8 +234,10 @@ def main():
     print('=' * 200 + '\n')
 
 
-def cluster_data(data_full, num_classes, embed):
-    clusters = clustering(embed, num_classes)
+def cluster_data(data_full, num_clusters, embed):
+    if num_clusters == 1:
+        return [data_full]
+    clusters = clustering(embed, num_clusters)
     elements_count = collections.Counter(clusters)
     print(elements_count)
     data_full_split = split_data(data_full, clusters)
