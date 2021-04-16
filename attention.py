@@ -13,7 +13,7 @@ class Attention(nn.Module):
         # self.batch_norms = torch.nn.ModuleList()
 
         if hidden_dim is None:
-            hidden_dim = input_dim
+            hidden_dim = input_dim // 2 + 1
 
         if num_layers < 1:
             raise ValueError("number of layers should be positive!")

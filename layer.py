@@ -38,7 +38,7 @@ class HGNNLayer(nn.Module):
         super(HGNNLayer, self).__init__()
         self.dropout = nn.Dropout(args.dropout)
         self.activation = F.leaky_relu
-        self.mlp = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
+        self.mlp1 = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
         self.mlp2 = MLP(args.num_mlp_layers, output_dim, args.hidden_dim, output_dim, args.dropout)
         self.theta_att = nn.Parameter(torch.zeros(output_dim, 1), requires_grad=True)
         # self.theta_att_mlp = Attention(output_dim, activation=torch.tanh)
@@ -56,19 +56,19 @@ class HGNNLayer(nn.Module):
         self.theta_att.data.uniform_(-stdv, stdv)
 
     def forward(self, incident_mat_full, degree_v_full, degree_e_full, h, layer):
-        # h = self.mlp(h)
+        # h = self.mlp1(h)
         # h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
         # h_n = self.activation(h_n)
         # h_n = self.dropout(h_n)
         # h_n = self.batch_norms(h_n)
 
-        # h = self.mlp(h)
+        # h = self.mlp1(h)
         # h = self.message_passing_2(incident_mat_full, h, degree_v_full, degree_e_full)
         # h = self.activation(h)
         # h_n = self.dropout(h)
         # h_n = self.batch_norms(h_n)
 
-        h = self.mlp(h)
+        h = self.mlp1(h)
         h_n = self.message_passing_3_1(incident_mat_full, h, degree_v_full)
         h_n = self.activation(h_n)
         h_n = self.dropout(h_n)

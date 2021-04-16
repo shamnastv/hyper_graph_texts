@@ -138,7 +138,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=64,
+    parser.add_argument('--batch_size', type=int, default=16,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -187,14 +187,15 @@ def main():
 
     init_embed = get_init_embd(data_full, word_vectors).numpy()
 
-    data_full_split = cluster_data(data_full, num_clusters, init_embed)
+    data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
+    data_full_split_train = [data_full]
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
 
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.5)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.1)
 
     print(model)
 
@@ -202,10 +203,10 @@ def main():
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
     for epoch in range(1, args.epochs + 1):
 
-        loss_accum = train(epoch, args, model, optimizer, data_full_split, class_weights)
+        loss_accum = train(epoch, args, model, optimizer, data_full_split_train, class_weights)
         print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
-        acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split)
+        acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split_test)
         print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
         if acc_dev > max_val_accuracy:
             max_val_accuracy = acc_dev
@@ -219,10 +220,10 @@ def main():
             model.word_embeddings.weight.requires_grad = True
 
         # if epoch % 5 == 0:
-        #     data_full_split = cluster_data(data_full, num_clusters, embed)
+        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
         # if epoch > 60:
         #     num_clusters = num_classes
-        # scheduler.step()
+        scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
             break
