@@ -46,8 +46,8 @@ class HGNNLayer(nn.Module):
         self.batch_norms = nn.BatchNorm1d(output_dim)
         # self.batch_norms2 = nn.BatchNorm1d(output_dim)
         self.gru = GRUCellMod(output_dim, output_dim)
-        self.att_1 = Attention(output_dim * 2, activation=torch.tanh)
-        self.att_2 = Attention(output_dim * 2, activation=torch.tanh)
+        self.att_1 = Attention(output_dim * 2, activation=torch.tanh, num_layers=2)
+        self.att_2 = Attention(output_dim * 2, activation=torch.tanh, num_layers=2)
 
         self.reset_parameters()
 
