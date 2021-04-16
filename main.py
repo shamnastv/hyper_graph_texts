@@ -54,8 +54,8 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         # sss += len(output)
         # loss = F.cross_entropy(output, targets)
         # loss = F.cross_entropy(output, targets, class_weights)
-        loss += F.cross_entropy(output, targets)
-        # loss += F.cross_entropy(output, targets, class_weights)
+        # loss += F.cross_entropy(output, targets)
+        loss += F.cross_entropy(output, targets, class_weights)
 
         if sz >= args.batch_size:
             loss.backward()
@@ -137,7 +137,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=16,
+    parser.add_argument('--batch_size', type=int, default=8,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -197,6 +197,7 @@ def main():
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.5)
 
     print(model)
+    print('')
 
     acc_test = 0
     max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
@@ -215,13 +216,15 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        if epoch > 20:
-            model.word_embeddings.weight.requires_grad = True
+        # if epoch > 20:
+        #     model.word_embeddings.weight.requires_grad = True
 
         # if epoch % 5 == 0:
         #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
+
         # if epoch > 60:
         #     num_clusters = num_classes
+
         scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
@@ -236,8 +239,10 @@ def main():
 
 
 def cluster_data(data_full, num_clusters, embed):
+
     if num_clusters == 1:
         return [data_full]
+
     clusters = clustering(embed, num_clusters)
     elements_count = collections.Counter(clusters)
     print(elements_count)
