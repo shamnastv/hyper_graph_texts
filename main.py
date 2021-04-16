@@ -44,7 +44,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
                 t_idxs.append(j)
         if len(t_idxs) == 0:
             continue
-
+        sz += len(t_idxs)
         # optimizer.zero_grad()
         output, targets, _ = model(batch_data)
 
@@ -56,7 +56,6 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         # loss = F.cross_entropy(output, targets, class_weights)
         loss += F.cross_entropy(output, targets)
         # loss += F.cross_entropy(output, targets, class_weights)
-        sz += len(batch_data)
 
         if sz >= args.batch_size:
             loss.backward()
@@ -195,7 +194,7 @@ def main():
 
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.1)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.5)
 
     print(model)
 
