@@ -37,7 +37,7 @@ class HGNNLayer(nn.Module):
     def __init__(self, args, input_dim, output_dim):
         super(HGNNLayer, self).__init__()
         self.dropout = nn.Dropout(args.dropout)
-        self.activation = F.leaky_relu
+        self.activation = F.relu
         self.mlp1 = MLP(args.num_mlp_layers, input_dim, args.hidden_dim, output_dim, args.dropout)
         self.mlp2 = MLP(args.num_mlp_layers, output_dim, args.hidden_dim, output_dim, args.dropout)
         self.theta_att = nn.Parameter(torch.zeros(output_dim, 1), requires_grad=True)
@@ -46,8 +46,8 @@ class HGNNLayer(nn.Module):
         self.batch_norms = nn.BatchNorm1d(output_dim)
         # self.batch_norms2 = nn.BatchNorm1d(output_dim)
         self.gru = GRUCellMod(output_dim, output_dim)
-        self.att_1 = Attention(output_dim * 2, activation=torch.tanh, num_layers=1)
-        self.att_2 = Attention(output_dim * 2, activation=torch.tanh, num_layers=1)
+        self.att_1 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=2)
+        self.att_2 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=2)
 
         self.reset_parameters()
 
@@ -69,18 +69,18 @@ class HGNNLayer(nn.Module):
         # h_n = self.batch_norms(h_n)
 
         h = self.mlp1(h)
-        h_n = self.message_passing_3_1(incident_mat_full, h, degree_v_full)
+        h_n = self.message_passing_3_1(incident_mat_full, h, degree_e_full)
         h_n = self.activation(h_n)
-        h_n = self.dropout(h_n)
+        # h_n = self.dropout(h_n)
         # h_n = self.batch_norms(h_n)
 
         h_n = self.mlp2(h_n)
-        h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_e_full)
+        h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_v_full)
         h_n = self.activation(h_n)
         h_n = self.dropout(h_n)
         h_n = self.batch_norms(h_n)
-        # h_n = h_n + self.eps * h
-        h_n = self.gru(h_n, h)
+        h_n = h_n + self.eps * h
+        # h_n = self.gru(h_n, h)
 
         return h_n
 
@@ -117,10 +117,10 @@ class HGNNLayer(nn.Module):
         h = h + self.eps * x
         return h
 
-    def message_passing_3_1(self, incident_mat_full, h, degree_v_full):
+    def message_passing_3_1(self, incident_mat_full, h, degree_e_full):
         idx = torch.flip(incident_mat_full[0], [0])
-        h_t = spmm(degree_v_full[0], degree_v_full[1], degree_v_full[2][0], degree_v_full[2][1], h)
-        h_t = spmm(idx, incident_mat_full[1], incident_mat_full[2][1], incident_mat_full[2][0], h_t)
+        h_t = spmm(idx, incident_mat_full[1], incident_mat_full[2][1], incident_mat_full[2][0], h)
+        h_t = spmm(degree_e_full[0], degree_e_full[1], degree_e_full[2][0], degree_e_full[2][1], h_t)
 
         attn_inpt = torch.cat((h[idx[1]], h_t[idx[0]]), dim=1)
         attn_inpt = F.leaky_relu(attn_inpt, negative_slope=0.2)
@@ -138,15 +138,15 @@ class HGNNLayer(nn.Module):
 
         ones = torch.ones(size=(h.shape[0], 1), device=h.device)
         pooled = spmm(idx, att, incident_mat_full[2][1], incident_mat_full[2][0], h)
-        row_sum = spmm(idx, att, incident_mat_full[2][1], incident_mat_full[2][0], ones) + 1e-10
+        row_sum = spmm(idx, att, incident_mat_full[2][1], incident_mat_full[2][0], ones) + 1e-20
         h_e = pooled.div(row_sum)
 
         return h_e
 
-    def message_passing_3_2(self, incident_mat_full, h_e, degree_e_full):
-        idx = degree_e_full[0]
-        h_t = spmm(idx, degree_e_full[1], degree_e_full[2][0], degree_e_full[2][1], h_e)
-        h_t = spmm(incident_mat_full[0], incident_mat_full[1], incident_mat_full[2][0], incident_mat_full[2][1], h_t)
+    def message_passing_3_2(self, incident_mat_full, h_e, degree_v_full):
+        idx = incident_mat_full[0]
+        h_t = spmm(idx, incident_mat_full[1], incident_mat_full[2][0], incident_mat_full[2][1], h_e)
+        h_t = spmm(degree_v_full[0], degree_v_full[1], degree_v_full[2][0], degree_v_full[2][1], h_t)
 
         attn_inpt = torch.cat((h_e[idx[1]], h_t[idx[0]]), dim=1)
         attn_inpt = F.leaky_relu(attn_inpt, negative_slope=0.2)
@@ -164,7 +164,7 @@ class HGNNLayer(nn.Module):
 
         ones = torch.ones(size=(h_e.shape[0], 1), device=h_e.device)
         pooled = spmm(idx, att, incident_mat_full[2][0], incident_mat_full[2][1], h_e)
-        row_sum = spmm(idx, att, incident_mat_full[2][0], incident_mat_full[2][1], ones) + 1e-10
+        row_sum = spmm(idx, att, incident_mat_full[2][0], incident_mat_full[2][1], ones) + 1e-20
         h_v = pooled.div(row_sum)
 
         return h_v

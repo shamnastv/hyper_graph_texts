@@ -54,8 +54,8 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         # sss += len(output)
         # loss = F.cross_entropy(output, targets)
         # loss = F.cross_entropy(output, targets, class_weights)
-        # loss += F.cross_entropy(output, targets)
-        loss += F.cross_entropy(output, targets, class_weights)
+        loss += F.cross_entropy(output, targets)
+        # loss += F.cross_entropy(output, targets, class_weights)
 
         if sz >= args.batch_size:
             loss.backward()
@@ -145,11 +145,11 @@ def main():
                         help='learning rate (default: 0.001)')
     parser.add_argument('--seed', type=int, default=0,
                         help='random seed for splitting the dataset into 10 (default: 0)')
-    parser.add_argument('--num_layers', type=int, default=3,
+    parser.add_argument('--num_layers', type=int, default=4,
                         help='number of layers INCLUDING the input one (default: 3)')
-    parser.add_argument('--num_mlp_layers', type=int, default=1,
+    parser.add_argument('--num_mlp_layers', type=int, default=2,
                         help='number of layers for MLP EXCLUDING the input one (default: 1). 1 means linear model.')
-    parser.add_argument('--hidden_dim', type=int, default=100,
+    parser.add_argument('--hidden_dim', type=int, default=200,
                         help='number of hidden units (default: 64)')
     parser.add_argument('--dropout', type=float, default=0.5,
                         help='dropout (default: 0.5)')
@@ -157,8 +157,6 @@ def main():
                         help='output file')
     parser.add_argument('--early_stop', type=int, default=50,
                         help='early_stop')
-    parser.add_argument('--debug', action="store_true",
-                        help='run in debug mode')
     parser.add_argument('--random_vec', action="store_true",
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
@@ -196,7 +194,7 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=.5)
 
-    print(model)
+    # print(model)
     print('')
 
     acc_test = 0
@@ -225,7 +223,7 @@ def main():
         # if epoch > 60:
         #     num_clusters = num_classes
 
-        scheduler.step()
+        # scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
             break
