@@ -35,11 +35,11 @@ def get_features(data, device):
         x.extend(d.node_ids)
         targets.append(d.label)
 
-    # for w in word_dict:
-    #     if len(word_dict[w]) > 1:
-    #         for i in word_dict[w]:
-    #             incident_mat.append([i, e_start, 1])
-    #         e_start += 1
+    for w in word_dict:
+        if len(word_dict[w]) > 1:
+            for i in word_dict[w]:
+                incident_mat.append([i, e_start, 1])
+            e_start += 1
 
     num_v = v_start
     num_e = e_start
