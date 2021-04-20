@@ -74,7 +74,7 @@ class Data:
         self.d_type = 0
 
 
-def get_data(dataset, lda=True, val_prop=.1):
+def get_data(dataset, lda=True, val_prop=.1, seed=0):
     lda_str = ''
     if lda:
         lda_str = '_lda'
@@ -82,6 +82,7 @@ def get_data(dataset, lda=True, val_prop=.1):
     if os.path.exists(pickle_file):
         return pickle.load(open(pickle_file, 'rb'))
 
+    np.random.seed(seed)
     doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights, keywords_dic\
         = read_file(dataset, lda)
 
