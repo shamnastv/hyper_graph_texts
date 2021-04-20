@@ -137,7 +137,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=8,
+    parser.add_argument('--batch_size', type=int, default=32,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -147,7 +147,7 @@ def main():
                         help='random seed for splitting the dataset into 10 (default: 0)')
     parser.add_argument('--num_layers', type=int, default=4,
                         help='number of layers INCLUDING the input one (default: 3)')
-    parser.add_argument('--num_mlp_layers', type=int, default=2,
+    parser.add_argument('--num_mlp_layers', type=int, default=1,
                         help='number of layers for MLP EXCLUDING the input one (default: 1). 1 means linear model.')
     parser.add_argument('--hidden_dim', type=int, default=200,
                         help='number of hidden units (default: 64)')
@@ -161,7 +161,7 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=1e-7,
+    parser.add_argument('--weight_decay', type=float, default=0,
                         help='weight decay')
     args = parser.parse_args()
 
@@ -192,7 +192,7 @@ def main():
 
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=.5)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
 
     # print(model)
     print('')
@@ -223,7 +223,8 @@ def main():
         # if epoch > 60:
         #     num_clusters = num_classes
 
-        # scheduler.step()
+        if epoch < 20:
+            scheduler.step()
         print('')
         if epoch > max_acc_epoch + args.early_stop:
             break
