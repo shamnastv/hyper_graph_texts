@@ -46,8 +46,8 @@ class HGNNLayer(nn.Module):
         self.batch_norms = nn.BatchNorm1d(output_dim)
         # self.batch_norms2 = nn.BatchNorm1d(output_dim)
         self.gru = GRUCellMod(output_dim, output_dim)
-        self.att_1 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=1)
-        self.att_2 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=1)
+        self.att_1 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=2)
+        self.att_2 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=2)
 
         self.reset_parameters()
 
@@ -123,7 +123,7 @@ class HGNNLayer(nn.Module):
         h_t = spmm(degree_e_full[0], degree_e_full[1], degree_e_full[2][0], degree_e_full[2][1], h_t)
 
         attn_inpt = torch.cat((h[idx[1]], h_t[idx[0]]), dim=1)
-        attn_inpt = F.leaky_relu(attn_inpt, negative_slope=0.2)
+        # attn_inpt = F.leaky_relu(attn_inpt, negative_slope=0.2)
         att = self.att_1(attn_inpt).squeeze(1)
 
         with torch.no_grad():
@@ -149,7 +149,7 @@ class HGNNLayer(nn.Module):
         h_t = spmm(degree_v_full[0], degree_v_full[1], degree_v_full[2][0], degree_v_full[2][1], h_t)
 
         attn_inpt = torch.cat((h_e[idx[1]], h_t[idx[0]]), dim=1)
-        attn_inpt = F.leaky_relu(attn_inpt, negative_slope=0.2)
+        # attn_inpt = F.leaky_relu(attn_inpt, negative_slope=0.2)
         att = self.att_2(attn_inpt).squeeze(1)
 
         with torch.no_grad():
