@@ -187,8 +187,8 @@ def main():
     init_embed = get_init_embd(data_full, word_vectors).numpy()
 
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
-    data_full_split_train = data_full_split_test
-    # data_full_split_train = [data_full]
+    # data_full_split_train = data_full_split_test
+    data_full_split_train = [data_full]
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -222,12 +222,12 @@ def main():
 
         if epoch % 2 == 0:
             data_full_split_test = cluster_data(data_full, num_clusters, embed)
-            data_full_split_train = data_full_split_test
+            # data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
 
-        if epoch < 20:
+        if epoch < 15:
             scheduler.step()
             print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('')
