@@ -130,7 +130,7 @@ def test(args, model, data_full):
 
 
 def main():
-    print('date and time : ', time.ctime())
+    print('\n\ndate and time : ', time.ctime())
     parser = argparse.ArgumentParser(
         description='PyTorch graph convolutional neural net for whole-graph classification')
     parser.add_argument('--device', type=int, default=0,
@@ -178,14 +178,15 @@ def main():
         = get_data(args.dataset, args.lda)
 
     num_classes = len(labels_dic)
-    num_clusters = 1
+    num_clusters = 3
     # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
     init_embed = get_init_embd(data_full, word_vectors).numpy()
 
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
-    data_full_split_train = [data_full]
+    data_full_split_train = data_full_split_test
+    # data_full_split_train = [data_full]
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -217,14 +218,16 @@ def main():
         # if epoch > 20:
         #     model.word_embeddings.weight.requires_grad = True
 
-        # if epoch % 5 == 0:
-        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
+        if epoch % 2 == 0:
+            data_full_split_test = cluster_data(data_full, num_clusters, embed)
+            data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
 
         if epoch < 15:
             scheduler.step()
+            print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('')
         if epoch > max_acc_epoch + args.early_stop:
             break
