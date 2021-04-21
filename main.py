@@ -38,6 +38,8 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
     idx_train = np.random.permutation(len(new_train_data))
     for i in idx_train:
         batch_data = new_train_data[i]
+        if len(batch_data) <= 1:
+            continue
         t_idxs = []
         for j, d in enumerate(batch_data):
             if d.d_type == 0:
