@@ -161,7 +161,7 @@ class HGNNModel(nn.Module):
             pooled_h = pooled_h.div(row_sum + 1e-10)
             assert not torch.isnan(pooled_h).any()
 
-            h = torch.cat([h, torch.ones(1, h.shape[1]) * -1e9], dim=0)
+            h = torch.cat([h, torch.ones(1, h.shape[1], device=self.device) * -1e9], dim=0)
             max_pooled = torch.max(h[max_pool_idx], keepdim=False, dim=1)[0]
             pooled_h = pooled_h + max_pooled
 
