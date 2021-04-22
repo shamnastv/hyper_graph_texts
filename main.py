@@ -180,7 +180,7 @@ def main():
         = get_data(args.dataset, args.lda)
 
     num_classes = len(labels_dic)
-    num_clusters = 3
+    num_clusters = 1
     # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
@@ -220,8 +220,8 @@ def main():
         # if epoch > 20:
         #     model.word_embeddings.weight.requires_grad = True
 
-        if epoch % 2 == 0:
-            data_full_split_test = cluster_data(data_full, num_clusters, embed)
+        # if epoch % 2 == 0:
+        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
             # data_full_split_train = data_full_split_test
 
         # if epoch > 60:

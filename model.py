@@ -17,6 +17,8 @@ def get_features(data, device):
     v_start = 0
     e_start = 0
     graph_pool = []
+    max_pool_idx = []
+    max_nodes = max([d.node_num for d in data])
     word_dict = {}
 
     for i, d in enumerate(data):
@@ -30,6 +32,7 @@ def get_features(data, device):
                     word_dict[w] = [v_start + j]
 
         graph_pool.extend([[i, j, 1/d.node_num] for j in range(v_start, v_start + d.node_num, 1)])
+        max_pool_idx.append([j for j in range(v_start, v_start + d.node_num, 1)] + [-1] * (max_nodes - d.node_num))
         v_start += d.node_num
         e_start += d.edge_num
         x.extend(d.node_ids)
@@ -77,11 +80,13 @@ def get_features(data, device):
     graph_pool = graph_pool[2]
     graph_pool_full = (graph_pool_idx, graph_pool, graph_pool_shape)
 
+    max_pool_idx = torch.tensor(max_pool_idx).long().to(device)
+
     incident_mat = torch.tensor(incident_mat).long().transpose(0, 1).to(device)
     incident_mat_shape = torch.Size([v_start, e_start])
     incident_mat_full = (incident_mat[:2], incident_mat[2].float(), incident_mat_shape)
 
-    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets
+    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx
 
 
 class HGNNModel(nn.Module):
@@ -122,7 +127,8 @@ class HGNNModel(nn.Module):
 
     def forward(self, data):
 
-        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets = get_features(data, self.device)
+        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx\
+            = get_features(data, self.device)
 
         h = self.word_embeddings(x)
         h = self.dropout(h)
@@ -142,7 +148,6 @@ class HGNNModel(nn.Module):
 
             with torch.no_grad():
                 maximum = torch.max(elem_gp)
-
             elem_gp = elem_gp - maximum
             elem_gp = torch.exp(elem_gp)
             assert not torch.isnan(elem_gp).any()
@@ -155,6 +160,10 @@ class HGNNModel(nn.Module):
 
             pooled_h = pooled_h.div(row_sum + 1e-10)
             assert not torch.isnan(pooled_h).any()
+
+            h = torch.cat([h, torch.ones(1, h.shape[1]) * -1e9], dim=0)
+            max_pooled = torch.max(h[max_pool_idx], keepdim=False, dim=1)[0]
+            pooled_h = pooled_h + max_pooled
 
             pred += self.linears_prediction[layer](pooled_h)
 
