@@ -218,8 +218,8 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
 
-        # if epoch > 20:
-        #     model.word_embeddings.weight.requires_grad = True
+        if epoch > 20:
+            model.word_embeddings.weight.requires_grad = True
 
         # if epoch % 2 == 0:
         #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
