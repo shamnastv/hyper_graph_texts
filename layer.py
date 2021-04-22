@@ -79,8 +79,8 @@ class HGNNLayer(nn.Module):
         h_n = self.activation(h_n)
         h_n = self.dropout(h_n)
         h_n = self.batch_norms(h_n)
-        h_n = h_n + self.eps * h
-        # h_n = self.gru(h_n, h)
+        # h_n = h_n + self.eps * h
+        h_n = self.gru(h_n, h)
 
         return h_n
 
