@@ -25,11 +25,11 @@ class GRUCellMod(nn.Module):
         self.W_hz = nn.Linear(hidden_dim, hidden_dim)
 
     def forward(self, inp, ht_1):
-        # r_t = torch.sigmoid(self.W_ir(inp) + self.W_hr(ht_1))
         z_t = torch.sigmoid(self.W_iz(inp) + self.W_hz(ht_1))
-        # n_t = F.leaky_relu(self.W_in(inp) + r_t * self.W_hn(ht_1))
-        # h_t = z_t * n_t + (1 - z_t) * ht_1
-        h_t = z_t * inp + (1 - z_t) * ht_1
+        r_t = torch.sigmoid(self.W_ir(inp) + self.W_hr(ht_1))
+        n_t = torch.tanh(self.W_in(inp) + r_t * self.W_hn(ht_1))
+        h_t = (1 - z_t) * n_t + z_t * ht_1
+        # h_t = z_t * inp + (1 - z_t) * ht_1
         return h_t
 
 
@@ -45,7 +45,7 @@ class HGNNLayer(nn.Module):
         self.eps = nn.Parameter(torch.rand(1), requires_grad=True)
         self.batch_norms = nn.BatchNorm1d(output_dim)
         self.batch_norms2 = nn.BatchNorm1d(output_dim)
-        self.gru = GRUCellMod(output_dim, output_dim)
+        self.gru = GRUCellMod(input_dim, output_dim)
         self.att_1 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=2)
         self.att_2 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=2)
 
@@ -68,8 +68,8 @@ class HGNNLayer(nn.Module):
         # h_n = self.dropout(h)
         # h_n = self.batch_norms(h_n)
 
-        h = self.mlp1(h)
-        h_n = self.message_passing_3_1(incident_mat_full, h, degree_e_full)
+        h_n = self.mlp1(h)
+        h_n = self.message_passing_3_1(incident_mat_full, h_n, degree_e_full)
         # h_n = self.activation(h_n)
         h_n = F.leaky_relu(h_n, negative_slope=0.2)
         h_n = self.dropout(h_n)
@@ -82,7 +82,7 @@ class HGNNLayer(nn.Module):
         h_n = self.dropout(h_n)
         h_n = self.batch_norms(h_n)
         # h_n = h_n + self.eps * h
-        h_n = self.gru(h_n, h)
+        h_n = self.gru(h, h_n)
 
         return h_n
 
