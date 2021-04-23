@@ -228,7 +228,7 @@ def main():
         #     num_clusters = num_classes
 
         if epoch < 15:
-            scheduler.step()
+            # scheduler.step()
             print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('')
         if epoch > max_acc_epoch + args.early_stop:
