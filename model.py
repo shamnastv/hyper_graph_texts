@@ -166,6 +166,6 @@ class HGNNModel(nn.Module):
             max_pooled = torch.max(h[max_pool_idx], keepdim=False, dim=1)[0]
             pooled_h = pooled_h + max_pooled
 
-            pred += self.dropout(self.linears_prediction[layer](pooled_h))
+            pred += self.linears_prediction[layer](pooled_h)
 
         return pred, targets, pooled_h
