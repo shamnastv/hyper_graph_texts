@@ -181,7 +181,7 @@ def main():
     print('device : ', device, flush=True)
 
     train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors \
-        = get_data(args.dataset, args.lda, args.seed)
+        = get_data(dataset=args.dataset, lda=args.lda, seed=args.seed)
 
     num_classes = len(labels_dic)
     num_clusters = 1
