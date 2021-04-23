@@ -1,5 +1,6 @@
 import argparse
 import collections
+import random
 import time
 
 import torch
@@ -168,6 +169,8 @@ def main():
                         help='weight decay')
     args = parser.parse_args()
 
+    if args.seed == -1:
+        args.seed = random. randint(0, 1000)
     print(args)
 
     torch.manual_seed(args.seed)
@@ -178,7 +181,7 @@ def main():
     print('device : ', device, flush=True)
 
     train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors \
-        = get_data(args.dataset, args.lda)
+        = get_data(args.dataset, args.lda, args.seed)
 
     num_classes = len(labels_dic)
     num_clusters = 1

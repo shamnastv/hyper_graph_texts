@@ -80,20 +80,25 @@ def get_data(dataset, lda=True, val_prop=.1, seed=0):
         lda_str = '_lda'
     pickle_file = './data/%s%s_dump.pkl' % (dataset, lda_str)
     if os.path.exists(pickle_file):
-        return pickle.load(open(pickle_file, 'rb'))
+        data = pickle.load(open(pickle_file, 'rb'))
+        train_dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors = data
+    else:
+        doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights, keywords_dic\
+            = read_file(dataset, lda)
+        word_vectors = get_embedding(vocab_dic)
+
+        train_dev_data = []
+        for d in doc_train_list:
+            train_dev_data.append(Data(d, keywords_dic, lda))
+
+        test_data = []
+        for d in doc_test_list:
+            test_data.append(Data(d, keywords_dic, lda))
+
+        data = train_dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors
+        pickle.dump(data, open(pickle_file, 'wb'))
 
     np.random.seed(seed)
-    doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights, keywords_dic\
-        = read_file(dataset, lda)
-
-    train_dev_data = []
-    for d in doc_train_list:
-        train_dev_data.append(Data(d, keywords_dic, lda))
-
-    test_data = []
-    for d in doc_test_list:
-        test_data.append(Data(d, keywords_dic, lda))
-
     total_size = len(train_dev_data)
     val_size = int(val_prop * total_size)
     train_size = total_size - val_size
@@ -117,12 +122,7 @@ def get_data(dataset, lda=True, val_prop=.1, seed=0):
     for d in test_data:
         d.d_type = 2
 
-    word_vectors = get_embedding(vocab_dic)
-
-    data = train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors
-    pickle.dump(data, open(pickle_file, 'wb'))
-
-    return data
+    return train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors
 
 
 if __name__ == '__main__':
