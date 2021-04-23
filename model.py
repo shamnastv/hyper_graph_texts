@@ -132,7 +132,7 @@ class HGNNModel(nn.Module):
             = get_features(data, self.device)
 
         h = self.word_embeddings(x)
-        h = self.dropout(h)
+        # h = self.dropout(h)
         # h_cat = [self.dropout(h)]
         h_cat = [h]
 
@@ -166,6 +166,6 @@ class HGNNModel(nn.Module):
             max_pooled = torch.max(h[max_pool_idx], keepdim=False, dim=1)[0]
             pooled_h = pooled_h + max_pooled
 
-            pred += self.linears_prediction[layer](pooled_h)
+            pred += self.dropout(self.linears_prediction[layer](pooled_h))
 
         return pred, targets, pooled_h

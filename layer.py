@@ -73,14 +73,14 @@ class HGNNLayer(nn.Module):
         h_n = self.batch_norms2(h_n)
         h_n = self.activation(h_n)
         # h_n = F.leaky_relu(h_n, negative_slope=0.2)
-        h_n = self.dropout(h_n)
+        # h_n = self.dropout(h_n)
 
         h_n = self.mlp2(h_n)
         h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_v_full)
         h_n = self.batch_norms(h_n)
         h_n = self.activation(h_n)
         # h_n = F.leaky_relu(h_n, negative_slope=0.2)
-        h_n = self.dropout(h_n)
+        # h_n = self.dropout(h_n)
         # h_n = h_n + self.eps * h_m
         h_n = self.gru(h, h_n)
 
