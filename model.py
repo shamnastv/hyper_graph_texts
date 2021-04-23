@@ -132,7 +132,7 @@ class HGNNModel(nn.Module):
             = get_features(data, self.device)
 
         h = self.word_embeddings(x)
-        # h = self.dropout(h)
+        h = self.dropout(h)
         # h_cat = [self.dropout(h)]
         h_cat = [h]
 
