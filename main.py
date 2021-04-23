@@ -54,10 +54,11 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         output = output[t_idxs]
         targets = targets[t_idxs]
         # sss += len(output)
-        # loss = F.cross_entropy(output, targets)
-        # loss = F.cross_entropy(output, targets, class_weights)
         loss += F.cross_entropy(output, targets)
-        # loss += F.cross_entropy(output, targets, class_weights)
+        # if epoch > 3:
+        #     loss += F.cross_entropy(output, targets)
+        # else:
+        #     loss += F.cross_entropy(output, targets, class_weights)
 
         if sz >= args.batch_size:
             loss.backward()
