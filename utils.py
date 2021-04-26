@@ -115,6 +115,7 @@ def make_window(sents, window_size):
         if len(sent) <= window_size:
             windows.append(sent)
             continue
+        windows.append(sent)
         for i in range(0, len(sent) - window_size):
             windows.append(sent[i:i+window_size])
     return windows
