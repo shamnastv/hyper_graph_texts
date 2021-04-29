@@ -184,15 +184,15 @@ def main():
         = get_data(dataset=args.dataset, lda=args.lda, seed=args.seed)
 
     num_classes = len(labels_dic)
-    num_clusters = 1
+    num_clusters = num_classes
     # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
     init_embed = get_init_embd(data_full, word_vectors).numpy()
 
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
-    # data_full_split_train = data_full_split_test
-    data_full_split_train = [data_full]
+    data_full_split_train = data_full_split_test
+    # data_full_split_train = [data_full]
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -224,9 +224,9 @@ def main():
         if epoch > 20:
             model.word_embeddings.weight.requires_grad = True
 
-        # if epoch % 2 == 0:
-        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
-        #     data_full_split_train = data_full_split_test
+        if epoch % 2 == 0:
+            data_full_split_test = cluster_data(data_full, num_clusters, embed)
+            data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
