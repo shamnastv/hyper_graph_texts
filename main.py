@@ -61,7 +61,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         # else:
         #     loss += F.cross_entropy(output, targets, class_weights)
 
-        if sz >= 4 * args.batch_size:
+        if sz >= args.batch_size:
             loss.backward()
             optimizer.step()
             loss_accum += loss.detach().cpu().item()
