@@ -184,7 +184,8 @@ def main():
         = get_data(dataset=args.dataset, lda=args.lda, seed=args.seed)
 
     num_classes = len(labels_dic)
-    num_clusters = (num_classes + 1) // 2
+    # num_clusters = (num_classes + 1) // 2
+    num_clusters = 1
     # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
@@ -219,7 +220,7 @@ def main():
             test_accuracy = acc_test
 
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
-              % (max_val_accuracy, max_acc_epoch, test_accuracy), flush=True)
+              % (max_val_accuracy, max_acc_epoch, test_accuracy))
 
         if epoch > 20:
             model.word_embeddings.weight.requires_grad = True
@@ -234,7 +235,7 @@ def main():
         if epoch < 15:
             scheduler.step()
             print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
-        print('')
+        print('', flush=True)
         if epoch > max_acc_epoch + args.early_stop:
             break
 
