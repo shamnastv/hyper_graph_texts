@@ -1,5 +1,6 @@
 import os
 import pickle
+from math import log
 
 from preprocess import read_file, get_embedding
 import numpy as np
@@ -17,6 +18,7 @@ class Data:
 
         vocab_list = list(vocab_set)
         self.node_ids = vocab_list
+        wf = [0] * len(vocab_list)
 
         word_to_id = {}
         for i, w in enumerate(vocab_list):
@@ -27,9 +29,12 @@ class Data:
             temp = set()
             for word in sent:
                 temp.add(word_to_id[word])
+                wf[word_to_id[word]] += 1
             temp = list(temp)
             if temp:
                 self.data.append(temp)
+        s = sum(wf)
+        self.tf = [i/s for i in wf]
 
         self.rows = []
         self.cols = []
@@ -72,6 +77,7 @@ class Data:
         self.degrees_v = [1/i if i != 0 else 0 for i in self.degrees_v]
 
         self.d_type = 0
+        self.idf = None
 
 
 def get_data(dataset, lda=True, val_prop=.1, seed=0):
@@ -86,14 +92,37 @@ def get_data(dataset, lda=True, val_prop=.1, seed=0):
         doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights, keywords_dic\
             = read_file(dataset, lda)
         word_vectors = get_embedding(vocab_dic)
+        d_f = [0] * len(word_vectors)
+        d_f[0] = 1
 
         train_dev_data = []
         for d in doc_train_list:
-            train_dev_data.append(Data(d, keywords_dic, lda))
+            d_t = Data(d, keywords_dic, lda)
+            train_dev_data.append(d_t)
+            for w in d_t.node_ids:
+                d_f[w] += 1
 
         test_data = []
         for d in doc_test_list:
-            test_data.append(Data(d, keywords_dic, lda))
+            d_t = Data(d, keywords_dic, lda)
+            test_data.append(d_t)
+            for w in d_t.node_ids:
+                d_f[w] += 1
+
+        total_size = len(doc_train_list) + len(doc_test_list)
+        d_f = [log(total_size / (1 + i)) + 1 for i in d_f]
+        for d in train_dev_data:
+            idf = [d_f[i] for i in d.node_ids]
+            s = sum(idf)
+            idf = [i/s for i in idf]
+            d.idf = idf
+
+        d_f = [log(total_size / (1 + i)) + 1 for i in d_f]
+        for d in test_data:
+            idf = [d_f[i] for i in d.node_ids]
+            s = sum(idf)
+            idf = [i/s for i in idf]
+            d.idf = idf
 
         data = train_dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors
         pickle.dump(data, open(pickle_file, 'wb'))

@@ -12,6 +12,8 @@ from layer import HGNNLayer
 def get_features(data, device):
     targets = []
     x = []
+    tf = []
+    idf = []
 
     incident_mat = []
     v_start = 0
@@ -37,6 +39,8 @@ def get_features(data, device):
         e_start += d.edge_num
         x.extend(d.node_ids)
         targets.append(d.label)
+        tf.extend(d.tf)
+        idf.extend(d.idf)
 
     # inter graph edges
     for w in word_dict:
@@ -74,7 +78,12 @@ def get_features(data, device):
 
     targets = torch.tensor(targets).long().to(device)
 
-    x = torch.tensor(x).long().to(device)
+    x = torch.tensor(x, device=device).long()
+
+    tf = torch.tensor(tf, device=device).float()
+    idf = torch.tensor(idf, device=device).float()
+    tf_idf = torch.stack((tf, idf), dim=0).transpose(0, 1)
+
     graph_pool = torch.tensor(graph_pool).float().transpose(0, 1).to(device)
     graph_pool_shape = torch.Size([len(data), len(x)])
     graph_pool_idx = graph_pool[:2].long()
@@ -87,7 +96,7 @@ def get_features(data, device):
     incident_mat_shape = torch.Size([v_start, e_start])
     incident_mat_full = (incident_mat[:2], incident_mat[2].float(), incident_mat_shape)
 
-    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx
+    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf
 
 
 class HGNNModel(nn.Module):
@@ -113,22 +122,22 @@ class HGNNModel(nn.Module):
                 self.h_gnn_layers.append(HGNNLayer(args, input_dim, args.hidden_dim))
                 # self.linears_prediction.append(nn.Linear(2 * input_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(input_dim, num_classes))
-                self.graph_pool_layer.append(Attention(input_dim))
+                self.graph_pool_layer.append(Attention(input_dim + 2))
             else:
                 self.h_gnn_layers.append(HGNNLayer(args, args.hidden_dim, args.hidden_dim))
                 # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
-                self.graph_pool_layer.append(Attention(args.hidden_dim, activation=torch.tanh))
+                self.graph_pool_layer.append(Attention(args.hidden_dim + 2))
 
         # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
         self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
-        self.graph_pool_layer.append(Attention(args.hidden_dim))
+        self.graph_pool_layer.append(Attention(args.hidden_dim + 2))
 
         self.dropout = nn.Dropout(args.dropout)
 
     def forward(self, data):
 
-        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx\
+        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf\
             = get_features(data, self.device)
 
         h = self.word_embeddings(x)
@@ -145,7 +154,8 @@ class HGNNModel(nn.Module):
         for layer, h in enumerate(h_cat):
             # if layer == 0:
             #     continue
-            elem_gp = self.graph_pool_layer[layer](h).squeeze(1)
+            h_t = torch.cat((h, tf_idf), dim=1)
+            elem_gp = self.graph_pool_layer[layer](h_t).squeeze(1)
 
             with torch.no_grad():
                 maximum = torch.max(elem_gp)
