@@ -5,6 +5,8 @@ import time
 
 import torch
 import numpy as np
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
 from torch import optim
 import torch.nn.functional as F
 from sklearn.metrics import accuracy_score, f1_score, classification_report
@@ -194,6 +196,7 @@ def main():
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
     data_full_split_train = data_full_split_test
     # data_full_split_train = [data_full]
+    plot_tsne(init_embed, args.dataset + str(0))
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -245,6 +248,14 @@ def main():
     print('test accuracy : ', test_accuracy)
     print('last test_accuracy : ', acc_test)
     print('=' * 200 + '\n')
+
+
+def plot_tsne(embed, filename):
+    tsne = TSNE()
+    h = tsne.fit_transform(embed)
+    plt.figure()
+    plt.scatter(h[:, 0], h[:, 1])
+    plt.savefig('tsne' + filename + '.png')
 
 
 def cluster_data(data_full, num_clusters, embed):
