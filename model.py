@@ -162,7 +162,7 @@ class HGNNModel(nn.Module):
             elem_gp = elem_gp - maximum
             elem_gp = torch.exp(elem_gp)
             assert not torch.isnan(elem_gp).any()
-            elem_gp = elem_gp * tf_idf[:, 0] * tf_idf[:, 1]
+            # elem_gp = elem_gp * tf_idf[:, 0] * tf_idf[:, 1]
 
             row_sum = spmm(graph_pool_full[0], elem_gp, graph_pool_full[2][0], graph_pool_full[2][1],
                            torch.ones(size=(h.shape[0], 1), device=self.device))
