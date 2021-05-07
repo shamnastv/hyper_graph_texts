@@ -196,7 +196,7 @@ def main():
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
     data_full_split_train = data_full_split_test
     # data_full_split_train = [data_full]
-    plot_tsne(init_embed, args.dataset + str(0))
+    # plot_tsne(init_embed, args.dataset + str(0))
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -225,13 +225,16 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy))
 
-        plot_tsne(init_embed, args.dataset + str(epoch))
+        # plot_tsne(init_embed, args.dataset + str(epoch))
         if epoch == 20:
             model.word_embeddings.weight.requires_grad = True
 
+        if epoch == 5:
+            num_clusters = (num_classes + 1) // 2
+
         if epoch % 2 == 0:
             data_full_split_test = cluster_data(data_full, num_clusters, embed)
-            # data_full_split_train = data_full_split_test
+            data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
@@ -257,6 +260,7 @@ def plot_tsne(embed, filename):
     plt.figure()
     plt.scatter(h[:, 0], h[:, 1])
     plt.savefig('3tsne' + filename + '.png')
+    plt.close()
 
 
 def cluster_data(data_full, num_clusters, embed):
