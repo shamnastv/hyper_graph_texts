@@ -256,7 +256,7 @@ def plot_tsne(embed, filename):
     h = tsne.fit_transform(embed)
     plt.figure()
     plt.scatter(h[:, 0], h[:, 1])
-    plt.savefig('2tsne' + filename + '.png')
+    plt.savefig('3tsne' + filename + '.png')
 
 
 def cluster_data(data_full, num_clusters, embed):

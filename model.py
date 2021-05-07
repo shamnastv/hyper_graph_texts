@@ -120,17 +120,17 @@ class HGNNModel(nn.Module):
         for layer in range(self.num_layers - 1):
             if layer == 0:
                 self.h_gnn_layers.append(HGNNLayer(args, input_dim, args.hidden_dim))
-                # self.linears_prediction.append(nn.Linear(2 * input_dim, num_classes))
-                self.linears_prediction.append(nn.Linear(input_dim, num_classes))
+                self.linears_prediction.append(nn.Linear(2 * input_dim, num_classes))
+                # self.linears_prediction.append(nn.Linear(input_dim, num_classes))
                 self.graph_pool_layer.append(Attention(input_dim + 2))
             else:
                 self.h_gnn_layers.append(HGNNLayer(args, args.hidden_dim, args.hidden_dim))
-                # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
-                self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
+                self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
+                # self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
                 self.graph_pool_layer.append(Attention(args.hidden_dim + 2))
 
-        # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
-        self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
+        self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
+        # self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
         self.graph_pool_layer.append(Attention(args.hidden_dim + 2))
 
         self.dropout = nn.Dropout(args.dropout)
@@ -176,7 +176,8 @@ class HGNNModel(nn.Module):
             h = torch.cat([h, torch.ones(1, h.shape[1], device=self.device) * -1e9], dim=0)
             max_pooled = torch.max(h[max_pool_idx], keepdim=False, dim=1)[0]
             # pooled_h = pooled_h + max_pooled
+            pooled_h = torch.cat((pooled_h, max_pooled), dim=1)
 
-            pred += self.linears_prediction[layer](max_pooled)
+            pred += self.linears_prediction[layer](pooled_h)
 
-        return pred, targets, pooled_h
+        return pred, targets, pred
