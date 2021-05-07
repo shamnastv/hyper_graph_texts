@@ -225,6 +225,7 @@ def main():
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy))
 
+        plot_tsne(init_embed, args.dataset + str(epoch))
         if epoch == 20:
             model.word_embeddings.weight.requires_grad = True
 
