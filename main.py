@@ -90,8 +90,8 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
 
     for data in data_full:
         data_size = len(data)
-        # full_idx = np.arange(data_size)
-        full_idx = np.random.permutation(data_size)
+        full_idx = np.arange(data_size)
+        # full_idx = np.random.permutation(data_size)
         for i in range(0, data_size, minibatch_size):
             selected_idx = full_idx[i:i + minibatch_size]
             if len(selected_idx) == 0:
@@ -190,6 +190,13 @@ def main():
     num_clusters = 1
     # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
+
+    tmp = []
+    idx = np.random.permutation(len(data_full))
+    for i in idx:
+        tmp.append(data_full[i])
+
+    data_full = tmp
 
     init_embed = get_init_embd(data_full, word_vectors).numpy()
 
