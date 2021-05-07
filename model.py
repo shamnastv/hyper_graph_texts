@@ -175,8 +175,8 @@ class HGNNModel(nn.Module):
 
             h = torch.cat([h, torch.ones(1, h.shape[1], device=self.device) * -1e9], dim=0)
             max_pooled = torch.max(h[max_pool_idx], keepdim=False, dim=1)[0]
-            pooled_h = pooled_h + max_pooled
+            # pooled_h = pooled_h + max_pooled
 
-            pred += self.linears_prediction[layer](pooled_h)
+            pred += self.linears_prediction[layer](max_pooled)
 
         return pred, targets, pooled_h
