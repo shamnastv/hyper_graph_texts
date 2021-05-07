@@ -122,16 +122,16 @@ class HGNNModel(nn.Module):
                 self.h_gnn_layers.append(HGNNLayer(args, input_dim, args.hidden_dim))
                 # self.linears_prediction.append(nn.Linear(2 * input_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(input_dim, num_classes))
-                self.graph_pool_layer.append(Attention(input_dim + 2, activation=torch.tanh))
+                self.graph_pool_layer.append(Attention(input_dim + 2))
             else:
                 self.h_gnn_layers.append(HGNNLayer(args, args.hidden_dim, args.hidden_dim))
                 # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
                 self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
-                self.graph_pool_layer.append(Attention(args.hidden_dim + 2, activation=torch.tanh))
+                self.graph_pool_layer.append(Attention(args.hidden_dim + 2))
 
         # self.linears_prediction.append(nn.Linear(2 * args.hidden_dim, num_classes))
         self.linears_prediction.append(nn.Linear(args.hidden_dim, num_classes))
-        self.graph_pool_layer.append(Attention(args.hidden_dim + 2, activation=torch.tanh))
+        self.graph_pool_layer.append(Attention(args.hidden_dim + 2))
 
         self.dropout = nn.Dropout(args.dropout)
 
@@ -162,6 +162,7 @@ class HGNNModel(nn.Module):
             elem_gp = elem_gp - maximum
             elem_gp = torch.exp(elem_gp)
             assert not torch.isnan(elem_gp).any()
+            elem_gp = elem_gp * tf_idf[:, 0] * tf_idf[:, 1]
 
             row_sum = spmm(graph_pool_full[0], elem_gp, graph_pool_full[2][0], graph_pool_full[2][1],
                            torch.ones(size=(h.shape[0], 1), device=self.device))
