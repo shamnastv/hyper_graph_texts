@@ -1,9 +1,13 @@
+from math import log
+
+import scipy.sparse as sp
 from nltk.corpus import stopwords
 
 from collections import Counter
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from gensim.utils import *
+from sklearn.decomposition import TruncatedSVD
 
 
 def clean_str(string):
@@ -119,8 +123,88 @@ def make_window(sents, window_size):
             continue
         windows.append(sent)
         for i in range(0, len(sent) - window_size):
-            windows.append(sent[i:i+window_size])
+            windows.append(sent[i:i + window_size])
 
     if len(windows) == 0:
         print('zero size document')
     return windows
+
+
+def create_word_vectors(doc_content_list, global_word_to_id):
+    dim = 300
+    global_vocab = [None] * len(global_word_to_id)
+    for word in global_word_to_id:
+        global_vocab[global_word_to_id[word]] = word
+
+    windows_g = []
+    for doc in doc_content_list:
+        for window in doc:
+            windows_g.append(window)
+
+    global_vocab_size = len(global_vocab)
+
+    word_window_freq = {}
+    for window in windows_g:
+        appeared = set()
+        for i in range(len(window)):
+            if window[i] in appeared:
+                continue
+            if window[i] in word_window_freq:
+                word_window_freq[window[i]] += 1
+            else:
+                word_window_freq[window[i]] = 1
+            appeared.add(window[i])
+
+    word_pair_count = {}
+    for window in windows_g:
+        for i in range(1, len(window)):
+            for j in range(0, i):
+                word_i = window[i]
+                word_i_id = global_word_to_id[word_i]
+                word_j = window[j]
+                word_j_id = global_word_to_id[word_j]
+                if word_i_id == word_j_id:
+                    continue
+                word_pair_str = str(word_i_id) + ',' + str(word_j_id)
+                if word_pair_str in word_pair_count:
+                    word_pair_count[word_pair_str] += 1
+                else:
+                    word_pair_count[word_pair_str] = 1
+                # two orders
+                word_pair_str = str(word_j_id) + ',' + str(word_i_id)
+                if word_pair_str in word_pair_count:
+                    word_pair_count[word_pair_str] += 1
+                else:
+                    word_pair_count[word_pair_str] = 1
+
+    row = []
+    col = []
+    weight = []
+
+    # pmi as weights
+    num_window = len(windows_g) + 2
+
+    for key in word_pair_count:
+        temp = key.split(',')
+        i = int(temp[0])
+        j = int(temp[1])
+        count = word_pair_count[key]
+        word_freq_i = word_window_freq[global_vocab[i]]
+        word_freq_j = word_window_freq[global_vocab[j]]
+        pmi = log((1.0 * count / num_window) /
+                  (1.0 * word_freq_i * word_freq_j / (num_window * num_window)))
+
+        if pmi <= 0:
+            continue
+        row.append(i)
+        col.append(j)
+        weight.append(pmi)
+
+    adj_g = sp.csr_matrix(
+        (weight, (row, col)), shape=(global_vocab_size, global_vocab_size))
+    svd = TruncatedSVD(n_components=dim, n_iter=7, random_state=42)
+    # word_vectors = adj_g + sp.identity(adj_g.shape[0])
+    word_vectors = svd.fit_transform(adj_g)
+    word_vectors[0] = np.zeros(dim, dtype='float32')
+
+    return word_vectors

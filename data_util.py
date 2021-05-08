@@ -5,6 +5,8 @@ from math import log
 from preprocess import read_file, get_embedding
 import numpy as np
 
+from utils import create_word_vectors
+
 
 class Data:
     def __init__(self, data, keywords, lda=True):
@@ -91,7 +93,8 @@ def get_data(dataset, lda=True, val_prop=.1, seed=0):
     else:
         doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights, keywords_dic\
             = read_file(dataset, lda)
-        word_vectors = get_embedding(vocab_dic)
+        # word_vectors = get_embedding(vocab_dic)
+        word_vectors = create_word_vectors(doc_content_list, vocab_dic)
         d_f = [0] * len(word_vectors)
         d_f[0] = 1
 
