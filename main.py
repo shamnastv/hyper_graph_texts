@@ -238,8 +238,8 @@ def main():
         if epoch == 20:
             model.word_embeddings.weight.requires_grad = True
 
-        if epoch == 5:
-            num_clusters = (num_classes + 1) // 2
+        # if epoch == 5:
+        #     num_clusters = (num_classes + 1) // 2
 
         if epoch % 2 == 0:
             data_full_split_test = cluster_data(data_full, num_clusters, embed)
@@ -248,9 +248,9 @@ def main():
         # if epoch > 60:
         #     num_clusters = num_classes
 
-        if epoch < 15:
-            scheduler.step()
-            print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
+        # if epoch < 15:
+        #     scheduler.step()
+        #     print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('', flush=True)
         if epoch > max_acc_epoch + args.early_stop:
             break
@@ -268,7 +268,7 @@ def plot_tsne(embed, filename):
     h = tsne.fit_transform(embed)
     plt.figure()
     plt.scatter(h[:, 0], h[:, 1])
-    plt.savefig('3tsne' + filename + '.png')
+    plt.savefig('tsne' + filename + '.png')
     plt.close()
 
 
