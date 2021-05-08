@@ -228,6 +228,8 @@ def main():
             max_val_accuracy = acc_dev
             max_acc_epoch = epoch
             test_accuracy = acc_test
+        else:
+            scheduler.step()
 
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy))
