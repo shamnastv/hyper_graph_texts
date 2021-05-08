@@ -210,7 +210,7 @@ def main():
 
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.5)
 
     # print(model)
     print('')
@@ -248,9 +248,9 @@ def main():
         # if epoch > 60:
         #     num_clusters = num_classes
 
-        # if epoch < 15:
-        #     scheduler.step()
-        #     print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
+        if epoch < 15:
+            scheduler.step()
+            print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('', flush=True)
         if epoch > max_acc_epoch + args.early_stop:
             break
