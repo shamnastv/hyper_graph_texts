@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import scipy.sparse as sp
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.decomposition import TruncatedSVD
 
 
 def get_init_embd(data, word_vectors):
@@ -21,8 +22,29 @@ def get_init_embd(data, word_vectors):
         embd = torch.matmul(word_weights, word_embds)
         init_embed.append(embd)
 
-    init_embed = torch.cat(init_embed, dim=0)
+    init_embed = torch.cat(init_embed, dim=0).numpy()
     return init_embed
+
+
+def get_init_embd2(data, word_vectors):
+
+    num_words = len(word_vectors)
+    num_docs = len(data)
+    row = []
+    col = []
+    weight = []
+
+    for i, d in enumerate(data):
+        for j, k in enumerate(d.node_ids):
+            w = d.tf[j] * d.idf[j]
+            row.append(i)
+            col.append(k)
+            weight.append(w)
+
+    embd = sp.csr_matrix((weight, (row, col)), shape=(num_docs, num_words))
+    svd = TruncatedSVD(n_components=200, n_iter=7, random_state=42)
+    embd = svd.fit_transform(embd)
+    return embd
 
 
 def clustering(data, num_clusters):

@@ -13,7 +13,7 @@ from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 from data_util import get_data
 from model import HGNNModel
-from nn_util import get_init_embd, clustering, split_data
+from nn_util import get_init_embd, clustering, split_data, get_init_embd2
 
 start_time = time.time()
 
@@ -186,8 +186,8 @@ def main():
         = get_data(dataset=args.dataset, lda=args.lda, seed=args.seed)
 
     num_classes = len(labels_dic)
-    # num_clusters = (num_classes + 1) // 2
-    num_clusters = 1
+    num_clusters = (num_classes + 1) // 2
+    # num_clusters = 1
     # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
     data_full = train_data + dev_data + test_data
 
@@ -198,12 +198,12 @@ def main():
 
     data_full = tmp
 
-    init_embed = get_init_embd(data_full, word_vectors).numpy()
+    init_embed = get_init_embd2(data_full, word_vectors)
 
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
     data_full_split_train = data_full_split_test
     # data_full_split_train = [data_full]
-    # plot_tsne(init_embed, args.dataset + str(0))
+    plot_tsne(init_embed, args.dataset + str(0))
 
     class_weights = torch.from_numpy(class_weights).float().to(device)
     input_dim = word_vectors.shape[1]
@@ -241,9 +241,9 @@ def main():
         # if epoch == 5:
         #     num_clusters = (num_classes + 1) // 2
 
-        if epoch % 2 == 0:
-            data_full_split_test = cluster_data(data_full, num_clusters, embed)
-            data_full_split_train = data_full_split_test
+        # if epoch % 2 == 0:
+        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
+        #     data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
