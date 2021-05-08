@@ -228,8 +228,8 @@ def main():
             max_val_accuracy = acc_dev
             max_acc_epoch = epoch
             test_accuracy = acc_test
-        else:
-            scheduler.step()
+        # else:
+        #     scheduler.step()
 
         print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
               % (max_val_accuracy, max_acc_epoch, test_accuracy))
@@ -248,9 +248,9 @@ def main():
         # if epoch > 60:
         #     num_clusters = num_classes
 
-        # if epoch < 15:
-        #     scheduler.step()
-        #     print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
+        if epoch < 15:
+            scheduler.step()
+            print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('', flush=True)
         if epoch > max_acc_epoch + args.early_stop:
             break
