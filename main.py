@@ -172,7 +172,7 @@ def main():
     args = parser.parse_args()
 
     if args.seed == -1:
-        args.seed = random. randint(0, 1000)
+        args.seed = random.randint(0, 1000)
     print(args)
 
     torch.manual_seed(args.seed)
