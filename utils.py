@@ -182,7 +182,7 @@ def create_word_vectors(doc_content_list, global_word_to_id):
     weight = []
 
     # pmi as weights
-    num_window = len(windows_g) + 2
+    num_window = len(windows_g)
 
     for key in word_pair_count:
         temp = key.split(',')
