@@ -23,11 +23,6 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
     loss_accum = 0
     new_train_data = []
 
-    # sz = 0
-    # for train_data in train_data_full:
-    #     train_size = len(train_data)
-    #     # if epoch < 25 and train_size > 1000:
-    #     #     continue
     train_size = len(train_data_full)
     idx_train = np.random.permutation(train_size)
 
@@ -36,7 +31,6 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         optimizer.zero_grad()
         selected_idx = idx_train[i:i + args.batch_size]
         batch_data = [train_data_full[idx] for idx in selected_idx]
-        # new_train_data.append([train_data[idx] for idx in selected_idx])
         if len(batch_data) <= 1:
             continue
         t_idxs = []
@@ -50,12 +44,10 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         t_idxs = torch.tensor(t_idxs, device=output.device).long()
         output = output[t_idxs]
         targets = targets[t_idxs]
-        # sss += len(output)
         loss = F.cross_entropy(output, targets)
         loss.backward()
         optimizer.step()
         loss_accum += loss.detach().cpu().item()
-        print(len(t_idxs))
 
     # sz = 0
     # # sss = 0
@@ -261,12 +253,12 @@ def main():
         # if epoch == 20:
         #     model.word_embeddings.weight.requires_grad = True
 
-        if epoch == 5:
+        if epoch == 3:
             num_clusters = (num_classes + 1) // 2
 
-        # if epoch % 2 == 0:
-        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
-        #     data_full_split_train = data_full_split_test
+        if epoch % 2 == 0:
+            data_full_split_test = cluster_data(data_full, num_clusters, embed)
+            data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
