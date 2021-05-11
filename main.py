@@ -55,6 +55,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         loss.backward()
         optimizer.step()
         loss_accum += loss.detach().cpu().item()
+        print(len(t_idxs))
 
     # sz = 0
     # # sss = 0
