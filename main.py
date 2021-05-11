@@ -253,12 +253,12 @@ def main():
         # if epoch == 20:
         #     model.word_embeddings.weight.requires_grad = True
 
-        if epoch == 4:
-            num_clusters = (num_classes + 1) // 2
+        # if epoch == 4:
+        #     num_clusters = (num_classes + 1) // 2
 
-        if epoch % 2 == 0:
-            data_full_split_test = cluster_data(data_full, num_clusters, embed)
-            data_full_split_train = data_full_split_test
+        # if epoch % 2 == 0:
+        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
+        #     data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
