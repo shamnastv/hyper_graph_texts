@@ -96,7 +96,7 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
     return loss_accum
 
 
-def pass_data_iteratively(model, data_full, minibatch_size=128):
+def pass_data_iteratively(model, data_full, minibatch_size):
     pooled_h_ls = []
     data_new = []
 
