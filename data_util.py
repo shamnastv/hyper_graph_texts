@@ -80,6 +80,7 @@ class Data:
 
         self.d_type = 0
         self.idf = None
+        self.cluster = 0
 
 
 def get_data(dataset, lda=True, val_prop=.1, seed=0):

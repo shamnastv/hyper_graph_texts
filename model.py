@@ -21,17 +21,21 @@ def get_features(data, device):
     graph_pool = []
     max_pool_idx = []
     max_nodes = max([d.node_num for d in data])
-    word_dict = {}
+    # word_dict = {}
+    clusters = [d.cluster for d in data]
+    # clusters = [0] * len(data)
+    word_dict_ls = [{} for _ in range(max(clusters) + 1)]
 
     for i, d in enumerate(data):
+        c = clusters[i]
         for j in range(len(d.vals)):
             incident_mat.append([d.rows[j] + v_start, d.cols[j] + e_start, d.vals[j]])
         for j, w in enumerate(d.node_ids):
             if w != 0:
-                if w in word_dict:
-                    word_dict[w].append(v_start + j)
+                if w in word_dict_ls[c]:
+                    word_dict_ls[c][w].append(v_start + j)
                 else:
-                    word_dict[w] = [v_start + j]
+                    word_dict_ls[c][w] = [v_start + j]
 
         graph_pool.extend([[i, j, 1/d.node_num] for j in range(v_start, v_start + d.node_num, 1)])
         max_pool_idx.append([j for j in range(v_start, v_start + d.node_num, 1)] + [-1] * (max_nodes - d.node_num))
@@ -43,11 +47,12 @@ def get_features(data, device):
         idf.extend(d.idf)
 
     # inter graph edges
-    for w in word_dict:
-        if len(word_dict[w]) > 1:
-            for i in word_dict[w]:
-                incident_mat.append([i, e_start, 1])
-            e_start += 1
+    for word_dict in word_dict_ls:
+        for w in word_dict:
+            if len(word_dict[w]) > 1:
+                for i in word_dict[w]:
+                    incident_mat.append([i, e_start, 1])
+                e_start += 1
 
     num_v = v_start
     num_e = e_start

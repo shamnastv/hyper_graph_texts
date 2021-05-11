@@ -23,24 +23,20 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
     loss_accum = 0
     new_train_data = []
 
-    for train_data in train_data_full:
-        train_size = len(train_data)
-        # if epoch < 25 and train_size > 1000:
-        #     continue
-        idx_train = np.random.permutation(train_size)
-
-        for i in range(0, train_size, args.batch_size):
-            selected_idx = idx_train[i:i + args.batch_size]
-            # batch_data = [train_data[idx] for idx in selected_idx]
-            new_train_data.append([train_data[idx] for idx in selected_idx])
+    # sz = 0
+    # for train_data in train_data_full:
+    #     train_size = len(train_data)
+    #     # if epoch < 25 and train_size > 1000:
+    #     #     continue
+    train_size = len(train_data_full)
+    idx_train = np.random.permutation(train_size)
 
     sz = 0
-    # sss = 0
-    optimizer.zero_grad()
-    loss = torch.zeros(1, device=class_weights.device)
-    idx_train = np.random.permutation(len(new_train_data))
-    for i in idx_train:
-        batch_data = new_train_data[i]
+    for i in range(0, train_size, args.batch_size):
+        optimizer.zero_grad()
+        selected_idx = idx_train[i:i + args.batch_size]
+        batch_data = [train_data_full[idx] for idx in selected_idx]
+        # new_train_data.append([train_data[idx] for idx in selected_idx])
         if len(batch_data) <= 1:
             continue
         t_idxs = []
@@ -50,32 +46,58 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         if len(t_idxs) == 0:
             continue
         sz += len(t_idxs)
-        # optimizer.zero_grad()
         output, targets, _ = model(batch_data)
-
         t_idxs = torch.tensor(t_idxs, device=output.device).long()
         output = output[t_idxs]
         targets = targets[t_idxs]
         # sss += len(output)
-        loss += F.cross_entropy(output, targets)
-        # if epoch > 3:
-        #     loss += F.cross_entropy(output, targets)
-        # else:
-        #     loss += F.cross_entropy(output, targets, class_weights)
-
-        if sz >= args.batch_size:
-            loss.backward()
-            optimizer.step()
-            loss_accum += loss.detach().cpu().item()
-
-            sz = 0
-            optimizer.zero_grad()
-            loss = torch.zeros(1, device=class_weights.device)
-
-    if sz > 0:
+        loss = F.cross_entropy(output, targets)
         loss.backward()
         optimizer.step()
         loss_accum += loss.detach().cpu().item()
+
+    # sz = 0
+    # # sss = 0
+    # optimizer.zero_grad()
+    # loss = torch.zeros(1, device=class_weights.device)
+    # idx_train = np.random.permutation(len(new_train_data))
+    # for i in idx_train:
+    #     batch_data = new_train_data[i]
+    #     if len(batch_data) <= 1:
+    #         continue
+    #     t_idxs = []
+    #     for j, d in enumerate(batch_data):
+    #         if d.d_type == 0:
+    #             t_idxs.append(j)
+    #     if len(t_idxs) == 0:
+    #         continue
+    #     sz += len(t_idxs)
+    #     # optimizer.zero_grad()
+    #     output, targets, _ = model(batch_data)
+    #
+    #     t_idxs = torch.tensor(t_idxs, device=output.device).long()
+    #     output = output[t_idxs]
+    #     targets = targets[t_idxs]
+    #     # sss += len(output)
+    #     loss += F.cross_entropy(output, targets)
+    #     # if epoch > 3:
+    #     #     loss += F.cross_entropy(output, targets)
+    #     # else:
+    #     #     loss += F.cross_entropy(output, targets, class_weights)
+    #
+    #     if sz >= args.batch_size:
+    #         loss.backward()
+    #         optimizer.step()
+    #         loss_accum += loss.detach().cpu().item()
+    #
+    #         sz = 0
+    #         optimizer.zero_grad()
+    #         loss = torch.zeros(1, device=class_weights.device)
+    #
+    # if sz > 0:
+    #     loss.backward()
+    #     optimizer.step()
+    #     loss_accum += loss.detach().cpu().item()
 
     # print(sss)
     return loss_accum
@@ -88,23 +110,23 @@ def pass_data_iteratively(model, data_full, minibatch_size=128):
     outputs = [[], [], []]
     targets = [[], [], []]
 
-    for data in data_full:
-        data_size = len(data)
-        full_idx = np.arange(data_size)
-        # full_idx = np.random.permutation(data_size)
-        for i in range(0, data_size, minibatch_size):
-            selected_idx = full_idx[i:i + minibatch_size]
-            if len(selected_idx) == 0:
-                continue
-            batch_data = [data[idx] for idx in selected_idx]
-            with torch.no_grad():
-                output, target, pooled_h = model(batch_data)
-            for j, d in enumerate(batch_data):
-                outputs[d.d_type].append(output[j])
-                targets[d.d_type].append(target[j])
+    # for data in data_full:
+    data_size = len(data_full)
+    full_idx = np.arange(data_size)
+    # full_idx = np.random.permutation(data_size)
+    for i in range(0, data_size, minibatch_size):
+        selected_idx = full_idx[i:i + minibatch_size]
+        if len(selected_idx) == 0:
+            continue
+        batch_data = [data_full[idx] for idx in selected_idx]
+        with torch.no_grad():
+            output, target, pooled_h = model(batch_data)
+        for j, d in enumerate(batch_data):
+            outputs[d.d_type].append(output[j])
+            targets[d.d_type].append(target[j])
 
-            pooled_h_ls.append(pooled_h)
-            data_new.extend(batch_data)
+        pooled_h_ls.append(pooled_h)
+        data_new.extend(batch_data)
 
     output_train, target_train = torch.stack(outputs[0]), torch.stack(targets[0]).detach().cpu().numpy()
     output_dev, target_dev = torch.stack(outputs[1]), torch.stack(targets[1]).detach().cpu().numpy()
@@ -274,14 +296,25 @@ def plot_tsne(embed, filename):
 
 def cluster_data(data_full, num_clusters, embed):
 
-    if num_clusters == 1:
-        return [data_full]
+    # if num_clusters == 1:
+    #     return [data_full]
+    #
+    # clusters = clustering(embed, num_clusters)
+    # elements_count = collections.Counter(clusters)
+    # print(elements_count)
+    # data_full_split = split_data(data_full, clusters)
+    # return data_full_split
 
+    if num_clusters == 1:
+        for d in data_full:
+            d.cluster = 0
+        return data_full
     clusters = clustering(embed, num_clusters)
     elements_count = collections.Counter(clusters)
     print(elements_count)
-    data_full_split = split_data(data_full, clusters)
-    return data_full_split
+    for i, d in enumerate(data_full):
+        d.cluster = clusters[i]
+    return data_full
 
 
 if __name__ == '__main__':
