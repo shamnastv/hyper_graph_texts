@@ -250,8 +250,8 @@ def main():
               % (max_val_accuracy, max_acc_epoch, test_accuracy))
 
         # plot_tsne(init_embed, args.dataset + str(epoch))
-        # if epoch == 20:
-        #     model.word_embeddings.weight.requires_grad = True
+        if epoch == 10:
+            model.word_embeddings.weight.requires_grad = True
 
         # if epoch == 4:
         #     num_clusters = (num_classes + 1) // 2
