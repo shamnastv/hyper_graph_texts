@@ -214,7 +214,7 @@ def main():
 
     num_classes = len(labels_dic)
     # num_clusters = (num_classes + 2) // 3
-    num_clusters = 1
+    num_clusters = 2
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
     data_full_split_train = data_full_split_test
     # data_full_split_train = [data_full]
@@ -250,15 +250,15 @@ def main():
               % (max_val_accuracy, max_acc_epoch, test_accuracy))
 
         # plot_tsne(init_embed, args.dataset + str(epoch))
-        if epoch == 10:
+        if epoch == 15:
             model.word_embeddings.weight.requires_grad = True
 
         # if epoch == 4:
         #     num_clusters = (num_classes + 1) // 2
 
-        # if epoch % 2 == 0:
-        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
-        #     data_full_split_train = data_full_split_test
+        if epoch % 1 == 0:
+            data_full_split_test = cluster_data(data_full, num_clusters, embed)
+            data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
