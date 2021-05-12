@@ -214,7 +214,7 @@ def main():
 
     num_classes = len(labels_dic)
     # num_clusters = (num_classes + 2) // 3
-    num_clusters = 2
+    num_clusters = 20
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
     data_full_split_train = data_full_split_test
     # data_full_split_train = [data_full]
