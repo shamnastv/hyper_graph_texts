@@ -114,9 +114,12 @@ def pass_data_iteratively(model, data_full, minibatch_size):
         batch_data = [data_full[idx] for idx in selected_idx]
         with torch.no_grad():
             output, target, pooled_h = model(batch_data)
+        output = output.max(1, keepdim=True)[1].squeeze()
         for j, d in enumerate(batch_data):
             outputs[d.d_type].append(output[j])
             targets[d.d_type].append(target[j])
+            # if d.d_type == 2 and output[j] != target[j]:
+            #     print(d.full_doc)
 
         pooled_h_ls.append(pooled_h)
         data_new.extend(batch_data)
@@ -125,9 +128,9 @@ def pass_data_iteratively(model, data_full, minibatch_size):
     output_dev, target_dev = torch.stack(outputs[1]), torch.stack(targets[1]).detach().cpu().numpy()
     output_test, target_test = torch.stack(outputs[2]), torch.stack(targets[2]).detach().cpu().numpy()
 
-    pred_train = output_train.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
-    pred_dev = output_dev.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
-    pred_test = output_test.max(1, keepdim=True)[1].squeeze().detach().cpu().numpy()
+    pred_train = output_train.detach().cpu().numpy()
+    pred_dev = output_dev.detach().cpu().numpy()
+    pred_test = output_test.detach().cpu().numpy()
 
     # print("train", target_train, pred_train)
     # print("dev", target_dev, pred_dev)
@@ -214,7 +217,7 @@ def main():
 
     num_classes = len(labels_dic)
     # num_clusters = (num_classes + 2) // 3
-    num_clusters = 20
+    num_clusters = 1
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
     data_full_split_train = data_full_split_test
     # data_full_split_train = [data_full]
@@ -256,9 +259,9 @@ def main():
         # if epoch == 4:
         #     num_clusters = (num_classes + 1) // 2
 
-        if epoch % 1 == 0:
-            data_full_split_test = cluster_data(data_full, num_clusters, embed)
-            data_full_split_train = data_full_split_test
+        # if epoch % 1 == 0:
+        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
+        #     data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes

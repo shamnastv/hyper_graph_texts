@@ -77,7 +77,7 @@ def read_file(dataset, lda=True):
             for word in sentence:
                 temp.append(vocab_dic[word])
             temp_doc.append(temp)
-        doc_train_list.append((temp_doc, labels_dic[label]))
+        doc_train_list.append((temp_doc, labels_dic[label], doc))
 
     for doc, label in doc_test_list_original:
         temp_doc = []
@@ -86,7 +86,7 @@ def read_file(dataset, lda=True):
             for word in sentence:
                 temp.append(vocab_dic[word])
             temp_doc.append(temp)
-        doc_test_list.append((temp_doc, labels_dic[label]))
+        doc_test_list.append((temp_doc, labels_dic[label], doc))
 
     keywords_dic = {}
     if lda:
@@ -96,7 +96,7 @@ def read_file(dataset, lda=True):
             if i in vocab_dic:
                 keywords_dic[vocab_dic[i]] = keywords_dic_original[i]
 
-    train_set_y = [j for i, j in doc_train_list]
+    train_set_y = [j for i, j, k in doc_train_list]
 
     class_weights = class_weight.compute_class_weight(class_weight='balanced',
                                                       classes=np.unique(train_set_y), y=train_set_y)

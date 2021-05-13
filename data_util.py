@@ -10,6 +10,7 @@ from utils import create_word_vectors
 
 class Data:
     def __init__(self, data, keywords, lda=True):
+        self.full_doc = data[2]
         self.label = data[1]
         doc = data[0]
 
