@@ -18,7 +18,7 @@ from nn_util import get_init_embd, clustering, split_data, get_init_embd2
 start_time = time.time()
 
 
-def train(epoch, args, model, optimizer, train_data_full, class_weights):
+def train(epoch, args, model, optimizer, train_data_full, class_weights, weighted_loss=False):
     model.train()
     loss_accum = 0
     new_train_data = []
@@ -44,7 +44,10 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights):
         t_idxs = torch.tensor(t_idxs, device=output.device).long()
         output = output[t_idxs]
         targets = targets[t_idxs]
-        loss = F.cross_entropy(output, targets)
+        if weighted_loss:
+            loss = F.cross_entropy(output, targets, class_weights)
+        else:
+            loss = F.cross_entropy(output, targets)
         loss.backward()
         optimizer.step()
         loss_accum += loss.detach().cpu().item()
@@ -217,7 +220,7 @@ def main():
 
     num_classes = len(labels_dic)
     # num_clusters = (num_classes + 2) // 3
-    num_clusters = 1
+    num_clusters = num_classes
     data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
     data_full_split_train = data_full_split_test
     # data_full_split_train = [data_full]
@@ -229,6 +232,10 @@ def main():
     model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
+
+    model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
+    optimizer2 = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
 
     # print(model)
     print('')
@@ -259,15 +266,19 @@ def main():
         # if epoch == 4:
         #     num_clusters = (num_classes + 1) // 2
 
-        # if epoch % 1 == 0:
-        #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
-        #     data_full_split_train = data_full_split_test
+        loss_accum = train(epoch, args, model2, optimizer2, data_full_split_train, class_weights)
+        acc_train, acc_dev, acc_test, data_full, embed = test(args, model2, data_full_split_test)
+
+        if epoch % 1 == 0:
+            data_full_split_test = cluster_data(data_full, num_clusters, embed)
+            data_full_split_train = data_full_split_test
 
         # if epoch > 60:
         #     num_clusters = num_classes
 
         if epoch < 15:
             scheduler.step()
+            scheduler2.step()
             print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('', flush=True)
         if epoch > max_acc_epoch + args.early_stop:
