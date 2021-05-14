@@ -266,7 +266,7 @@ def main():
         # if epoch == 4:
         #     num_clusters = (num_classes + 1) // 2
 
-        loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train, class_weights)
+        loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train, class_weights, weighted_loss=True)
         acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
         print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
         print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
