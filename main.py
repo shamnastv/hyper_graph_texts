@@ -234,8 +234,8 @@ def main():
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
 
     model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
-    optimizer2 = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
+    optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
 
     # print(model)
     print('')
