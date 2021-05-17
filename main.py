@@ -21,7 +21,7 @@ start_time = time.time()
 def train(epoch, args, model, optimizer, train_data_full, class_weights, weighted_loss=False):
     model.train()
     loss_accum = 0
-    new_train_data = []
+    # new_train_data = []
 
     train_size = len(train_data_full)
     idx_train = np.random.permutation(train_size)
@@ -121,8 +121,8 @@ def pass_data_iteratively(model, data_full, minibatch_size):
         for j, d in enumerate(batch_data):
             outputs[d.d_type].append(output[j])
             targets[d.d_type].append(target[j])
-            # if d.d_type == 2 and output[j] != target[j]:
-            #     print(d.full_doc)
+            if d.d_type == 2 and output[j] != target[j]:
+                print(d.full_doc)
 
         pooled_h_ls.append(pooled_h)
         data_new.extend(batch_data)
@@ -233,9 +233,9 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
 
-    model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
-    optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
+    # model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
+    # optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    # scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
 
     # print(model)
     print('')
@@ -266,10 +266,10 @@ def main():
         # if epoch == 4:
         #     num_clusters = (num_classes + 1) // 2
 
-        loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train, class_weights, weighted_loss=True)
-        acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
-        print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
-        print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
+        # loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train, class_weights, weighted_loss=True)
+        # acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
+        # print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
+        # print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
 
         if epoch % 1 == 0:
             data_full_split_test = cluster_data(data_full, num_clusters, embed)
@@ -280,7 +280,7 @@ def main():
 
         if epoch < 15:
             scheduler.step()
-            scheduler2.step()
+            # scheduler2.step()
             print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
         print('', flush=True)
         if epoch > max_acc_epoch + args.early_stop:
