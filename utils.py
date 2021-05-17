@@ -97,7 +97,8 @@ def clean_document(doc_sentence_list, dataset):
             doc_words = []
             for word in words:
                 if word.isdigit():
-                    word = 'digit'
+                    doc_words.append('digit')
+                    continue
                 if dataset == 'mr':
                     if word not in stop_words:
                         doc_words.append(word)
