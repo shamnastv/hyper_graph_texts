@@ -121,8 +121,8 @@ def pass_data_iteratively(model, data_full, minibatch_size):
         for j, d in enumerate(batch_data):
             outputs[d.d_type].append(output[j])
             targets[d.d_type].append(target[j])
-            if d.d_type == 2 and output[j] != target[j]:
-                print(d.full_doc)
+            # if d.d_type == 2 and output[j] != target[j]:
+            #     print(d.full_doc)
 
         pooled_h_ls.append(pooled_h)
         data_new.extend(batch_data)
