@@ -46,8 +46,8 @@ class HGNNLayer(nn.Module):
         self.batch_norms = nn.BatchNorm1d(output_dim)
         self.batch_norms2 = nn.BatchNorm1d(output_dim)
         self.gru = GRUCellMod(input_dim, output_dim)
-        self.att_1 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=2)
-        self.att_2 = Attention(output_dim * 2, activation=F.leaky_relu, num_layers=2)
+        self.att_1 = Attention(output_dim * 2 + 1 , activation=F.leaky_relu, num_layers=2)
+        self.att_2 = Attention(output_dim * 2 + 1, activation=F.leaky_relu, num_layers=2)
 
         self.reset_parameters()
 
@@ -55,7 +55,7 @@ class HGNNLayer(nn.Module):
         stdv = 1. / math.sqrt(self.theta_att.size(1))
         self.theta_att.data.uniform_(-stdv, stdv)
 
-    def forward(self, incident_mat_full, degree_v_full, degree_e_full, h, layer):
+    def forward(self, incident_mat_full, degree_v_full, degree_e_full, h, layer, edge_type):
         # h = self.mlp1(h)
         # h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
         # h_n = self.activation(h_n)
@@ -69,14 +69,14 @@ class HGNNLayer(nn.Module):
         # h_n = self.batch_norms(h_n)
 
         h_m = self.mlp1(h)
-        h_n = self.message_passing_3_1(incident_mat_full, h_m, degree_e_full)
+        h_n = self.message_passing_3_1(incident_mat_full, h_m, degree_e_full, edge_type)
         h_n = self.batch_norms2(h_n)
         h_n = self.activation(h_n)
         # h_n = F.leaky_relu(h_n, negative_slope=0.2)
         h_n = self.dropout(h_n)
 
         h_n = self.mlp2(h_n)
-        h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_v_full)
+        h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_v_full, edge_type)
         h_n = self.batch_norms(h_n)
         h_n = self.activation(h_n)
         # h_n = F.leaky_relu(h_n, negative_slope=0.2)
@@ -119,10 +119,11 @@ class HGNNLayer(nn.Module):
         h = h + self.eps * x
         return h
 
-    def message_passing_3_1(self, incident_mat_full, h, degree_e_full):
+    def message_passing_3_1(self, incident_mat_full, h, degree_e_full, edge_type):
         idx = torch.flip(incident_mat_full[0], [0])
         h_t = spmm(idx, incident_mat_full[1], incident_mat_full[2][1], incident_mat_full[2][0], h)
         h_t = spmm(degree_e_full[0], degree_e_full[1], degree_e_full[2][0], degree_e_full[2][1], h_t)
+        h_t = torch.cat((h_t, edge_type), dim=1)
 
         attn_inpt = torch.cat((h[idx[1]], h_t[idx[0]]), dim=1)
         # attn_inpt = F.leaky_relu(attn_inpt, negative_slope=0.2)
@@ -145,12 +146,13 @@ class HGNNLayer(nn.Module):
 
         return h_e
 
-    def message_passing_3_2(self, incident_mat_full, h_e, degree_v_full):
+    def message_passing_3_2(self, incident_mat_full, h_e, degree_v_full, edge_type):
         idx = incident_mat_full[0]
         h_t = spmm(idx, incident_mat_full[1], incident_mat_full[2][0], incident_mat_full[2][1], h_e)
         h_t = spmm(degree_v_full[0], degree_v_full[1], degree_v_full[2][0], degree_v_full[2][1], h_t)
 
-        attn_inpt = torch.cat((h_e[idx[1]], h_t[idx[0]]), dim=1)
+        h_e_t = torch.cat((h_e, edge_type), dim=1)
+        attn_inpt = torch.cat((h_e_t[idx[1]], h_t[idx[0]]), dim=1)
         # attn_inpt = F.leaky_relu(attn_inpt, negative_slope=0.2)
         att = self.att_2(attn_inpt).squeeze(1)
 
