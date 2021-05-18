@@ -46,7 +46,6 @@ def get_features(data, device):
         tf.extend(d.tf)
         idf.extend(d.idf)
 
-    num_inra_edges = e_start
     # inter graph edges
     for word_dict in word_dict_ls:
         for w in word_dict:
@@ -54,7 +53,6 @@ def get_features(data, device):
                 for i in word_dict[w]:
                     incident_mat.append([i, e_start, 1])
                 e_start += 1
-    num_inter_edges = e_start - num_inra_edges
 
     num_v = v_start
     num_e = e_start
@@ -103,9 +101,7 @@ def get_features(data, device):
     incident_mat_shape = torch.Size([v_start, e_start])
     incident_mat_full = (incident_mat[:2], incident_mat[2].float(), incident_mat_shape)
 
-    edge_type = torch.tensor([0] * num_inra_edges + [1] * num_inter_edges, device=device).float().unsqueeze(1)
-
-    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf, edge_type
+    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf
 
 
 class HGNNModel(nn.Module):
@@ -146,7 +142,7 @@ class HGNNModel(nn.Module):
 
     def forward(self, data):
 
-        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf, edge_type\
+        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf\
             = get_features(data, self.device)
 
         h = self.word_embeddings(x)
@@ -155,7 +151,7 @@ class HGNNModel(nn.Module):
         h_cat = [h]
 
         for layer in range(self.num_layers - 1):
-            h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer, edge_type)
+            h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer)
             h_cat.append(h)
 
         pred = 0
