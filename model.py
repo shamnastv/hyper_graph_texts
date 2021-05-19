@@ -155,7 +155,7 @@ class HGNNModel(nn.Module):
             h_cat.append(h)
 
         pred = 0
-        pooled_h = None
+        pooled_h_ls = []
         for layer, h in enumerate(h_cat):
             # if layer == 0:
             #     continue
@@ -184,5 +184,7 @@ class HGNNModel(nn.Module):
             pooled_h = torch.cat((pooled_h, max_pooled), dim=1)
 
             pred += self.linears_prediction[layer](pooled_h)
+            pooled_h_ls.append(pooled_h)
 
-        return pred, targets, pred
+        pooled_h_ls = torch.cat(pooled_h_ls, dim=1)
+        return pred, targets, pooled_h_ls
