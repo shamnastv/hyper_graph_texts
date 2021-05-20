@@ -164,7 +164,7 @@ def main():
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
                         help='dataset')
-    parser.add_argument('--batch_size', type=int, default=32,
+    parser.add_argument('--batch_size', type=int, default=64,
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
@@ -190,108 +190,131 @@ def main():
                         help='lda')
     parser.add_argument('--weight_decay', type=float, default=0,
                         help='weight decay')
+    parser.add_argument('--num_Exp', type=int, default=5,
+                        help='num_Exp')
     args = parser.parse_args()
 
-    if args.seed == -1:
-        args.seed = random.randint(0, 1000)
-    print(args)
+    acc_detais = []
+    for itr in range(args.num_Exp):
+        if args.seed == -1:
+            args.seed = random.randint(0, 1000)
+        print(args)
 
-    torch.manual_seed(args.seed)
-    np.random.seed(args.seed)
-    device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(args.seed)
-    print('device : ', device, flush=True)
+        torch.manual_seed(args.seed)
+        np.random.seed(args.seed)
+        device = torch.device("cuda:" + str(args.device)) if torch.cuda.is_available() else torch.device("cpu")
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(args.seed)
+        print('device : ', device, flush=True)
 
-    train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors \
-        = get_data(dataset=args.dataset, lda=args.lda, seed=args.seed)
+        train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors \
+            = get_data(dataset=args.dataset, lda=args.lda, seed=args.seed)
 
-    # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
-    data_full = train_data + dev_data + test_data
+        # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
+        data_full = train_data + dev_data + test_data
 
-    tmp = []
-    idx = np.random.permutation(len(data_full))
-    for i in idx:
-        tmp.append(data_full[i])
+        tmp = []
+        idx = np.random.permutation(len(data_full))
+        for i in idx:
+            tmp.append(data_full[i])
 
-    data_full = tmp
+        data_full = tmp
 
-    init_embed = get_init_embd(data_full, word_vectors)
+        init_embed = get_init_embd(data_full, word_vectors)
 
-    num_classes = len(labels_dic)
-    # num_clusters = (num_classes + 2) // 3
-    num_clusters = 3
-    data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
-    data_full_split_train = data_full_split_test
-    # data_full_split_train = [data_full]
-    plot_tsne(init_embed, args.dataset + str(0))
+        num_classes = len(labels_dic)
+        # num_clusters = (num_classes + 2) // 3
+        num_clusters = 3
+        data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
+        data_full_split_train = data_full_split_test
+        # data_full_split_train = [data_full]
+        plot_tsne(init_embed, args.dataset + str(0))
 
-    class_weights = torch.from_numpy(class_weights).float().to(device)
-    input_dim = word_vectors.shape[1]
+        class_weights = torch.from_numpy(class_weights).float().to(device)
+        input_dim = word_vectors.shape[1]
 
-    model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
+        model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
+        optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
 
-    # model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
-    # optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    # scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
+        # model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
+        # optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+        # scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
 
-    # print(model)
-    print('')
+        # print(model)
+        print('')
 
-    acc_test = 0
-    max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
-    for epoch in range(1, args.epochs + 1):
+        acc_test = 0
+        max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
+        for epoch in range(1, args.epochs + 1):
 
-        loss_accum = train(epoch, args, model, optimizer, data_full_split_train, class_weights)
-        print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
+            loss_accum = train(epoch, args, model, optimizer, data_full_split_train, class_weights)
+            print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
-        acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split_test)
-        print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
-        if acc_dev > max_val_accuracy:
-            max_val_accuracy = acc_dev
-            max_acc_epoch = epoch
-            test_accuracy = acc_test
-        # else:
-        #     scheduler.step()
+            acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split_test)
+            print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
+            if acc_dev > max_val_accuracy:
+                max_val_accuracy = acc_dev
+                max_acc_epoch = epoch
+                test_accuracy = acc_test
+            # else:
+            #     scheduler.step()
 
-        print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
-              % (max_val_accuracy, max_acc_epoch, test_accuracy))
+            print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
+                  % (max_val_accuracy, max_acc_epoch, test_accuracy))
 
-        # plot_tsne(init_embed, args.dataset + str(epoch))
-        if epoch == 15:
-            model.word_embeddings.weight.requires_grad = True
+            # plot_tsne(init_embed, args.dataset + str(epoch))
+            if epoch == 15:
+                model.word_embeddings.weight.requires_grad = True
 
-        # if epoch == 4:
-        #     num_clusters = (num_classes + 1) // 2
+            # if epoch == 4:
+            #     num_clusters = (num_classes + 1) // 2
 
-        # loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train, class_weights, weighted_loss=True)
-        # acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
-        # print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
-        # print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
+            # loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train, class_weights, weighted_loss=True)
+            # acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
+            # print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
+            # print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
 
-        if epoch % 1 == 0:
-            data_full_split_test = cluster_data(data_full, num_clusters, embed)
-            data_full_split_train = data_full_split_test
+            if epoch % 1 == 0:
+                data_full_split_test = cluster_data(data_full, num_clusters, embed)
+                data_full_split_train = data_full_split_test
 
-        # if epoch > 60:
-        #     num_clusters = num_classes
+            # if epoch > 60:
+            #     num_clusters = num_classes
 
-        if epoch < 15:
-            scheduler.step()
-            # scheduler2.step()
-            print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
-        print('', flush=True)
-        if epoch > max_acc_epoch + args.early_stop:
-            break
+            if epoch < 15:
+                scheduler.step()
+                # scheduler2.step()
+                print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
+            print('', flush=True)
+            if epoch > max_acc_epoch + args.early_stop:
+                break
 
-    print('=' * 200)
-    print('max acc epoch : ', max_acc_epoch)
-    print('max validation accuracy : ', max_val_accuracy)
-    print('test accuracy : ', test_accuracy)
-    print('last test_accuracy : ', acc_test)
-    print('=' * 200 + '\n')
+        print('=' * 200)
+        print('max acc epoch : ', max_acc_epoch)
+        print('max validation accuracy : ', max_val_accuracy)
+        print('test accuracy : ', test_accuracy)
+        print('last test_accuracy : ', acc_test)
+        print('=' * 200 + '\n')
+        acc_detais.append((max_val_accuracy, test_accuracy, max_acc_epoch, acc_test))
+
+    if len(acc_detais) >= 1:
+        print('=' * 71 + 'Summary' + '=' * 71)
+        avg = [0] * 3
+        for k in range(len(acc_detais)):
+            avg[0] += acc_detais[k][0]
+            avg[1] += acc_detais[k][1]
+            avg[2] += acc_detais[k][3]
+            print('k : ', k,
+                  '\tval_accuracy : ', acc_detais[k][0] * 100,
+                  '\ttest_accuracy : ', acc_detais[k][1] * 100,
+                  '\tmax_acc epoch : ', acc_detais[k][2],
+                  '\tlatest_test_accuracy : ', acc_detais[k][3] * 100)
+
+        print('\navg : ',
+              '\tval_accuracy : ', avg[0] / len(acc_detais) * 100,
+              '\ttest_accuracy : ', avg[1] / len(acc_detais) * 100,
+              '\tlatest_test_accuracy : ', avg[2] / len(acc_detais) * 100)
 
 
 def plot_tsne(embed, filename):
