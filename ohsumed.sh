@@ -6,6 +6,12 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
 
-python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset ohsumed
+#python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset ohsumed
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset ohsumed --lda
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset ohsumed --random_vec
+
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset ohsumed --seed -1
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset ohsumed --seed -1
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset ohsumed --seed -1
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset ohsumed --seed -1
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset ohsumed --seed -1
