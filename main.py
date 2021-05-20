@@ -196,6 +196,7 @@ def main():
 
     acc_detais = []
     for itr in range(args.num_Exp):
+        print('itr :', itr)
         if args.seed == -1:
             args.seed = random.randint(0, 1000)
         print(args)
