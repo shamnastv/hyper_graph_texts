@@ -230,8 +230,7 @@ def main():
         num_clusters = args.num_clusters
         data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
         data_full_split_train = data_full_split_test
-        # data_full_split_train = [data_full]
-        plot_tsne(init_embed, args.dataset + str(0))
+        # plot_tsne(init_embed, args.dataset + str(0))
 
         class_weights = torch.from_numpy(class_weights).float().to(device)
         input_dim = word_vectors.shape[1]
@@ -240,9 +239,9 @@ def main():
         optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
 
-        # model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
-        # optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-        # scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
+        model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
+        optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+        scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
 
         # print(model)
         print('')
@@ -273,10 +272,11 @@ def main():
             # if epoch == 4:
             #     num_clusters = (num_classes + 1) // 2
 
-            # loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train, class_weights, weighted_loss=True)
-            # acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
-            # print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
-            # print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
+            loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train,
+                                class_weights, weighted_loss=True)
+            acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
+            print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
+            print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
 
             if epoch % 1 == 0:
                 data_full_split_test = cluster_data(data_full, num_clusters, embed)
@@ -340,7 +340,7 @@ def cluster_data(data_full, num_clusters, embed):
     # data_full_split = split_data(data_full, clusters)
     # return data_full_split
 
-    if num_clusters == 1:
+    if num_clusters <= 1:
         for d in data_full:
             d.cluster = 0
         return data_full
