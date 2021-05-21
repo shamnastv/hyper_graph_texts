@@ -192,6 +192,8 @@ def main():
                         help='weight decay')
     parser.add_argument('--num_Exp', type=int, default=5,
                         help='num_Exp')
+    parser.add_argument('--num_clusters', type=int, default=3,
+                        help='num_clusters')
     args = parser.parse_args()
 
     acc_detais = []
@@ -225,7 +227,7 @@ def main():
 
         num_classes = len(labels_dic)
         # num_clusters = (num_classes + 2) // 3
-        num_clusters = 3
+        num_clusters = args.num_clusters
         data_full_split_test = cluster_data(data_full, num_clusters, init_embed)
         data_full_split_train = data_full_split_test
         # data_full_split_train = [data_full]
@@ -310,12 +312,12 @@ def main():
                   '\tval_accuracy : ', acc_detais[k][0] * 100,
                   '\ttest_accuracy : ', acc_detais[k][1] * 100,
                   '\tmax_acc epoch : ', acc_detais[k][2],
-                  '\tlatest_test_accuracy : ', acc_detais[k][3] * 100)
+                  '\tlast test_accuracy : ', acc_detais[k][3] * 100)
 
         print('\navg : ',
               '\tval_accuracy : ', avg[0] / len(acc_detais) * 100,
               '\ttest_accuracy : ', avg[1] / len(acc_detais) * 100,
-              '\tlatest_test_accuracy : ', avg[2] / len(acc_detais) * 100)
+              '\tlast_accuracy : ', avg[2] / len(acc_detais) * 100)
 
 
 def plot_tsne(embed, filename):
