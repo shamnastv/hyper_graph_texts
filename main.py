@@ -287,7 +287,7 @@ def main():
 
             if epoch < 15:
                 scheduler.step()
-                # scheduler2.step()
+                scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
             print('', flush=True)
             if epoch > max_acc_epoch + args.early_stop:
