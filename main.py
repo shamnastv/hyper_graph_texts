@@ -188,9 +188,9 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=0,
+    parser.add_argument('--weight_decay', type=float, default=1e-6,
                         help='weight decay')
-    parser.add_argument('--num_Exp', type=int, default=5,
+    parser.add_argument('--num_Exp', type=int, default=4,
                         help='num_Exp')
     parser.add_argument('--num_clusters', type=int, default=3,
                         help='num_clusters')
@@ -239,9 +239,9 @@ def main():
         optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
 
-        model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
-        optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-        scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
+        # model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
+        # optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+        # scheduler2 = torch.optim.lr_scheduler.StepLR(optimizer2, step_size=3, gamma=.5)
 
         # print(model)
         print('')
@@ -272,11 +272,11 @@ def main():
             # if epoch == 4:
             #     num_clusters = (num_classes + 1) // 2
 
-            loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train,
-                                class_weights, weighted_loss=True)
-            acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
-            print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
-            print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
+            # loss_accum2 = train(epoch, args, model2, optimizer2, data_full_split_train,
+            #                     class_weights, weighted_loss=True)
+            # acc_train2, acc_dev2, acc_test2, data_full, embed = test(args, model2, data_full_split_test)
+            # print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
+            # print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
 
             if epoch % 1 == 0:
                 data_full_split_test = cluster_data(data_full, num_clusters, embed)
@@ -287,7 +287,7 @@ def main():
 
             if epoch < 15:
                 scheduler.step()
-                scheduler2.step()
+                # scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
             print('', flush=True)
             if epoch > max_acc_epoch + args.early_stop:
@@ -309,15 +309,15 @@ def main():
             avg[1] += acc_detais[k][1]
             avg[2] += acc_detais[k][3]
             print('k : ', k,
-                  '\tval_accuracy : ', acc_detais[k][0] * 100,
-                  '\ttest_accuracy : ', acc_detais[k][1] * 100,
-                  '\tmax_acc epoch : ', acc_detais[k][2],
-                  '\tlast test_accuracy : ', acc_detais[k][3] * 100)
+                  '\t val_accuracy : %.5f' % acc_detais[k][0],
+                  '\t test_accuracy : %.5f' % acc_detais[k][1],
+                  '\t max_acc epoch : ', acc_detais[k][2],
+                  '\t last test_accuracy : %.5f' % acc_detais[k][3])
 
         print('\navg : ',
-              '\tval_accuracy : ', avg[0] / len(acc_detais) * 100,
-              '\ttest_accuracy : ', avg[1] / len(acc_detais) * 100,
-              '\tlast_accuracy : ', avg[2] / len(acc_detais) * 100)
+              '\t val_accuracy : %.5f' % (avg[0] / len(acc_detais)),
+              '\t test_accuracy : %.5f' % (avg[1] / len(acc_detais)),
+              '\t last_accuracy : %.5f' % (avg[2] / len(acc_detais)))
 
 
 def plot_tsne(embed, filename):
@@ -330,7 +330,6 @@ def plot_tsne(embed, filename):
 
 
 def cluster_data(data_full, num_clusters, embed):
-
     # if num_clusters == 1:
     #     return [data_full]
     #
