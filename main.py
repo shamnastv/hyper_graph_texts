@@ -178,7 +178,7 @@ def main():
                         help='number of layers for MLP EXCLUDING the input one (default: 1). 1 means linear model.')
     parser.add_argument('--hidden_dim', type=int, default=200,
                         help='number of hidden units (default: 64)')
-    parser.add_argument('--dropout', type=float, default=0.3,
+    parser.add_argument('--dropout', type=float, default=0.4,
                         help='dropout (default: 0.5)')
     parser.add_argument('--filename', type=str, default="",
                         help='output file')
@@ -188,7 +188,7 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=1e-6,
+    parser.add_argument('--weight_decay', type=float, default=1e-7,
                         help='weight decay')
     parser.add_argument('--num_Exp', type=int, default=4,
                         help='num_Exp')
