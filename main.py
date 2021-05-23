@@ -159,7 +159,7 @@ def test(args, model, data_full):
 def main():
     print('\n\ndate and time : ', time.ctime())
     parser = argparse.ArgumentParser(
-        description='PyTorch graph convolutional neural net for whole-graph classification')
+        description='Hyper-graph text classification')
     parser.add_argument('--device', type=int, default=0,
                         help='which gpu to use if any (default: 0)')
     parser.add_argument('--dataset', type=str, default="R8",
