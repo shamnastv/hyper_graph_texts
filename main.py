@@ -179,7 +179,7 @@ def main():
     parser.add_argument('--hidden_dim', type=int, default=200,
                         help='number of hidden units (default: 64)')
     parser.add_argument('--dropout', type=float, default=0.3,
-                        help='dropout (default: 0.5)')
+                        help='dropout (default: 0.3)')
     parser.add_argument('--filename', type=str, default="",
                         help='output file')
     parser.add_argument('--early_stop', type=int, default=30,
@@ -188,7 +188,7 @@ def main():
                         help='run in debug mode')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=1e-7,
+    parser.add_argument('--weight_decay', type=float, default=1e-8,
                         help='weight decay')
     parser.add_argument('--num_Exp', type=int, default=4,
                         help='num_Exp')
@@ -196,7 +196,7 @@ def main():
                         help='num_clusters')
     args = parser.parse_args()
 
-    acc_detais = []
+    acc_details = []
     for itr in range(args.num_Exp):
         print('itr :', itr)
         if args.seed == -1:
@@ -299,25 +299,25 @@ def main():
         print('test accuracy : ', test_accuracy)
         print('last test_accuracy : ', acc_test)
         print('=' * 200 + '\n')
-        acc_detais.append((max_val_accuracy, test_accuracy, max_acc_epoch, acc_test))
+        acc_details.append((max_val_accuracy, test_accuracy, max_acc_epoch, acc_test))
 
-    if len(acc_detais) >= 1:
+    if len(acc_details) >= 1:
         print('=' * 71 + 'Summary' + '=' * 71)
         avg = [0] * 3
-        for k in range(len(acc_detais)):
-            avg[0] += acc_detais[k][0]
-            avg[1] += acc_detais[k][1]
-            avg[2] += acc_detais[k][3]
+        for k in range(len(acc_details)):
+            avg[0] += acc_details[k][0]
+            avg[1] += acc_details[k][1]
+            avg[2] += acc_details[k][3]
             print('k : ', k,
-                  '\t val_accuracy : %.5f' % acc_detais[k][0],
-                  '\t test_accuracy : %.5f' % acc_detais[k][1],
-                  '\t max_acc epoch : ', acc_detais[k][2],
-                  '\t last test_accuracy : %.5f' % acc_detais[k][3])
+                  '\t val_accuracy : %.5f' % acc_details[k][0],
+                  '\t test_accuracy : %.5f' % acc_details[k][1],
+                  '\t max_acc epoch : ', acc_details[k][2],
+                  '\t last test_accuracy : %.5f' % acc_details[k][3])
 
         print('\navg : ',
-              '\t val_accuracy : %.5f' % (avg[0] / len(acc_detais)),
-              '\t test_accuracy : %.5f' % (avg[1] / len(acc_detais)),
-              '\t last_accuracy : %.5f' % (avg[2] / len(acc_detais)))
+              '\t val_accuracy : %.5f' % (avg[0] / len(acc_details)),
+              '\t test_accuracy : %.5f' % (avg[1] / len(acc_details)),
+              '\t last_accuracy : %.5f' % (avg[2] / len(acc_details)))
 
 
 def plot_tsne(embed, filename):
