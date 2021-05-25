@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import scipy.sparse as sp
 import numpy as np
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN
 from sklearn.decomposition import TruncatedSVD
 
 
@@ -48,8 +48,10 @@ def get_init_embd2(data, word_vectors):
 
 
 def clustering(data, num_clusters):
-    cluster = KMeans(num_clusters, random_state=0)
-    c = cluster.fit(data)
+    # cluster = KMeans(num_clusters, random_state=0)
+    # c = cluster.fit(data)
+    c = DBSCAN(eps=1, min_samples=10).fit(data)
+
     return c.labels_
 
 

@@ -31,7 +31,7 @@ def get_features(data, device):
         for j in range(len(d.vals)):
             incident_mat.append([d.rows[j] + v_start, d.cols[j] + e_start, d.vals[j]])
         for j, w in enumerate(d.node_ids):
-            if w != 0:
+            if w != 0 and c >= 0:
                 if w in word_dict_ls[c]:
                     word_dict_ls[c][w].append(v_start + j)
                 else:
