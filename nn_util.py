@@ -49,11 +49,11 @@ def get_init_embd2(data, word_vectors):
 
 
 def clustering(data, num_clusters):
-    # cluster = KMeans(num_clusters, random_state=0)
-    # c = cluster.fit(data)
-    # labels = c.labels_
-    cluster = GaussianMixture(n_components=num_clusters, random_state=0)
-    labels = cluster.fit_predict(data)
+    cluster = KMeans(num_clusters, random_state=0)
+    c = cluster.fit(data)
+    labels = c.labels_
+    # cluster = GaussianMixture(n_components=num_clusters, random_state=0)
+    # labels = cluster.fit_predict(data)
     return labels
 
 
