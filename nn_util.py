@@ -5,6 +5,7 @@ import scipy.sparse as sp
 import numpy as np
 from sklearn.cluster import KMeans, DBSCAN
 from sklearn.decomposition import TruncatedSVD
+from sklearn.mixture import GaussianMixture
 
 
 def get_init_embd(data, word_vectors):
@@ -50,9 +51,10 @@ def get_init_embd2(data, word_vectors):
 def clustering(data, num_clusters):
     # cluster = KMeans(num_clusters, random_state=0)
     # c = cluster.fit(data)
-    c = DBSCAN(eps=1, min_samples=10).fit(data)
-
-    return c.labels_
+    # labels = c.labels_
+    cluster = GaussianMixture(n_components=num_clusters, random_state=0)
+    labels = cluster.fit_predict(data)
+    return labels
 
 
 def split_data(data, clusters):
