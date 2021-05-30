@@ -29,7 +29,6 @@ class GRUCellMod(nn.Module):
         r_t = torch.sigmoid(self.W_ir(inp) + self.W_hr(ht_1))
         n_t = torch.tanh(self.W_in(inp) + r_t * self.W_hn(ht_1))
         h_t = (1 - z_t) * n_t + z_t * ht_1
-        # h_t = z_t * inp + (1 - z_t) * ht_1
         return h_t
 
 
