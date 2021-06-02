@@ -126,7 +126,7 @@ def main():
                         help='number of epochs to train (default: 350)')
     parser.add_argument('--lr', type=float, default=0.001,
                         help='learning rate (default: 0.001)')
-    parser.add_argument('--seed', type=int, default=0,
+    parser.add_argument('--seed', type=int, default=-1,
                         help='random seed for splitting the dataset into 10 (default: 0)')
     parser.add_argument('--num_layers', type=int, default=3,
                         help='number of layers INCLUDING the input one (default: 3)')
@@ -146,7 +146,7 @@ def main():
                         help='lda')
     parser.add_argument('--weight_decay', type=float, default=1e-8,
                         help='weight decay')
-    parser.add_argument('--num_Exp', type=int, default=4,
+    parser.add_argument('--num_Exp', type=int, default=10,
                         help='num_Exp')
     parser.add_argument('--num_clusters', type=int, default=3,
                         help='num_clusters')
