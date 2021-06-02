@@ -52,50 +52,6 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights, weighte
         optimizer.step()
         loss_accum += loss.detach().cpu().item()
 
-    # sz = 0
-    # # sss = 0
-    # optimizer.zero_grad()
-    # loss = torch.zeros(1, device=class_weights.device)
-    # idx_train = np.random.permutation(len(new_train_data))
-    # for i in idx_train:
-    #     batch_data = new_train_data[i]
-    #     if len(batch_data) <= 1:
-    #         continue
-    #     t_idxs = []
-    #     for j, d in enumerate(batch_data):
-    #         if d.d_type == 0:
-    #             t_idxs.append(j)
-    #     if len(t_idxs) == 0:
-    #         continue
-    #     sz += len(t_idxs)
-    #     # optimizer.zero_grad()
-    #     output, targets, _ = model(batch_data)
-    #
-    #     t_idxs = torch.tensor(t_idxs, device=output.device).long()
-    #     output = output[t_idxs]
-    #     targets = targets[t_idxs]
-    #     # sss += len(output)
-    #     loss += F.cross_entropy(output, targets)
-    #     # if epoch > 3:
-    #     #     loss += F.cross_entropy(output, targets)
-    #     # else:
-    #     #     loss += F.cross_entropy(output, targets, class_weights)
-    #
-    #     if sz >= args.batch_size:
-    #         loss.backward()
-    #         optimizer.step()
-    #         loss_accum += loss.detach().cpu().item()
-    #
-    #         sz = 0
-    #         optimizer.zero_grad()
-    #         loss = torch.zeros(1, device=class_weights.device)
-    #
-    # if sz > 0:
-    #     loss.backward()
-    #     optimizer.step()
-    #     loss_accum += loss.detach().cpu().item()
-
-    # print(sss)
     return loss_accum
 
 
@@ -192,7 +148,7 @@ def main():
                         help='weight decay')
     parser.add_argument('--num_Exp', type=int, default=4,
                         help='num_Exp')
-    parser.add_argument('--num_clusters', type=int, default=2,
+    parser.add_argument('--num_clusters', type=int, default=3,
                         help='num_clusters')
     args = parser.parse_args()
 
