@@ -64,8 +64,8 @@ def pass_data_iteratively(model, data_full, minibatch_size):
 
     # for data in data_full:
     data_size = len(data_full)
-    full_idx = np.arange(data_size)
-    # full_idx = np.random.permutation(data_size)
+    # full_idx = np.arange(data_size)
+    full_idx = np.random.permutation(data_size)
     for i in range(0, data_size, minibatch_size):
         selected_idx = full_idx[i:i + minibatch_size]
         if len(selected_idx) == 0:
