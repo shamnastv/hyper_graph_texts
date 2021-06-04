@@ -124,7 +124,7 @@ def main():
                         help='input batch size for training (default: 64)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 350)')
-    parser.add_argument('--lr', type=float, default=0.001,
+    parser.add_argument('--lr', type=float, default=0.005,
                         help='learning rate (default: 0.001)')
     parser.add_argument('--seed', type=int, default=-1,
                         help='random seed for splitting the dataset into 10 (default: 0)')
@@ -241,7 +241,7 @@ def main():
             # if epoch > 60:
             #     num_clusters = num_classes
 
-            if epoch < 15:
+            if epoch < 20:
                 scheduler.step()
                 # scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
