@@ -148,7 +148,7 @@ def main():
                         help='weight decay')
     parser.add_argument('--num_Exp', type=int, default=5,
                         help='num_Exp')
-    parser.add_argument('--num_clusters', type=int, default=1,
+    parser.add_argument('--num_clusters', type=int, default=0,
                         help='num_clusters')
     args = parser.parse_args()
 
@@ -295,7 +295,12 @@ def cluster_data(data_full, num_clusters, embed):
     # data_full_split = split_data(data_full, clusters)
     # return data_full_split
 
-    if num_clusters <= 1:
+    if num_clusters == 0:
+        for d in data_full:
+            d.cluster = -1
+        return data_full
+
+    if num_clusters == 1:
         for d in data_full:
             d.cluster = 0
         return data_full
