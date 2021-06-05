@@ -148,7 +148,7 @@ def main():
                         help='weight decay')
     parser.add_argument('--num_Exp', type=int, default=5,
                         help='num_Exp')
-    parser.add_argument('--num_clusters', type=int, default=2,
+    parser.add_argument('--num_clusters', type=int, default=1,
                         help='num_clusters')
     args = parser.parse_args()
 
