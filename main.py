@@ -241,7 +241,7 @@ def main():
             # if epoch > 60:
             #     num_clusters = num_classes
 
-            if epoch < 20:
+            if epoch < 15:
                 scheduler.step()
                 # scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
