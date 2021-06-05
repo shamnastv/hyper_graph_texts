@@ -148,7 +148,7 @@ def main():
                         help='weight decay')
     parser.add_argument('--num_Exp', type=int, default=5,
                         help='num_Exp')
-    parser.add_argument('--num_clusters', type=int, default=0,
+    parser.add_argument('--num_clusters', type=int, default=3,
                         help='num_clusters')
     args = parser.parse_args()
 
@@ -241,10 +241,10 @@ def main():
             # if epoch > 60:
             #     num_clusters = num_classes
 
-            if epoch < 15:
-                scheduler.step()
-                # scheduler2.step()
-                print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
+            # if epoch < 15:
+            #     scheduler.step()
+            #     # scheduler2.step()
+            #     print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
             print('', flush=True)
             if epoch > max_acc_epoch + args.early_stop:
                 break
