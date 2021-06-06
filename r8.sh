@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH --job-name=R8 # Job name
-#SBATCH --ntasks=4 # Run on a single CPU
+#SBATCH --ntasks=2 # Run on a single CPU
 #SBATCH --time=23:50:00 # Time limit hrs:min:sec
 #SBATCH --output=test_job%j.out # Standard output and error log
 #SBATCH --gres=gpu:1
