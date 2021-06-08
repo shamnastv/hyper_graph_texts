@@ -124,7 +124,6 @@ def make_window(sents, window_size):
         if len(sent) <= window_size:
             windows.append(sent)
             continue
-        windows.append(sent)
         for i in range(0, len(sent) - window_size):
             windows.append(sent[i:i + window_size])
 
@@ -141,8 +140,9 @@ def create_word_vectors(doc_content_list, global_word_to_id):
 
     windows_g = []
     for doc in doc_content_list:
-        for window in doc:
-            windows_g.append(window)
+        windows_g.extend(make_window(doc, 7))
+        # for window in doc:
+        #     windows_g.append(window)
 
     global_vocab_size = len(global_vocab)
 
