@@ -95,9 +95,9 @@ def get_data(dataset, lda=True, val_prop=.1, seed=0):
     else:
         doc_content_list, doc_train_list, doc_test_list, vocab_dic, labels_dic, class_weights, keywords_dic\
             = read_file(dataset, lda)
-        word_vectors = get_embedding(vocab_dic)
-        word_vectors1 = create_word_vectors(doc_content_list, vocab_dic)
-        word_vectors = np.concatenate((word_vectors, word_vectors1), axis=1)
+        # word_vectors = get_embedding(vocab_dic)
+        word_vectors = create_word_vectors(doc_content_list, vocab_dic)
+        # word_vectors = np.concatenate((word_vectors, word_vectors1), axis=1)
         d_f = [0] * len(word_vectors)
         d_f[0] = 1
 
