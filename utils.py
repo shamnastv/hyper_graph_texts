@@ -110,7 +110,7 @@ def clean_document(doc_sentence_list, dataset):
 
             # if dataset == '20ng' and count_num > 2000:
             #     break
-        clean_doc = make_window(clean_doc, 7, inc_sent=True)
+        # clean_doc = make_window(clean_doc, 7, inc_sent=True)
         clean_docs.append(clean_doc)
 
     return clean_docs
