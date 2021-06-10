@@ -132,7 +132,7 @@ def main():
                         help='number of layers INCLUDING the input one (default: 3)')
     parser.add_argument('--num_mlp_layers', type=int, default=1,
                         help='number of layers for MLP EXCLUDING the input one (default: 1). 1 means linear model.')
-    parser.add_argument('--hidden_dim', type=int, default=300,
+    parser.add_argument('--hidden_dim', type=int, default=100,
                         help='number of hidden units (default: 64)')
     parser.add_argument('--dropout', type=float, default=0.2,
                         help='dropout (default: 0.3)')
