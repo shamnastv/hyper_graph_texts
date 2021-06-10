@@ -154,6 +154,7 @@ def main():
 
     acc_details = []
     for itr in range(args.num_Exp):
+        max_gap = 0
         print('itr :', itr)
         if args.seed == -1:
             args.seed = random.randint(0, 1000)
@@ -213,6 +214,7 @@ def main():
             print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
             if acc_dev > max_val_accuracy:
                 max_val_accuracy = acc_dev
+                max_gap = max(max_gap, epoch - max_acc_epoch)
                 max_acc_epoch = epoch
                 test_accuracy = acc_test
             # else:
@@ -254,6 +256,7 @@ def main():
         print('max validation accuracy : ', max_val_accuracy)
         print('test accuracy : ', test_accuracy)
         print('last test_accuracy : ', acc_test)
+        print('max gap', max_gap)
         print('=' * 200 + '\n')
         acc_details.append((max_val_accuracy, test_accuracy, max_acc_epoch, acc_test))
 
