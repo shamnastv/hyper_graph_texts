@@ -84,7 +84,7 @@ class Data:
         self.cluster = 0
 
 
-def get_data(dataset, lda=True, val_prop=.1, seed=0):
+def get_data(dataset, lda=False, val_prop=.1, seed=0):
     lda_str = ''
     if lda:
         lda_str = '_lda'
