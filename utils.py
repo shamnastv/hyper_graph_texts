@@ -110,13 +110,13 @@ def clean_document(doc_sentence_list, dataset):
 
             # if dataset == '20ng' and count_num > 2000:
             #     break
-        # clean_doc = make_window(clean_doc, 5)
+        # clean_doc = make_window(clean_doc, 7, inc_sent=False)
         clean_docs.append(clean_doc)
 
     return clean_docs
 
 
-def make_window(sents, window_size):
+def make_window(sents, window_size, inc_sent=False):
     windows = []
     for sent in sents:
         if len(sent) == 0:
@@ -124,6 +124,8 @@ def make_window(sents, window_size):
         if len(sent) <= window_size:
             windows.append(sent)
             continue
+        if inc_sent:
+            windows.append(sent)
         for i in range(0, len(sent) - window_size):
             windows.append(sent[i:i + window_size])
 
