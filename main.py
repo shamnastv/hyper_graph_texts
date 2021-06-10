@@ -105,7 +105,7 @@ def pass_data_iteratively(model, data_full, minibatch_size):
 def test(args, model, data_full):
     model.eval()
 
-    acc_train, acc_dev, acc_test, data_full, pooled_h_ls = pass_data_iteratively(model, data_full, args.batch_size)
+    acc_train, acc_dev, acc_test, data_full, pooled_h_ls = pass_data_iteratively(model, data_full, 2 * args.batch_size)
 
     pooled_h_full = torch.cat(pooled_h_ls, dim=0).detach().cpu().numpy()
 
@@ -208,9 +208,9 @@ def main():
             loss_accum = train(epoch, args, model, optimizer, data_full_split_train, class_weights)
             print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
-            if epoch % 1 == 0:
-                data_full_split_test = cluster_data(data_full, 0, init_embed)
-                data_full_split_train = data_full_split_test
+            # if epoch % 1 == 0:
+            #     data_full_split_test = cluster_data(data_full, 0, init_embed)
+            #     data_full_split_train = data_full_split_test
 
             acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split_test)
             print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
