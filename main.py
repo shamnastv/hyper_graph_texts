@@ -209,7 +209,7 @@ def main():
             print('Epoch : ', epoch, 'loss training: ', loss_accum, 'Time : ', int(time.time() - start_time))
 
             if epoch % 1 == 0:
-                data_full_split_test = cluster_data(data_full, -1, init_embed)
+                data_full_split_test = cluster_data(data_full, 0, init_embed)
                 data_full_split_train = data_full_split_test
 
             acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split_test)
