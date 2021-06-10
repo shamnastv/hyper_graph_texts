@@ -136,12 +136,10 @@ def main():
                         help='number of hidden units (default: 64)')
     parser.add_argument('--dropout', type=float, default=0.3,
                         help='dropout (default: 0.3)')
-    parser.add_argument('--filename', type=str, default="",
-                        help='output file')
     parser.add_argument('--early_stop', type=int, default=30,
                         help='early_stop')
     parser.add_argument('--random_vec', action="store_true",
-                        help='run in debug mode')
+                        help='random initialization')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
     parser.add_argument('--weight_decay', type=float, default=0,
