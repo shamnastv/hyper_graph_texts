@@ -223,7 +223,7 @@ def main():
                 max_gap = max(max_gap, epoch - max_acc_epoch)
                 max_acc_epoch = epoch
                 test_accuracy = acc_test
-            elif acc_dev > second_best_val:
+            elif max_val_accuracy > acc_dev > second_best_val:
                 second_best_val = acc_dev
                 second_best_test = test_accuracy
             # else:
