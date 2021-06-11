@@ -193,7 +193,7 @@ def main():
 
         model = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
         optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=.5)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=.5)
 
         # model2 = HGNNModel(args, input_dim, num_classes, word_vectors, device).to(device)
         # optimizer2 = optim.Adam(model2.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -203,7 +203,7 @@ def main():
         print('')
 
         acc_test = 0
-        max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
+        best_acc_epoch, best_val_accuracy, test_accuracy = 0, 0, 0
         second_best_val, second_best_test = 0, 0
         for epoch in range(1, args.epochs + 1):
 
@@ -216,21 +216,21 @@ def main():
 
             acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split_test)
             print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
-            if acc_dev > max_val_accuracy:
-                second_best_val = max_val_accuracy
+            if acc_dev > best_val_accuracy:
+                second_best_val = best_val_accuracy
                 second_best_test = test_accuracy
-                max_val_accuracy = acc_dev
-                max_gap = max(max_gap, epoch - max_acc_epoch)
-                max_acc_epoch = epoch
+                best_val_accuracy = acc_dev
+                max_gap = max(max_gap, epoch - best_acc_epoch)
+                best_acc_epoch = epoch
                 test_accuracy = acc_test
-            elif max_val_accuracy > acc_dev > second_best_val:
+            elif best_val_accuracy > acc_dev > second_best_val:
                 second_best_val = acc_dev
                 second_best_test = test_accuracy
             # else:
             #     scheduler.step()
 
             print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
-                  % (max_val_accuracy, max_acc_epoch, test_accuracy))
+                  % (best_val_accuracy, best_acc_epoch, test_accuracy))
 
             # plot_tsne(init_embed, args.dataset + str(epoch))
             if epoch == 10:
@@ -257,12 +257,12 @@ def main():
                 # scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
             print('', flush=True)
-            if epoch > max_acc_epoch + args.early_stop:
+            if epoch > best_acc_epoch + args.early_stop:
                 break
 
         print('=' * 200)
-        print('max acc epoch : ', max_acc_epoch)
-        print('max validation accuracy : ', max_val_accuracy)
+        print('best acc epoch : ', best_acc_epoch)
+        print('validation accuracy : ', best_val_accuracy)
         print('test accuracy : ', test_accuracy)
         print('last test_accuracy : ', acc_test)
         print('second best val : ', second_best_val)
@@ -270,14 +270,14 @@ def main():
         print('max gap', max_gap)
         print('=' * 200 + '\n')
 
-        acc_details.append([max_val_accuracy, test_accuracy, acc_test, second_best_val, second_best_test])
-        epochs_details.append(max_acc_epoch)
+        acc_details.append([best_val_accuracy, test_accuracy, acc_test, second_best_val, second_best_test])
+        epochs_details.append(best_acc_epoch)
 
     if len(acc_details) >= 1:
         print('=' * 71 + 'Summary' + '=' * 71)
         for k in range(len(acc_details)):
             print('k : ', k,
-                  '\t max_acc epoch : ', epochs_details[k],
+                  '\t best_acc epoch : ', epochs_details[k],
                   '\t val_accuracy : %.5f' % acc_details[k][0],
                   '\t test_accuracy : %.5f' % acc_details[k][1],
                   '\t last test_accuracy : %.5f' % acc_details[k][2],
