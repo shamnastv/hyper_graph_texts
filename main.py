@@ -24,8 +24,10 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights, weighte
     # new_train_data = []
 
     train_size = len(train_data_full)
-    # idx_train = np.random.permutation(train_size)
-    idx_train = np.arange(train_size)
+    if epoch % 2 == 0:
+        idx_train = np.random.permutation(train_size)
+    else:
+        idx_train = np.arange(train_size)
 
     sz = 0
     for i in range(0, train_size, args.batch_size):
@@ -106,7 +108,7 @@ def pass_data_iteratively(model, data_full, minibatch_size):
 def test(args, model, data_full):
     model.eval()
 
-    acc_train, acc_dev, acc_test, data_full, pooled_h_ls = pass_data_iteratively(model, data_full, 2 * args.batch_size)
+    acc_train, acc_dev, acc_test, data_full, pooled_h_ls = pass_data_iteratively(model, data_full, args.batch_size)
 
     pooled_h_full = torch.cat(pooled_h_ls, dim=0).detach().cpu().numpy()
 
