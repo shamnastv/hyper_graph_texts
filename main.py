@@ -24,11 +24,12 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights, weighte
     # new_train_data = []
 
     train_size = len(train_data_full)
-    if epoch % 2 == 0:
-        idx_train = np.random.permutation(train_size)
-    else:
-        idx_train = np.arange(train_size)
+    # if epoch % 2 == 0:
+    #     idx_train = np.random.permutation(train_size)
+    # else:
+    #     idx_train = np.arange(train_size)
 
+    idx_train = np.random.permutation(train_size)
     sz = 0
     for i in range(0, train_size, args.batch_size):
         optimizer.zero_grad()
