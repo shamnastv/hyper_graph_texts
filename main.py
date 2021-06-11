@@ -203,6 +203,7 @@ def main():
 
         acc_test = 0
         max_acc_epoch, max_val_accuracy, test_accuracy = 0, 0, 0
+        second_best_val, second_best_test = 0, 0
         for epoch in range(1, args.epochs + 1):
 
             loss_accum = train(epoch, args, model, optimizer, data_full_split_train, class_weights)
@@ -215,10 +216,15 @@ def main():
             acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split_test)
             print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
             if acc_dev > max_val_accuracy:
+                second_best_val = max_val_accuracy
+                second_best_test = test_accuracy
                 max_val_accuracy = acc_dev
                 max_gap = max(max_gap, epoch - max_acc_epoch)
                 max_acc_epoch = epoch
                 test_accuracy = acc_test
+            elif acc_dev > second_best_val:
+                second_best_val = acc_dev
+                second_best_test = test_accuracy
             # else:
             #     scheduler.step()
 
@@ -258,6 +264,8 @@ def main():
         print('max validation accuracy : ', max_val_accuracy)
         print('test accuracy : ', test_accuracy)
         print('last test_accuracy : ', acc_test)
+        print('second best val : ', second_best_val)
+        print('second best test : ', second_best_test)
         print('max gap', max_gap)
         print('=' * 200 + '\n')
         acc_details.append((max_val_accuracy, test_accuracy, max_acc_epoch, acc_test))
