@@ -122,7 +122,7 @@ def main():
                         help='dataset')
     parser.add_argument('--batch_size', type=int, default=64,
                         help='input batch size for training (default: 64)')
-    parser.add_argument('--epochs', type=int, default=400,
+    parser.add_argument('--epochs', type=int, default=300,
                         help='number of epochs to train (default: 350)')
     parser.add_argument('--lr', type=float, default=0.001,
                         help='learning rate (default: 0.001)')
@@ -151,6 +151,7 @@ def main():
     args = parser.parse_args()
 
     acc_details = []
+    epochs_details = []
     for itr in range(args.num_exp):
         max_gap = 0
         print('itr :', itr)
@@ -268,25 +269,38 @@ def main():
         print('second best test : ', second_best_test)
         print('max gap', max_gap)
         print('=' * 200 + '\n')
-        acc_details.append((max_val_accuracy, test_accuracy, max_acc_epoch, acc_test))
+
+        acc_details.append([max_val_accuracy, test_accuracy, acc_test, second_best_val, second_best_test])
+        epochs_details.append(max_acc_epoch)
 
     if len(acc_details) >= 1:
         print('=' * 71 + 'Summary' + '=' * 71)
-        avg = [0] * 3
         for k in range(len(acc_details)):
-            avg[0] += acc_details[k][0]
-            avg[1] += acc_details[k][1]
-            avg[2] += acc_details[k][3]
             print('k : ', k,
+                  '\t max_acc epoch : ', epochs_details[k],
                   '\t val_accuracy : %.5f' % acc_details[k][0],
                   '\t test_accuracy : %.5f' % acc_details[k][1],
-                  '\t max_acc epoch : ', acc_details[k][2],
-                  '\t last test_accuracy : %.5f' % acc_details[k][3])
+                  '\t last test_accuracy : %.5f' % acc_details[k][2],
+                  '\t second best val : %.5f' % acc_details[k][3],
+                  '\t second best test : %.5f' % acc_details[k][4])
 
+        acc_details = np.array(acc_details)
+        avg = acc_details.mean(0)
+        std = acc_details.std(0)
+        print(avg.shape)
         print('\navg : ',
-              '\t val_accuracy : %.5f' % (avg[0] / len(acc_details)),
-              '\t test_accuracy : %.5f' % (avg[1] / len(acc_details)),
-              '\t last_accuracy : %.5f' % (avg[2] / len(acc_details)))
+              '\t val_accuracy : %.5f' % avg[0],
+              '\t test_accuracy : %.5f' % avg[1],
+              '\t last_accuracy : %.5f' % avg[2],
+              '\t second best val : %.5f' % avg[3],
+              '\t second best test : %.5f' % avg[4])
+
+        print('\nstd : ',
+              '\t val_accuracy : %.5f' % std[0],
+              '\t test_accuracy : %.5f' % std[1],
+              '\t last_accuracy : %.5f' % std[2],
+              '\t second best val : %.5f' % std[3],
+              '\t second best test : %.5f' % std[4])
 
 
 def plot_tsne(embed, filename):
