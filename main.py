@@ -252,7 +252,7 @@ def main():
             # if epoch > 60:
             #     num_clusters = num_classes
 
-            if epoch <= 20:
+            if epoch < 15:
                 scheduler.step()
                 # scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
@@ -287,7 +287,6 @@ def main():
         acc_details = np.array(acc_details)
         avg = acc_details.mean(0)
         std = acc_details.std(0)
-        print(avg.shape)
         print('\navg : ',
               '\t val_accuracy : %.5f' % avg[0],
               '\t test_accuracy : %.5f' % avg[1],
