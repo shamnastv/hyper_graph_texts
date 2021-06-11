@@ -1,6 +1,6 @@
 #!/bin/sh
 #SBATCH --job-name=20NG # Job name
-#SBATCH --ntasks=6 # Run on a single CPU
+#SBATCH --ntasks=8 # Run on a single CPU
 #SBATCH --time=47:50:00 # Time limit hrs:min:sec
 #SBATCH --output=test_job%j.out # Standard output and error log
 #SBATCH --gres=gpu:1
