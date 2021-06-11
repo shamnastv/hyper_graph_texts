@@ -148,7 +148,7 @@ def main():
                         help='lda')
     parser.add_argument('--weight_decay', type=float, default=1e-10,
                         help='weight decay')
-    parser.add_argument('--num_exp', type=int, default=10,
+    parser.add_argument('--num_exp', type=int, default=4,
                         help='Number of Experiment')
     parser.add_argument('--num_clusters', type=int, default=3,
                         help='num_clusters')
