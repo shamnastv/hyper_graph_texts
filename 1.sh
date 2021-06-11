@@ -10,4 +10,4 @@
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset 20ng --lda
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset 20ng --random_vec
 
-python3 main.py --num_layers 3 --num_mlp_layers 1 --dataset 20ng --seed -1
+python3 main.py --num_layers 3 --num_mlp_layers 1 --dataset 20ng --seed -1 --lr 5e-3
