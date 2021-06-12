@@ -65,6 +65,7 @@ def pass_data_iteratively(model, data_full, minibatch_size):
 
     outputs = [[], [], []]
     targets = [[], [], []]
+    embd1, embd2 = [], []
 
     # for data in data_full:
     data_size = len(data_full)
@@ -76,13 +77,16 @@ def pass_data_iteratively(model, data_full, minibatch_size):
             continue
         batch_data = [data_full[idx] for idx in selected_idx]
         with torch.no_grad():
-            output, target, pooled_h = model(batch_data)
-        output = output.max(1, keepdim=True)[1].squeeze()
+            output1, target, pooled_h = model(batch_data)
+        output = output1.max(1, keepdim=True)[1].squeeze()
         for j, d in enumerate(batch_data):
             outputs[d.d_type].append(output[j])
             targets[d.d_type].append(target[j])
             # if d.d_type == 2 and output[j] != target[j]:
             #     print(d.full_doc)
+            if d.d_type == 2:
+                embd1.append(pooled_h[j])
+                embd2.append(output1[j])
 
         pooled_h_ls.append(pooled_h)
         data_new.extend(batch_data)
@@ -103,17 +107,21 @@ def pass_data_iteratively(model, data_full, minibatch_size):
     acc_dev = accuracy_score(target_dev, pred_dev)
     acc_test = accuracy_score(target_test, pred_test)
 
-    return acc_train, acc_dev, acc_test, data_new, pooled_h_ls
+    embd1, embd2 = torch.stack(embd1).detach().cpu().numpy(), torch.stack(embd2).detach.cpu().numpy()
+    embd_details = (embd1, embd2, target_test)
+
+    return acc_train, acc_dev, acc_test, data_new, pooled_h_ls, embd_details
 
 
 def test(args, model, data_full):
     model.eval()
 
-    acc_train, acc_dev, acc_test, data_full, pooled_h_ls = pass_data_iteratively(model, data_full, args.batch_size)
+    acc_train, acc_dev, acc_test, data_full, pooled_h_ls, embd_details\
+        = pass_data_iteratively(model, data_full, args.batch_size)
 
     pooled_h_full = torch.cat(pooled_h_ls, dim=0).detach().cpu().numpy()
 
-    return acc_train, acc_dev, acc_test, data_full, pooled_h_full
+    return acc_train, acc_dev, acc_test, data_full, pooled_h_full, embd_details
 
 
 def main():
@@ -209,6 +217,7 @@ def main():
         acc_test = 0
         best_acc_epoch, best_val_accuracy, test_accuracy = 0, 0, 0
         second_best_val, second_best_test = 0, 0
+        best_embd = None
         for epoch in range(1, args.epochs + 1):
 
             loss_accum = train(epoch, args, model, optimizer, data_full_split_train, class_weights)
@@ -218,7 +227,7 @@ def main():
             #     data_full_split_test = cluster_data(data_full, 0, init_embed)
             #     data_full_split_train = data_full_split_test
 
-            acc_train, acc_dev, acc_test, data_full, embed = test(args, model, data_full_split_test)
+            acc_train, acc_dev, acc_test, data_full, embed, embd_details = test(args, model, data_full_split_test)
             print("accuracy train: %f val: %f test: %f" % (acc_train, acc_dev, acc_test))
             if acc_dev > best_val_accuracy:
                 second_best_val = best_val_accuracy
@@ -227,6 +236,7 @@ def main():
                 max_gap = max(max_gap, epoch - best_acc_epoch)
                 best_acc_epoch = epoch
                 test_accuracy = acc_test
+                best_embd = embd_details
             elif best_val_accuracy > acc_dev > second_best_val:
                 second_best_val = acc_dev
                 second_best_test = test_accuracy
@@ -236,7 +246,6 @@ def main():
             print('max validation accuracy : %f max acc epoch : %d test accuracy : %f'
                   % (best_val_accuracy, best_acc_epoch, test_accuracy))
 
-            # plot_tsne(init_embed, args.dataset + str(epoch))
             if epoch == 10:
                 model.word_embeddings.weight.requires_grad = True
 
@@ -274,6 +283,16 @@ def main():
         print('max gap', max_gap)
         print('=' * 200 + '\n')
 
+        start_dim = 0
+        end_dim = input_dim
+        labels = best_embd[2]
+        for i in range(args.num_layers):
+            emb = best_embd[0][start_dim:end_dim]
+            plot_tsne(emb, args.dataset + 'layer' + str(i) + 'acc_' + str(round(test_accuracy, 4)), labels)
+
+        emb = best_embd[1]
+        plot_tsne(emb, args.dataset + 'layer' + str(args.num_layers) + 'acc' + str(round(test_accuracy, 4)), labels)
+
         acc_details.append([best_val_accuracy, test_accuracy, acc_test, second_best_val, second_best_test])
         epochs_details.append(best_acc_epoch)
 
@@ -306,11 +325,11 @@ def main():
               '\t second best test : %.5f' % std[4])
 
 
-def plot_tsne(embed, filename):
+def plot_tsne(embed, filename, c=None):
     tsne = TSNE()
     h = tsne.fit_transform(embed)
     plt.figure()
-    plt.scatter(h[:, 0], h[:, 1])
+    plt.scatter(h[:, 0], h[:, 1], c=c)
     plt.savefig('tsne' + filename + '.png')
     plt.close()
 
