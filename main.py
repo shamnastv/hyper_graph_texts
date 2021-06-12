@@ -287,14 +287,15 @@ def main():
         start_dim = 0
         end_dim = 2 * input_dim
         labels = best_embd[2]
+        acc = str(round(test_accuracy, 4))
         for i in range(args.num_layers):
             emb = best_embd[0][:, start_dim:end_dim]
-            plot_tsne(emb, args.dataset + 'layer' + str(i) + 'acc_' + str(round(test_accuracy, 4)), labels)
+            plot_tsne(emb, args.dataset + 's_' + str(args.seed) + 'acc_' + acc + 'layer_' + str(i), labels)
             start_dim = end_dim
             end_dim += 2 * args.hidden_dim
 
         emb = best_embd[1]
-        plot_tsne(emb, args.dataset + 'layer' + str(args.num_layers) + 'acc' + str(round(test_accuracy, 4)), labels)
+        plot_tsne(emb, args.dataset + 's_' + str(args.seed) + 'acc_' + acc + 'layer_final', labels)
 
         acc_details.append([best_val_accuracy, test_accuracy, acc_test, second_best_val, second_best_test])
         epochs_details.append(best_acc_epoch)
