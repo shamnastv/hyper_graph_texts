@@ -289,6 +289,8 @@ def main():
         for i in range(args.num_layers):
             emb = best_embd[0][start_dim:end_dim]
             plot_tsne(emb, args.dataset + 'layer' + str(i) + 'acc_' + str(round(test_accuracy, 4)), labels)
+            start_dim = end_dim
+            end_dim += args.hidden_dim
 
         emb = best_embd[1]
         plot_tsne(emb, args.dataset + 'layer' + str(args.num_layers) + 'acc' + str(round(test_accuracy, 4)), labels)
