@@ -59,13 +59,14 @@ def train(epoch, args, model, optimizer, train_data_full, class_weights, weighte
     return loss_accum
 
 
-def pass_data_iteratively(model, data_full, minibatch_size):
+def pass_data_iteratively(model, data_full, minibatch_size, tsne):
     pooled_h_ls = []
     data_new = []
 
     outputs = [[], [], []]
     targets = [[], [], []]
     embd1, embd2 = [], []
+    embd_details = None
 
     # for data in data_full:
     data_size = len(data_full)
@@ -84,7 +85,7 @@ def pass_data_iteratively(model, data_full, minibatch_size):
             targets[d.d_type].append(target[j])
             # if d.d_type == 2 and output[j] != target[j]:
             #     print(d.full_doc)
-            if d.d_type == 2:
+            if tsne and d.d_type == 2:
                 embd1.append(pooled_h[j])
                 embd2.append(output1[j])
 
@@ -107,8 +108,9 @@ def pass_data_iteratively(model, data_full, minibatch_size):
     acc_dev = accuracy_score(target_dev, pred_dev)
     acc_test = accuracy_score(target_test, pred_test)
 
-    embd1, embd2 = torch.stack(embd1).detach().cpu().numpy(), torch.stack(embd2).detach().cpu().numpy()
-    embd_details = (embd1, embd2, target_test)
+    if tsne:
+        embd1, embd2 = torch.stack(embd1).detach().cpu().numpy(), torch.stack(embd2).detach().cpu().numpy()
+        embd_details = (embd1, embd2, target_test)
 
     return acc_train, acc_dev, acc_test, data_new, pooled_h_ls, embd_details
 
@@ -117,7 +119,7 @@ def test(args, model, data_full):
     model.eval()
 
     acc_train, acc_dev, acc_test, data_full, pooled_h_ls, embd_details\
-        = pass_data_iteratively(model, data_full, args.batch_size)
+        = pass_data_iteratively(model, data_full, args.batch_size, args.tsne)
 
     pooled_h_full = torch.cat(pooled_h_ls, dim=0).detach().cpu().numpy()
 
@@ -160,6 +162,8 @@ def main():
                         help='Number of Experiment')
     parser.add_argument('--num_clusters', type=int, default=3,
                         help='num_clusters')
+    parser.add_argument('--tsne', action="store_true",
+                        help='tsne')
     args = parser.parse_args()
 
     acc_details = []
@@ -283,19 +287,19 @@ def main():
         print('max gap', max_gap)
         print('=' * 200 + '\n')
 
-        print(best_embd[0].shape)
-        start_dim = 0
-        end_dim = 2 * input_dim
-        labels = best_embd[2]
-        acc = str(round(test_accuracy, 4))
-        for i in range(args.num_layers):
-            emb = best_embd[0][:, start_dim:end_dim]
-            plot_tsne(emb, args.dataset + 's_' + str(args.seed) + 'acc_' + acc + 'layer_' + str(i), labels)
-            start_dim = end_dim
-            end_dim += 2 * args.hidden_dim
+        if args.tsne:
+            start_dim = 0
+            end_dim = 2 * input_dim
+            labels = best_embd[2]
+            acc = str(round(test_accuracy, 4))
+            for i in range(args.num_layers):
+                emb = best_embd[0][:, start_dim:end_dim]
+                plot_tsne(emb, args.dataset + 's_' + str(args.seed) + 'acc_' + acc + 'layer_' + str(i), labels)
+                start_dim = end_dim
+                end_dim += 2 * args.hidden_dim
 
-        emb = best_embd[1]
-        plot_tsne(emb, args.dataset + 's_' + str(args.seed) + 'acc_' + acc + 'layer_final', labels)
+            emb = best_embd[1]
+            plot_tsne(emb, args.dataset + 's_' + str(args.seed) + 'acc_' + acc + 'layer_final', labels)
 
         acc_details.append([best_val_accuracy, test_accuracy, acc_test, second_best_val, second_best_test])
         epochs_details.append(best_acc_epoch)
