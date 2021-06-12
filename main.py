@@ -107,7 +107,7 @@ def pass_data_iteratively(model, data_full, minibatch_size):
     acc_dev = accuracy_score(target_dev, pred_dev)
     acc_test = accuracy_score(target_test, pred_test)
 
-    embd1, embd2 = torch.stack(embd1).detach().cpu().numpy(), torch.stack(embd2).detach.cpu().numpy()
+    embd1, embd2 = torch.stack(embd1).detach().cpu().numpy(), torch.stack(embd2).detach().cpu().numpy()
     embd_details = (embd1, embd2, target_test)
 
     return acc_train, acc_dev, acc_test, data_new, pooled_h_ls, embd_details
