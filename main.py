@@ -146,9 +146,9 @@ def main():
                         help='random initialization')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=1e-10,
+    parser.add_argument('--weight_decay', type=float, default=0,
                         help='weight decay')
-    parser.add_argument('--num_exp', type=int, default=4,
+    parser.add_argument('--num_exp', type=int, default=10,
                         help='Number of Experiment')
     parser.add_argument('--num_clusters', type=int, default=3,
                         help='num_clusters')
@@ -256,7 +256,7 @@ def main():
             # if epoch > 60:
             #     num_clusters = num_classes
 
-            if epoch < 15:
+            if epoch < 10:
                 scheduler.step()
                 # scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
