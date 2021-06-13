@@ -6,9 +6,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
 
-python3 main.py --num_layers 3 --dataset mr --seed -1 --num_clusters 1 --early_stop 10 --lr 5e-4  --weight_decay 1e-5
-python3 main.py --num_layers 3 --dataset mr --seed -1 --num_clusters 1 --early_stop 10 --lr 1e-3  --weight_decay 1e-7
-python3 main.py --num_layers 3 --dataset mr --seed -1 --num_clusters 1 --early_stop 10 --lr 1e-3  --weight_decay 1e-6
+python3 main.py --num_layers 3 --dataset mr --seed -1 --num_clusters 1 --early_stop 10 --lr 5e-4  --weight_decay 1e-6
 
 
 #python3 main.py --lr 5e-3 --num_layers 3 --num_mlp_layers 1 --dataset mr --seed -1 --num_clusters 1
