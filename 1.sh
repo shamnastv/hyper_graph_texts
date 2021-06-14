@@ -7,4 +7,3 @@
 #SBATCH --partition=cl1_48h-1G
 
 python3 main.py --num_layers 3 --dataset 20ng --seed -1 --num_clusters 0 --num_exp 4
-python3 main.py --num_layers 3 --dataset 20ng --seed -1 --num_clusters 3 --num_exp 4 --tsne
