@@ -370,7 +370,7 @@ def cluster_data(data_full, num_clusters, embed):
     print(elements_count)
     for i, d in enumerate(data_full):
         d.cluster = clusters[i]
-    # data_full = sort_data(data_full, num_clusters)
+    data_full = sort_data(data_full, num_clusters)
     return data_full
 
 
