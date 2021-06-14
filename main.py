@@ -172,7 +172,7 @@ def main():
         max_gap = 0
         print('itr :', itr)
         if args.seed == -1:
-            args.seed = random.randint(0, 1000)
+            args.seed = random.randint(0, 1000) + itr * 10
         print(args)
 
         torch.manual_seed(args.seed)
@@ -269,7 +269,7 @@ def main():
             # if epoch > 60:
             #     num_clusters = num_classes
 
-            if epoch < 15:
+            if epoch < 10:
                 scheduler.step()
                 # scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
