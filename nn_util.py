@@ -64,3 +64,16 @@ def split_data(data, clusters):
         new_data[c].append(data[i])
 
     return new_data
+
+
+def sort_data(data, num_clusters):
+
+    new_data = [[] for _ in range(num_clusters)]
+    for i, d in enumerate(data):
+        new_data[d.cluster].append(d)
+
+    data_full = []
+    for ls in new_data:
+        data_full += ls
+
+    return data_full

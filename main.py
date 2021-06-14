@@ -13,7 +13,7 @@ from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 from data_util import get_data
 from model import HGNNModel
-from nn_util import get_init_embd, clustering, split_data, get_init_embd2
+from nn_util import get_init_embd, clustering, split_data, get_init_embd2, sort_data
 
 start_time = time.time()
 
@@ -366,6 +366,7 @@ def cluster_data(data_full, num_clusters, embed):
     print(elements_count)
     for i, d in enumerate(data_full):
         d.cluster = clusters[i]
+    data_full = sort_data(data_full, num_clusters)
     return data_full
 
 
