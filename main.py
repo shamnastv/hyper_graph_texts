@@ -166,13 +166,17 @@ def main():
                         help='tsne')
     args = parser.parse_args()
 
+    random_seed = False
+    if args.seed == -1:
+        random_seed = True
+
     acc_details = []
     epochs_details = []
     for itr in range(args.num_exp):
         max_gap = 0
         print('itr :', itr)
-        if args.seed == -1:
-            args.seed = random.randint(0, 1000) + itr * 10
+        if random_seed:
+            args.seed = random.randint(0, 1000)
         print(args)
 
         torch.manual_seed(args.seed)
