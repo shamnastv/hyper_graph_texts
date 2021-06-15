@@ -247,6 +247,10 @@ def main():
                 best_acc_epoch = epoch
                 test_accuracy = acc_test
                 best_embd = embd_details
+
+                # data_full_split_test = cluster_data(data_full, num_clusters, embed)
+                # data_full_split_train = data_full_split_test
+
             elif best_val_accuracy > acc_dev > second_best_val:
                 second_best_val = acc_dev
                 second_best_test = test_accuracy
