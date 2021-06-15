@@ -27,11 +27,17 @@ parser.add_argument("--labels", default="invalid label")
 parser.add_argument("--twin_ax", default="F")
 args = parser.parse_args()
 
-if args.y1 == "invalid":
-    print("pass atleast one array to print via --y1")
-    sys.exit(0)
+# if args.y1 == "invalid":
+#     print("pass atleast one array to print via --y1")
+#     sys.exit(0)
 
-y1 = np.load(args.y1)
+# y1 = np.load(args.y1)
+y1 = np.array([1, 2, 3, 5, 6])
+
+r8_Val_prop = [.9321, .9626, .9685, .9707]
+val_percent = [.05, .25, .50, .75]
+y1 = np.array(r8_Val_prop)
+
 if args.average>0:
     y1 = smoothen(y1, args.average)
 if args.y2 != "invalid":
@@ -42,18 +48,23 @@ if args.y2 != "invalid":
 labels = args.labels.split()
 #define font size
 plt.rcParams.update({'font.size': 15})
+#
+# n = min(y1.shape[0], y2.shape[0])
+# y1 = y1[:n]
+# y2 = y2[:n]
+# x = [i for i in range(1, n+1)]
 
-n = min(y1.shape[0], y2.shape[0])
-y1 = y1[:n]
-y2 = y2[:n]
-x = [i for i in range(1, n+1)]
+x = [2, 4, 8, 16, 32]
+x = val_percent
+n = len(x)
 
 fig, ax1 = plt.subplots()
-ax1.set_xlabel('epochs')
+ax1.set_xlabel('train proportion')
 
 color = 'tab:red'
-ax1.set_ylabel('Reward', color='black')  # we already handled the x-label with ax1
-ax1.plot(x, y1, label = labels[0], color=color)
+ax1.set_ylabel('Accuracy', color='black')  # we already handled the x-label with ax1
+ax1.plot(x, y1, label=labels[0], color=color)
+plt.scatter(x, y1, color=color)
 ax1.tick_params(axis='y', labelcolor='black')
 
 if args.y2 != "invalid":
@@ -68,10 +79,10 @@ if args.y2 != "invalid":
         ax2.tick_params(axis='y', labelcolor=color)
 
 #for displaying grids
-plt.grid()
+# plt.grid()
 
 #for finely defining where to place values on x-axis
-plt.xticks([int(n/4), int(n/2), int((3*n)/4), n])
+# plt.xticks([int(n/4), int(n/2), int((3*n)/4), n])
 
 fig.tight_layout()  # otherwise the right y-label is slightly clipped
 if args.labels != "invalid label":

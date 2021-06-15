@@ -9,9 +9,10 @@
 #python3 main.py --num_layers 3 --dataset R8 --seed -1 --num_clusters 2 --early_stop 10 --weight_decay 1e-7 --lr 1e-3 --num_exp 2 --dropout .5
 #python3 main.py --num_layers 3 --dataset R8 --seed -1 --num_clusters 2 --early_stop 10 --weight_decay 1e-7 --lr 5e-3 --num_exp 2 --dropout .5
 
-python3 main.py --num_layers 3 --dataset R8 --seed -1 --num_clusters 0 --num_exp 4 --early_stop 10
-python3 main.py --num_layers 3 --dataset R8 --seed -1 --num_clusters 1 --num_exp 4 --early_stop 10
-python3 main.py --num_layers 3 --dataset R8 --seed -1 --num_clusters 2 --num_exp 4 --tsne --early_stop 10
+python3 main.py --num_layers 1 --dataset R8 --seed -1 --num_clusters 2 --num_exp 2 --early_stop 10
+python3 main.py --num_layers 2 --dataset R8 --seed -1 --num_clusters 2 --num_exp 2 --early_stop 10
+python3 main.py --num_layers 4 --dataset R8 --seed -1 --num_clusters 2 --num_exp 2 --early_stop 10
+python3 main.py --num_layers 5 --dataset R8 --seed -1 --num_clusters 2 --num_exp 2 --early_stop 10
 
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset R8 --lda
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset R8 --random_vec

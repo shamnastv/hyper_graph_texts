@@ -6,7 +6,5 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
 
-python3 main.py --num_layers 3 --dataset ohsumed --seed -1 --num_clusters 3 --num_exp 2 --early_stop 15 --val_prop .25
-python3 main.py --num_layers 3 --dataset ohsumed --seed -1 --num_clusters 3 --num_exp 2 --early_stop 15 --val_prop .5
-python3 main.py --num_layers 3 --dataset ohsumed --seed -1 --num_clusters 3 --num_exp 2 --early_stop 15 --val_prop .75
-python3 main.py --num_layers 3 --dataset ohsumed --seed -1 --num_clusters 3 --num_exp 2 --early_stop 15 --val_prop .95
+python3 main.py --num_layers 3 --dataset R8 --seed -1 --num_clusters 2 --num_exp 2 --early_stop 15 --val_prop .975
+python3 main.py --num_layers 3 --dataset ohsumed --seed -1 --num_clusters 3 --num_exp 2 --early_stop 15 --val_prop .975
