@@ -164,6 +164,8 @@ def main():
                         help='num_clusters')
     parser.add_argument('--tsne', action="store_true",
                         help='tsne')
+    parser.add_argument('--val_prop', type=float, default=0.1,
+                        help='val_prop (default: 0.1)')
     args = parser.parse_args()
 
     random_seed = False
@@ -187,7 +189,7 @@ def main():
         print('device : ', device, flush=True)
 
         train_data, dev_data, test_data, vocab_dic, labels_dic, class_weights, word_vectors \
-            = get_data(dataset=args.dataset, lda=args.lda, seed=args.seed)
+            = get_data(dataset=args.dataset, lda=args.lda, val_prop=args.val_prop, seed=args.seed)
 
         # train_size, dev_size, test_size = len(train_data), len(dev_data), len(test_data)
         data_full = train_data + dev_data + test_data
