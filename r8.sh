@@ -10,5 +10,5 @@
 #python3 main.py --num_layers 3 --dataset R8 --seed -1 --num_clusters 2 --early_stop 10 --weight_decay 1e-7 --lr 5e-3 --num_exp 2 --dropout .5
 
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset R8 --lda
-python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset R8 --random_vec --num_exp 2
-python3 main.py --lr 5e-4 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset R8 --random_vec --num_exp 2
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset R8 --random_vec --num_exp 2 --batch_size 16
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --num_mlp_layers 1 --dataset R8 --random_vec --num_exp 2 --batch_size 32
