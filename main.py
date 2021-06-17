@@ -248,8 +248,8 @@ def main():
                 test_accuracy = acc_test
                 best_embd = embd_details
 
-                # data_full_split_test = cluster_data(data_full, num_clusters, embed)
-                # data_full_split_train = data_full_split_test
+                data_full_split_test = cluster_data(data_full, num_clusters, embed)
+                data_full_split_train = data_full_split_test
 
             elif best_val_accuracy > acc_dev > second_best_val:
                 second_best_val = acc_dev
@@ -272,15 +272,15 @@ def main():
             # print('Epoch : ', epoch, 'loss training: ', loss_accum2, 'Time : ', int(time.time() - start_time))
             # print("accuracy train: %f val: %f test: %f" % (acc_train2, acc_dev2, acc_test2))
 
-            if epoch % 1 == 0:
-                data_full_split_test = cluster_data(data_full, num_clusters, embed)
-                data_full_split_train = data_full_split_test
+            # if epoch % 1 == 0:
+            #     data_full_split_test = cluster_data(data_full, num_clusters, embed)
+            #     data_full_split_train = data_full_split_test
 
             # if epoch > 60:
             #     num_clusters = num_classes
 
             if epoch < 10:
-                # scheduler.step()
+                scheduler.step()
                 # scheduler2.step()
                 print('Epoch-{0} lr: {1}'.format(epoch, optimizer.param_groups[0]['lr']))
             print('', flush=True)
