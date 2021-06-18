@@ -16,7 +16,7 @@ def get_features(data, device):
     idf = []
 
     sent_mat = []
-    sent_const = 5
+    sent_const = 2
     incident_mat = []
     v_start = 0
     e_start = 0
