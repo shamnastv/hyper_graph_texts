@@ -16,7 +16,7 @@ def get_features(data, device):
     idf = []
 
     sent_mat = []
-    sent_const = 3
+    sent_const = 5
     incident_mat = []
     v_start = 0
     e_start = 0
@@ -48,15 +48,16 @@ def get_features(data, device):
             else:
                 right = (sent_const-1) * sent_const / 2 - (m + sent_const - d.edge_num) * (m + sent_const - 1 - d.edge_num - 1) / 2
 
-            s = left + right + sent_const
-            ev = 0
+            s = left + right + sent_const * 2
+
             for j in range(sent_const):
-                if m - j >= 0:
-                    sent_mat.append([e_start + m, e_start + m - j, (sent_const - j) / s])
-                    ev += (sent_const - j) / s
-                if m + j < d.edge_num and j != 0:
-                    sent_mat.append([e_start + m, e_start + m + j, (sent_const - j) / s])
-                    ev += (sent_const - j) / s
+                if j == 0:
+                    sent_mat.append([e_start + m, e_start + m - j, sent_const * 2 / s])
+                else:
+                    if m - j >= 0:
+                        sent_mat.append([e_start + m, e_start + m - j, (sent_const - j) / s])
+                    if m + j < d.edge_num:
+                        sent_mat.append([e_start + m, e_start + m + j, (sent_const - j) / s])
 
         graph_pool.extend([[i, j, 1/d.node_num] for j in range(v_start, v_start + d.node_num, 1)])
         max_pool_idx.append([j for j in range(v_start, v_start + d.node_num, 1)] + [-1] * (max_nodes - d.node_num))
