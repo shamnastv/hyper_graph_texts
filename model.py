@@ -15,6 +15,8 @@ def get_features(data, device):
     tf = []
     idf = []
 
+    sent_mat = []
+    sent_const = 3
     incident_mat = []
     v_start = 0
     e_start = 0
@@ -36,6 +38,25 @@ def get_features(data, device):
                     word_dict_ls[c][w].append(v_start + j)
                 else:
                     word_dict_ls[c][w] = [v_start + j]
+        for m in range(d.edge_num):
+            if m - sent_const + 1 >= 0:
+                left = (sent_const-1) * sent_const / 2
+            else:
+                left = (sent_const-1) * sent_const / 2 - (sent_const-m) * (sent_const-m-1)/2
+            if m + sent_const - 1 <= d.edge_num:
+                right = (sent_const-1) * sent_const / 2
+            else:
+                right = (sent_const-1) * sent_const / 2 - (m + sent_const - d.edge_num) * (m + sent_const - 1 - d.edge_num - 1) / 2
+
+            s = left + right + sent_const
+            ev = 0
+            for j in range(sent_const):
+                if m - j >= 0:
+                    sent_mat.append([e_start + m, e_start + m - j, (sent_const - j) / s])
+                    ev += (sent_const - j) / s
+                if m + j < d.edge_num and j != 0:
+                    sent_mat.append([e_start + m, e_start + m + j, (sent_const - j) / s])
+                    ev += (sent_const - j) / s
 
         graph_pool.extend([[i, j, 1/d.node_num] for j in range(v_start, v_start + d.node_num, 1)])
         max_pool_idx.append([j for j in range(v_start, v_start + d.node_num, 1)] + [-1] * (max_nodes - d.node_num))
@@ -52,6 +73,7 @@ def get_features(data, device):
             if len(word_dict[w]) > 1:
                 for i in word_dict[w]:
                     incident_mat.append([i, e_start, 1])
+                sent_mat .append([e_start, e_start, 1])
                 e_start += 1
 
     num_v = v_start
@@ -101,7 +123,11 @@ def get_features(data, device):
     incident_mat_shape = torch.Size([v_start, e_start])
     incident_mat_full = (incident_mat[:2], incident_mat[2].float(), incident_mat_shape)
 
-    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf
+    sent_mat = torch.tensor(sent_mat).float().transpose(0, 1).to(device)
+    sent_mat_shape = torch.Size([e_start, e_start])
+    sent_mat_full = (sent_mat[:2].long(), sent_mat[2], sent_mat_shape)
+
+    return incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf, sent_mat_full
 
 
 class HGNNModel(nn.Module):
@@ -142,7 +168,7 @@ class HGNNModel(nn.Module):
 
     def forward(self, data):
 
-        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf\
+        incident_mat_full, graph_pool_full, degrees_v_full, degrees_e_full, x, targets, max_pool_idx, tf_idf, sent_mat_full\
             = get_features(data, self.device)
 
         h = self.word_embeddings(x)
@@ -151,7 +177,7 @@ class HGNNModel(nn.Module):
         h_cat = [h]
 
         for layer in range(self.num_layers - 1):
-            h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer)
+            h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer, sent_mat_full)
             h_cat.append(h)
 
         pred = 0

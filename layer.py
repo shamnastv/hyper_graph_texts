@@ -54,7 +54,7 @@ class HGNNLayer(nn.Module):
         stdv = 1. / math.sqrt(self.theta_att.size(1))
         self.theta_att.data.uniform_(-stdv, stdv)
 
-    def forward(self, incident_mat_full, degree_v_full, degree_e_full, h, layer):
+    def forward(self, incident_mat_full, degree_v_full, degree_e_full, h, layer, sent_mat_full):
         # h = self.mlp1(h)
         # h_n = self.message_passing_1(incident_mat_full, h, degree_v_full, degree_e_full)
         # h_n = self.activation(h_n)
@@ -69,6 +69,7 @@ class HGNNLayer(nn.Module):
 
         h_m = self.mlp1(h)
         h_n = self.message_passing_3_1(incident_mat_full, h_m, degree_e_full)
+        h_n = spmm(sent_mat_full[0], sent_mat_full[1], sent_mat_full[2][0], sent_mat_full[2][1], h_n)
         h_n = self.batch_norms2(h_n)
         h_n = self.activation(h_n)
         # h_n = F.leaky_relu(h_n, negative_slope=0.2)
