@@ -40,11 +40,11 @@ def get_features(data, device):
                     word_dict_ls[c][w] = [v_start + j]
         for m in range(d.edge_num):
             if m - sent_const + 1 >= 0:
-                left = (sent_const-1) * sent_const / 2
+                left = (sent_const - 1) * sent_const / 2
             else:
-                left = (sent_const-1) * sent_const / 2 - (sent_const-m) * (sent_const-m-1)/2
+                left = (sent_const - 1) * sent_const / 2 - (sent_const - m) * (sent_const - m - 1)/2
             if m + sent_const - 1 <= d.edge_num:
-                right = (sent_const-1) * sent_const / 2
+                right = (sent_const - 1) * sent_const / 2
             else:
                 right = (sent_const-1) * sent_const / 2 - (m + sent_const - d.edge_num) * (m + sent_const - 1 - d.edge_num - 1) / 2
 
