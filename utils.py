@@ -111,9 +111,17 @@ def clean_document(doc_sentence_list, dataset):
             # if dataset == '20ng' and count_num > 2000:
             #     break
         # clean_doc = make_window(clean_doc, 7, inc_sent=True)
+        clean_doc = combine_sent(clean_doc)
         clean_docs.append(clean_doc)
 
     return clean_docs
+
+
+def combine_sent(sents):
+    new_sents = []
+    for i in range(len(sents) - 1):
+        new_sents.append(sents[i] + sents[i + 1])
+    return new_sents
 
 
 def make_window(sents, window_size, inc_sent=False):
