@@ -61,10 +61,10 @@ def read_file(dataset, lda=True):
     vocab_size = len(vocab)
 
     vocab_dic = {}
-    for i, word in enumerate(word_set):
+    for i, word in enumerate(vocab):
         vocab_dic[word] = i
 
-    print('Total_number_of_words: ' + str(len(vocab)))
+    print('Total_number_of_words: ' + str(vocab_size))
     print('Total_number_of_categories: ' + str(len(labels_dic)))
 
     doc_train_list = []
@@ -77,7 +77,7 @@ def read_file(dataset, lda=True):
             for word in sentence:
                 temp.append(vocab_dic[word])
             temp_doc.append(temp)
-        doc_train_list.append((temp_doc, labels_dic[label]))
+        doc_train_list.append((temp_doc, labels_dic[label], doc))
 
     for doc, label in doc_test_list_original:
         temp_doc = []
@@ -86,7 +86,7 @@ def read_file(dataset, lda=True):
             for word in sentence:
                 temp.append(vocab_dic[word])
             temp_doc.append(temp)
-        doc_test_list.append((temp_doc, labels_dic[label]))
+        doc_test_list.append((temp_doc, labels_dic[label], doc))
 
     keywords_dic = {}
     if lda:
@@ -96,7 +96,7 @@ def read_file(dataset, lda=True):
             if i in vocab_dic:
                 keywords_dic[vocab_dic[i]] = keywords_dic_original[i]
 
-    train_set_y = [j for i, j in doc_train_list]
+    train_set_y = [j for i, j, k in doc_train_list]
 
     class_weights = class_weight.compute_class_weight(class_weight='balanced',
                                                       classes=np.unique(train_set_y), y=train_set_y)
@@ -124,3 +124,7 @@ def get_embedding(word_to_id):
     print('got embeddings of :', count)
     embeddings[0] = np.zeros(dim, dtype='float32')
     return embeddings
+
+
+if __name__ == '__main__':
+    read_file('R8', False)
