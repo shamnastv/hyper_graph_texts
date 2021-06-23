@@ -121,6 +121,8 @@ def combine_sent(sents):
     new_sents = []
     for i in range(len(sents) - 1):
         new_sents.append(sents[i] + sents[i + 1])
+    if len(sents) == 1:
+        return sents
     return new_sents
 
 
