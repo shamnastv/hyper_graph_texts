@@ -69,7 +69,7 @@ class HGNNLayer(nn.Module):
 
         h_m = self.mlp1(h)
         h_n = self.message_passing_3_1(incident_mat_full, h_m, degree_e_full)
-        h_n = spmm(sent_mat_full[0], sent_mat_full[1], sent_mat_full[2][0], sent_mat_full[2][1], h_n)
+        # h_n = spmm(sent_mat_full[0], sent_mat_full[1], sent_mat_full[2][0], sent_mat_full[2][1], h_n)
         h_n = self.batch_norms2(h_n)
         h_n = self.activation(h_n)
         # h_n = F.leaky_relu(h_n, negative_slope=0.2)
@@ -133,10 +133,7 @@ class HGNNLayer(nn.Module):
         att = att - maximum
 
         att = torch.exp(att)
-        try:
-            assert not torch.isnan(att).any()
-        except AssertionError:
-            print(att)
+        assert not torch.isnan(att).any()
 
         ones = torch.ones(size=(h.shape[0], 1), device=h.device)
         pooled = spmm(idx, att, incident_mat_full[2][1], incident_mat_full[2][0], h)
@@ -159,10 +156,7 @@ class HGNNLayer(nn.Module):
         att = att - maximum
 
         att = torch.exp(att)
-        try:
-            assert not torch.isnan(att).any()
-        except AssertionError:
-            print(att)
+        assert not torch.isnan(att).any()
 
         ones = torch.ones(size=(h_e.shape[0], 1), device=h_e.device)
         pooled = spmm(idx, att, incident_mat_full[2][0], incident_mat_full[2][1], h_e)
