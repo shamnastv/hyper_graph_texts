@@ -173,10 +173,9 @@ class HGNNModel(nn.Module):
             = get_features(data, self.device)
 
         h = self.word_embeddings(x)
-        h = self.dropout(h)
         # h_cat = [self.dropout(h)]
         h_cat = [h]
-
+        h = self.dropout(h)
         for layer in range(self.num_layers - 1):
             h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer, sent_mat_full)
             h_cat.append(h)
@@ -193,7 +192,7 @@ class HGNNModel(nn.Module):
                 maximum = torch.max(elem_gp)
             elem_gp = elem_gp - maximum
             elem_gp = torch.exp(elem_gp)
-            assert not torch.isnan(elem_gp).any()
+            # assert not torch.isnan(elem_gp).any()
             # elem_gp = elem_gp * tf_idf[:, 0] * tf_idf[:, 1]
 
             row_sum = spmm(graph_pool_full[0], elem_gp, graph_pool_full[2][0], graph_pool_full[2][1],

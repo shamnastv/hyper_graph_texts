@@ -83,7 +83,7 @@ class HGNNLayer(nn.Module):
         h_n = self.dropout(h_n)
         # h_n = h_n + self.eps * h_m
         h_n = self.gru(h, h_n)
-        h_n = self.dropout(h_n)
+        # h_n = self.dropout(h_n)
 
         return h_n
 
