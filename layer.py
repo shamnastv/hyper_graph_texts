@@ -81,8 +81,8 @@ class HGNNLayer(nn.Module):
         h_n = self.activation(h_n)
         # h_n = F.leaky_relu(h_n, negative_slope=0.2)
         h_n = self.dropout(h_n)
-        h_n = h_n + self.eps * h_m
-        # h_n = self.gru(h, h_n)
+        # h_n = h_n + self.eps * h_m
+        h_n = self.gru(h, h_n)
 
         return h_n
 
