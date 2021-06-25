@@ -174,8 +174,9 @@ class HGNNModel(nn.Module):
 
         h = self.word_embeddings(x)
         # h_cat = [self.dropout(h)]
-        h_cat = [h]
         h = self.dropout(h)
+        h_cat = [h]
+
         for layer in range(self.num_layers - 1):
             h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer, sent_mat_full)
             h_cat.append(h)
@@ -208,7 +209,7 @@ class HGNNModel(nn.Module):
             max_pooled = torch.max(h[max_pool_idx], keepdim=False, dim=1)[0]
             # pooled_h = pooled_h + max_pooled
             pooled_h = torch.cat((pooled_h, max_pooled), dim=1)
-            pooled_h = self.dropout(pooled_h)
+            # pooled_h = self.dropout(pooled_h)
 
             pred += self.linears_prediction[layer](pooled_h)
             pooled_h_ls.append(pooled_h)
