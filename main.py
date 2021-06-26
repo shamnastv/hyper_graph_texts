@@ -156,7 +156,7 @@ def main():
                         help='random initialization')
     parser.add_argument('--lda', action="store_true",
                         help='lda')
-    parser.add_argument('--weight_decay', type=float, default=1e-8,
+    parser.add_argument('--weight_decay', type=float, default=1e-7,
                         help='weight decay')
     parser.add_argument('--num_exp', type=int, default=4,
                         help='Number of Experiment')
