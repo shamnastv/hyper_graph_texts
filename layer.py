@@ -27,7 +27,7 @@ class GRUCellMod(nn.Module):
     def forward(self, inp, ht_1):
         z_t = torch.sigmoid(self.W_iz(inp) + self.W_hz(ht_1))
         r_t = torch.sigmoid(self.W_ir(inp) + self.W_hr(ht_1))
-        n_t = torch.tanh(self.W_in(inp) + r_t * self.W_hn(ht_1))
+        n_t = torch.tanh(self.W_in(inp) + self.W_hn(r_t * ht_1))
         h_t = (1 - z_t) * n_t + z_t * ht_1
         return h_t
 
