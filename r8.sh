@@ -12,5 +12,4 @@
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset R8 --lda
 #python3 main.py --lr 5e-4 --hidden_dim 200 --num_layers 3 --dropout .3 --dataset R8 --num_exp 2 --num_clusters 0
 #python3 main.py --lr 5e-4 --hidden_dim 200 --num_layers 3 --dropout .3 --dataset R8 --num_exp 2 --num_clusters 1
-python3 main.py --lr 8e-4 --hidden_dim 200 --num_layers 3 --dropout .3 --dataset R8 --num_exp 2 --num_clusters 2
-python3 main.py --lr 8e-4 --hidden_dim 200 --num_layers 3 --dropout .5 --dataset R8 --num_exp 2 --num_clusters 2
+python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .5 --dataset R8 --num_exp 2 --num_clusters 2

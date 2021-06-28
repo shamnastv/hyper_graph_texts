@@ -148,7 +148,7 @@ def main():
                         help='number of layers for MLP EXCLUDING the input one (default: 1). 1 means linear model.')
     parser.add_argument('--hidden_dim', type=int, default=200,
                         help='number of hidden units (default: 64)')
-    parser.add_argument('--dropout', type=float, default=0.3,
+    parser.add_argument('--dropout', type=float, default=0.5,
                         help='dropout (default: 0.3)')
     parser.add_argument('--early_stop', type=int, default=30,
                         help='early_stop')
@@ -158,7 +158,7 @@ def main():
                         help='lda')
     parser.add_argument('--weight_decay', type=float, default=0,
                         help='weight decay')
-    parser.add_argument('--num_exp', type=int, default=4,
+    parser.add_argument('--num_exp', type=int, default=3,
                         help='Number of Experiment')
     parser.add_argument('--num_clusters', type=int, default=3,
                         help='num_clusters')
