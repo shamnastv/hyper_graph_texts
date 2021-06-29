@@ -24,12 +24,12 @@ class GRUCellMod(nn.Module):
         self.W_iz = nn.Linear(input_dim, hidden_dim)
         self.W_hz = nn.Linear(hidden_dim, hidden_dim)
 
-    def forward(self, inp, ht_1):
-        z_t = torch.sigmoid(self.W_iz(inp) + self.W_hz(ht_1))
-        r_t = torch.sigmoid(self.W_ir(inp) + self.W_hr(ht_1))
-        n_t = torch.tanh(self.W_in(inp) + self.W_hn(r_t * ht_1))
-        h_t = (1 - z_t) * n_t + z_t * ht_1
-        return h_t
+    def forward(self, inp, h_1):
+        z = torch.sigmoid(self.W_iz(inp) + self.W_hz(h_1))
+        r = torch.sigmoid(self.W_ir(inp) + self.W_hr(h_1))
+        n = torch.tanh(self.W_in(inp) + r * self.W_hn(h_1))
+        h = (1 - z) * n + z * h_1
+        return h
 
 
 class HGNNLayer(nn.Module):
