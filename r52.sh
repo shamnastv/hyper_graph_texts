@@ -6,9 +6,9 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=cl1_48h-1G
 
-python3 main.py --dataset R52 --seed -1 --num_clusters 0 --num_exp 2 --random_vec
-python3 main.py --dataset R52 --seed -1 --num_clusters 1 --num_exp 2 --random_vec
-python3 main.py --dataset R52 --seed -1 --num_clusters 3 --num_exp 2 --random_vec
+python3 main.py --dataset R52 --seed -1 --num_clusters 0 --num_exp 2
+python3 main.py --dataset R52 --seed -1 --num_clusters 1 --num_exp 2
+python3 main.py --dataset R52 --seed -1 --num_clusters 3 --num_exp 2
 
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset R52 --lda
 #python3 main.py --lr 1e-3 --hidden_dim 200 --num_layers 3 --dropout .3 --num_mlp_layers 1 --dataset R52 --random_vec
