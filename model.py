@@ -46,13 +46,14 @@ def get_features(data, device):
             if m + sent_const - 1 <= d.edge_num:
                 right = (sent_const - 1) * sent_const / 2
             else:
-                right = (sent_const-1) * sent_const / 2 - (m + sent_const - d.edge_num) * (m + sent_const - 1 - d.edge_num - 1) / 2
+                right = (sent_const-1) * sent_const / 2 \
+                        - (m + sent_const - d.edge_num) * (m + sent_const - d.edge_num - 1) / 2
 
-            s = left + right + sent_const * 2
+            s = left + right + sent_const
 
             for j in range(sent_const):
                 if j == 0:
-                    sent_mat.append([e_start + m, e_start + m - j, sent_const * 2 / s])
+                    sent_mat.append([e_start + m, e_start + m - j, sent_const / s])
                 else:
                     if m - j >= 0:
                         sent_mat.append([e_start + m, e_start + m - j, (sent_const - j) / s])
