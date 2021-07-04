@@ -164,7 +164,7 @@ def main():
                         help='num_clusters')
     parser.add_argument('--tsne', action="store_true",
                         help='tsne')
-    parser.add_argument('--val_prop', type=float, default=0.15,
+    parser.add_argument('--val_prop', type=float, default=0.1,
                         help='val_prop (default: 0.1)')
     args = parser.parse_args()
 
