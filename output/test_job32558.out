@@ -1,0 +1,326 @@
+
+
+date and time :  Wed May 12 17:44:37 2021
+Namespace(batch_size=128, dataset='R8', device=0, dropout=0.3, early_stop=30, epochs=400, filename='', hidden_dim=200, lda=False, lr=0.001, num_layers=3, num_mlp_layers=1, random_vec=False, seed=329, weight_decay=0)
+device :  cuda:0
+Counter({0: 4817, 1: 2874})
+Traceback (most recent call last):
+  File "main.py", line 314, in <module>
+    main()
+  File "main.py", line 223, in main
+    class_weights = torch.from_numpy(class_weights).float().to(device)
+RuntimeError: CUDA error: out of memory
+
+
+date and time :  Wed May 12 17:45:30 2021
+Namespace(batch_size=128, dataset='R8', device=0, dropout=0.3, early_stop=30, epochs=400, filename='', hidden_dim=200, lda=False, lr=0.001, num_layers=3, num_mlp_layers=1, random_vec=False, seed=630, weight_decay=0)
+device :  cuda:0
+Counter({1: 4817, 0: 2874})
+Traceback (most recent call last):
+  File "main.py", line 314, in <module>
+    main()
+  File "main.py", line 223, in main
+    class_weights = torch.from_numpy(class_weights).float().to(device)
+RuntimeError: CUDA error: out of memory
+
+
+date and time :  Wed May 12 17:46:22 2021
+Namespace(batch_size=128, dataset='R8', device=0, dropout=0.3, early_stop=30, epochs=400, filename='', hidden_dim=200, lda=False, lr=0.001, num_layers=3, num_mlp_layers=1, random_vec=False, seed=874, weight_decay=0)
+device :  cuda:0
+Counter({1: 4817, 0: 2874})
+
+Traceback (most recent call last):
+  File "main.py", line 314, in <module>
+    main()
+  File "main.py", line 237, in main
+    loss_accum = train(epoch, args, model, optimizer, data_full_split_train, class_weights)
+  File "main.py", line 43, in train
+    output, targets, _ = model(batch_data)
+  File "/home/shamnast/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/shamnast/cluster2/model.py", line 154, in forward
+    h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer)
+  File "/home/shamnast/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/shamnast/cluster2/layer.py", line 72, in forward
+    h_n = self.message_passing_3_1(incident_mat_full, h_m, degree_e_full)
+  File "/home/shamnast/cluster2/layer.py", line 124, in message_passing_3_1
+    h_t = spmm(idx, incident_mat_full[1], incident_mat_full[2][1], incident_mat_full[2][0], h)
+  File "/home/shamnast/.local/lib/python3.6/site-packages/torch_sparse/spmm.py", line 23, in spmm
+    out = matrix[col]
+RuntimeError: CUDA out of memory. Tried to allocate 36.00 MiB (GPU 0; 10.92 GiB total capacity; 30.20 MiB already allocated; 38.38 MiB free; 48.00 MiB reserved in total by PyTorch)
+
+
+date and time :  Wed May 12 17:47:16 2021
+Namespace(batch_size=128, dataset='R8', device=0, dropout=0.3, early_stop=30, epochs=400, filename='', hidden_dim=200, lda=False, lr=0.001, num_layers=3, num_mlp_layers=1, random_vec=False, seed=380, weight_decay=0)
+device :  cuda:0
+Counter({0: 4817, 1: 2874})
+
+Traceback (most recent call last):
+  File "main.py", line 314, in <module>
+    main()
+  File "main.py", line 237, in main
+    loss_accum = train(epoch, args, model, optimizer, data_full_split_train, class_weights)
+  File "main.py", line 43, in train
+    output, targets, _ = model(batch_data)
+  File "/home/shamnast/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/shamnast/cluster2/model.py", line 154, in forward
+    h = self.h_gnn_layers[layer](incident_mat_full, degrees_v_full, degrees_e_full, h, layer)
+  File "/home/shamnast/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/shamnast/cluster2/layer.py", line 79, in forward
+    h_n = self.message_passing_3_2(incident_mat_full, h_n, degree_v_full)
+  File "/home/shamnast/cluster2/layer.py", line 150, in message_passing_3_2
+    h_t = spmm(idx, incident_mat_full[1], incident_mat_full[2][0], incident_mat_full[2][1], h_e)
+  File "/home/shamnast/.local/lib/python3.6/site-packages/torch_sparse/spmm.py", line 24, in spmm
+    out = out * value.unsqueeze(-1)
+RuntimeError: CUDA out of memory. Tried to allocate 36.00 MiB (GPU 0; 10.92 GiB total capacity; 352.91 MiB already allocated; 6.38 MiB free; 374.00 MiB reserved in total by PyTorch)
+
+
+date and time :  Wed May 12 17:48:11 2021
+Namespace(batch_size=128, dataset='R8', device=0, dropout=0.3, early_stop=30, epochs=400, filename='', hidden_dim=200, lda=False, lr=0.001, num_layers=3, num_mlp_layers=1, random_vec=False, seed=915, weight_decay=0)
+device :  cuda:0
+Counter({1: 4817, 0: 2874})
+
+Epoch :  1 loss training:  24.43966605514288 Time :  62
+accuracy train: 0.958796 val: 0.960000 test: 0.950228
+max validation accuracy : 0.960000 max acc epoch : 1 test accuracy : 0.950228
+Counter({1: 4033, 0: 3658})
+Epoch-1 lr: 0.001
+
+Epoch :  2 loss training:  9.027921497821808 Time :  86
+accuracy train: 0.965058 val: 0.958182 test: 0.963927
+max validation accuracy : 0.960000 max acc epoch : 1 test accuracy : 0.950228
+Counter({1: 3870, 0: 3821})
+Epoch-2 lr: 0.001
+
+Epoch :  3 loss training:  7.2966408636420965 Time :  110
+accuracy train: 0.975964 val: 0.969091 test: 0.966667
+max validation accuracy : 0.969091 max acc epoch : 3 test accuracy : 0.966667
+Counter({1: 3886, 0: 3805})
+Epoch-3 lr: 0.0005
+
+Epoch :  4 loss training:  6.579870881512761 Time :  133
+accuracy train: 0.979196 val: 0.972727 test: 0.973973
+max validation accuracy : 0.972727 max acc epoch : 4 test accuracy : 0.973973
+Counter({1: 3881, 0: 3810})
+Epoch-4 lr: 0.0005
+
+Epoch :  5 loss training:  5.793246166780591 Time :  156
+accuracy train: 0.985054 val: 0.970909 test: 0.968493
+max validation accuracy : 0.972727 max acc epoch : 4 test accuracy : 0.973973
+Counter({0: 3929, 1: 3762})
+Epoch-5 lr: 0.0005
+
+Epoch :  6 loss training:  4.630423978203908 Time :  180
+accuracy train: 0.983438 val: 0.974545 test: 0.964384
+max validation accuracy : 0.974545 max acc epoch : 6 test accuracy : 0.964384
+Counter({0: 3927, 1: 3764})
+Epoch-6 lr: 0.00025
+
+Epoch :  7 loss training:  3.9023453518748283 Time :  203
+accuracy train: 0.988689 val: 0.972727 test: 0.972146
+max validation accuracy : 0.974545 max acc epoch : 6 test accuracy : 0.964384
+Counter({0: 3926, 1: 3765})
+Epoch-7 lr: 0.00025
+
+Epoch :  8 loss training:  3.361140771768987 Time :  226
+accuracy train: 0.989901 val: 0.970909 test: 0.967123
+max validation accuracy : 0.974545 max acc epoch : 6 test accuracy : 0.964384
+Counter({1: 3928, 0: 3763})
+Epoch-8 lr: 0.00025
+
+Epoch :  9 loss training:  3.0795395839959383 Time :  249
+accuracy train: 0.988285 val: 0.974545 test: 0.970320
+max validation accuracy : 0.974545 max acc epoch : 6 test accuracy : 0.964384
+Counter({1: 3919, 0: 3772})
+Epoch-9 lr: 0.000125
+
+Epoch :  10 loss training:  3.408933859784156 Time :  272
+accuracy train: 0.990305 val: 0.974545 test: 0.968493
+max validation accuracy : 0.974545 max acc epoch : 6 test accuracy : 0.964384
+Counter({1: 3923, 0: 3768})
+Epoch-10 lr: 0.000125
+
+Epoch :  11 loss training:  4.11743832193315 Time :  296
+accuracy train: 0.990305 val: 0.972727 test: 0.966667
+max validation accuracy : 0.974545 max acc epoch : 6 test accuracy : 0.964384
+Counter({0: 3923, 1: 3768})
+Epoch-11 lr: 0.000125
+
+Epoch :  12 loss training:  2.846718767657876 Time :  320
+accuracy train: 0.991719 val: 0.976364 test: 0.969406
+max validation accuracy : 0.976364 max acc epoch : 12 test accuracy : 0.969406
+Counter({0: 3923, 1: 3768})
+Epoch-12 lr: 6.25e-05
+
+Epoch :  13 loss training:  2.5401558349840343 Time :  344
+accuracy train: 0.993335 val: 0.978182 test: 0.969406
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3923, 0: 3768})
+Epoch-13 lr: 6.25e-05
+
+Epoch :  14 loss training:  2.6635206937789917 Time :  368
+accuracy train: 0.992325 val: 0.976364 test: 0.969406
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3923, 1: 3768})
+Epoch-14 lr: 6.25e-05
+
+Epoch :  15 loss training:  2.4580844417214394 Time :  391
+accuracy train: 0.992729 val: 0.972727 test: 0.968493
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3923, 0: 3768})
+
+Epoch :  16 loss training:  2.706654322333634 Time :  415
+accuracy train: 0.993739 val: 0.972727 test: 0.968037
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3923, 1: 3768})
+
+Epoch :  17 loss training:  2.4789331005886197 Time :  440
+accuracy train: 0.993537 val: 0.972727 test: 0.967580
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3924, 0: 3767})
+
+Epoch :  18 loss training:  2.3624390033073723 Time :  465
+accuracy train: 0.992729 val: 0.970909 test: 0.966667
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3925, 0: 3766})
+
+Epoch :  19 loss training:  2.2897345339879394 Time :  490
+accuracy train: 0.993739 val: 0.972727 test: 0.968493
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3927, 1: 3764})
+
+Epoch :  20 loss training:  2.229762795381248 Time :  514
+accuracy train: 0.992931 val: 0.974545 test: 0.968493
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3927, 0: 3764})
+
+Epoch :  21 loss training:  2.203882062807679 Time :  540
+accuracy train: 0.994143 val: 0.972727 test: 0.968950
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3928, 1: 3763})
+
+Epoch :  22 loss training:  2.040033338125795 Time :  565
+accuracy train: 0.993739 val: 0.972727 test: 0.968950
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3930, 1: 3761})
+
+Epoch :  23 loss training:  2.0099592050537467 Time :  589
+accuracy train: 0.993537 val: 0.970909 test: 0.966667
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3930, 1: 3761})
+
+Epoch :  24 loss training:  1.9453194523230195 Time :  614
+accuracy train: 0.993739 val: 0.970909 test: 0.967580
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3930, 0: 3761})
+
+Epoch :  25 loss training:  1.9237099562305957 Time :  639
+accuracy train: 0.994547 val: 0.974545 test: 0.967580
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3930, 0: 3761})
+
+Epoch :  26 loss training:  1.7003050338244066 Time :  665
+accuracy train: 0.995152 val: 0.974545 test: 0.968493
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3930, 1: 3761})
+
+Epoch :  27 loss training:  1.8092646752484143 Time :  689
+accuracy train: 0.994749 val: 0.972727 test: 0.968037
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3933, 0: 3758})
+
+Epoch :  28 loss training:  1.718803612748161 Time :  716
+accuracy train: 0.995354 val: 0.970909 test: 0.968493
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3933, 1: 3758})
+
+Epoch :  29 loss training:  1.8493592026643455 Time :  740
+accuracy train: 0.995354 val: 0.970909 test: 0.968037
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3933, 0: 3758})
+
+Epoch :  30 loss training:  1.577243615873158 Time :  765
+accuracy train: 0.995354 val: 0.970909 test: 0.967123
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3934, 0: 3757})
+
+Epoch :  31 loss training:  1.7695483115967363 Time :  790
+accuracy train: 0.995758 val: 0.972727 test: 0.968037
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3935, 0: 3756})
+
+Epoch :  32 loss training:  1.5041412552818656 Time :  815
+accuracy train: 0.994951 val: 0.972727 test: 0.968493
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3935, 0: 3756})
+
+Epoch :  33 loss training:  1.4699727159459144 Time :  839
+accuracy train: 0.995556 val: 0.970909 test: 0.968037
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3932, 1: 3759})
+
+Epoch :  34 loss training:  1.4426491607446223 Time :  864
+accuracy train: 0.996162 val: 0.972727 test: 0.968037
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3931, 1: 3760})
+
+Epoch :  35 loss training:  1.3295111091574654 Time :  889
+accuracy train: 0.996364 val: 0.972727 test: 0.966667
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3932, 1: 3759})
+
+Epoch :  36 loss training:  1.273782758275047 Time :  914
+accuracy train: 0.996768 val: 0.972727 test: 0.968950
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3932, 0: 3759})
+
+Epoch :  37 loss training:  1.1037707888754085 Time :  939
+accuracy train: 0.996566 val: 0.970909 test: 0.966667
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3932, 1: 3759})
+
+Epoch :  38 loss training:  1.015054827556014 Time :  963
+accuracy train: 0.996970 val: 0.970909 test: 0.968037
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3933, 0: 3758})
+
+Epoch :  39 loss training:  1.1453912804136053 Time :  988
+accuracy train: 0.996970 val: 0.970909 test: 0.968493
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3931, 1: 3760})
+
+Epoch :  40 loss training:  1.209616485517472 Time :  1013
+accuracy train: 0.997374 val: 0.970909 test: 0.966210
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({1: 3932, 0: 3759})
+
+Epoch :  41 loss training:  0.9395803100196645 Time :  1038
+accuracy train: 0.997172 val: 0.970909 test: 0.965753
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3935, 1: 3756})
+
+Epoch :  42 loss training:  1.7038706147577614 Time :  1062
+accuracy train: 0.997374 val: 0.970909 test: 0.967580
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3936, 1: 3755})
+
+Epoch :  43 loss training:  1.2472274457104504 Time :  1087
+accuracy train: 0.997576 val: 0.972727 test: 0.969406
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3933, 1: 3758})
+
+Epoch :  44 loss training:  0.96664037136361 Time :  1111
+accuracy train: 0.998182 val: 0.970909 test: 0.967123
+max validation accuracy : 0.978182 max acc epoch : 13 test accuracy : 0.969406
+Counter({0: 3933, 1: 3758})
+
+========================================================================================================================================================================================================
+max acc epoch :  13
+max validation accuracy :  0.9781818181818182
+test accuracy :  0.9694063926940639
+last test_accuracy :  0.9671232876712329
+========================================================================================================================================================================================================
+

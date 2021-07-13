@@ -1,0 +1,1533 @@
+date and time :  Wed Apr 14 11:33:38 2021
+Namespace(batch_size=64, dataset='R8', debug=False, device=0, dropout=0.4, early_stop=50, epochs=400, filename='', hidden_dim=200, lda=False, lr=0.0005, num_layers=4, num_mlp_layers=1, random_vec=False, seed=0, weight_decay=1e-07)
+device :  cuda:0
+Counter({0: 7691})
+HGNNModel(
+  (word_embeddings): Embedding(8232, 300, padding_idx=0)
+  (h_gnn_layers): ModuleList(
+    (0): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=300, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+    (1): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+    (2): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+  )
+  (linears_prediction): ModuleList(
+    (0): Linear(in_features=300, out_features=8, bias=True)
+    (1): Linear(in_features=200, out_features=8, bias=True)
+    (2): Linear(in_features=200, out_features=8, bias=True)
+    (3): Linear(in_features=200, out_features=8, bias=True)
+  )
+  (graph_pool_layer): ModuleList(
+    (0): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=300, out_features=300, bias=False)
+        (1): Linear(in_features=300, out_features=1, bias=False)
+      )
+    )
+    (1): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+    (2): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+    (3): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+  )
+  (dropout): Dropout(p=0.4, inplace=False)
+)
+Epoch :  1 loss training:  76.56255286931992 Time :  20
+accuracy train: 0.926681 val: 0.910909 test: 0.948858
+max validation accuracy : 0.910909 max acc epoch : 1 test accuracy : 0.948858
+
+Epoch :  2 loss training:  27.98565599322319 Time :  35
+accuracy train: 0.950919 val: 0.929091 test: 0.971689
+max validation accuracy : 0.929091 max acc epoch : 2 test accuracy : 0.971689
+
+Epoch :  3 loss training:  20.9578178524971 Time :  49
+accuracy train: 0.968289 val: 0.956364 test: 0.981735
+max validation accuracy : 0.956364 max acc epoch : 3 test accuracy : 0.981735
+
+Epoch :  4 loss training:  16.46508188545704 Time :  63
+accuracy train: 0.972935 val: 0.961818 test: 0.984018
+max validation accuracy : 0.961818 max acc epoch : 4 test accuracy : 0.984018
+
+Epoch :  5 loss training:  14.374990031123161 Time :  78
+accuracy train: 0.976368 val: 0.967273 test: 0.983562
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  6 loss training:  12.952785849571228 Time :  92
+accuracy train: 0.982630 val: 0.963636 test: 0.988128
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  7 loss training:  11.49838437139988 Time :  106
+accuracy train: 0.971521 val: 0.956364 test: 0.979452
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  8 loss training:  11.772531658411026 Time :  121
+accuracy train: 0.982226 val: 0.954545 test: 0.987671
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  9 loss training:  9.832971904426813 Time :  136
+accuracy train: 0.984246 val: 0.954545 test: 0.984018
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  10 loss training:  9.928305603563786 Time :  150
+accuracy train: 0.984448 val: 0.958182 test: 0.983562
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  11 loss training:  8.996763736009598 Time :  164
+accuracy train: 0.985861 val: 0.963636 test: 0.989041
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  12 loss training:  9.316723976284266 Time :  179
+accuracy train: 0.981620 val: 0.949091 test: 0.981279
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  13 loss training:  9.08660976961255 Time :  193
+accuracy train: 0.987275 val: 0.956364 test: 0.988128
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  14 loss training:  8.180079033598304 Time :  208
+accuracy train: 0.990103 val: 0.961818 test: 0.990411
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  15 loss training:  7.771531758829951 Time :  223
+accuracy train: 0.991113 val: 0.963636 test: 0.983562
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  16 loss training:  6.759031463414431 Time :  237
+accuracy train: 0.989699 val: 0.961818 test: 0.987215
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  17 loss training:  6.8927738685160875 Time :  252
+accuracy train: 0.992729 val: 0.965455 test: 0.985388
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  18 loss training:  6.017190073616803 Time :  267
+accuracy train: 0.989901 val: 0.958182 test: 0.987671
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  19 loss training:  6.750816900283098 Time :  284
+accuracy train: 0.991719 val: 0.958182 test: 0.982648
+max validation accuracy : 0.967273 max acc epoch : 5 test accuracy : 0.983562
+
+Epoch :  20 loss training:  6.179473537020385 Time :  301
+accuracy train: 0.992325 val: 0.972727 test: 0.988584
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  21 loss training:  5.917943162843585 Time :  315
+accuracy train: 0.993537 val: 0.969091 test: 0.985845
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  22 loss training:  6.694968558847904 Time :  330
+accuracy train: 0.990305 val: 0.956364 test: 0.984932
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  23 loss training:  9.075459126383066 Time :  344
+accuracy train: 0.981216 val: 0.963636 test: 0.982192
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  24 loss training:  11.438479898497462 Time :  358
+accuracy train: 0.985256 val: 0.956364 test: 0.984018
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  25 loss training:  8.639337833970785 Time :  373
+accuracy train: 0.976974 val: 0.947273 test: 0.975799
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  26 loss training:  12.577415661886334 Time :  387
+accuracy train: 0.984448 val: 0.943636 test: 0.979909
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  27 loss training:  9.395351979881525 Time :  402
+accuracy train: 0.988891 val: 0.960000 test: 0.986301
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  28 loss training:  7.8966392762959 Time :  417
+accuracy train: 0.987477 val: 0.963636 test: 0.987215
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  29 loss training:  7.5971844950690866 Time :  431
+accuracy train: 0.990305 val: 0.961818 test: 0.984018
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  30 loss training:  7.342395290732384 Time :  445
+accuracy train: 0.991315 val: 0.967273 test: 0.982192
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  31 loss training:  8.834874760359526 Time :  460
+accuracy train: 0.992931 val: 0.967273 test: 0.985388
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  32 loss training:  6.065581955015659 Time :  474
+accuracy train: 0.992729 val: 0.960000 test: 0.987671
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  33 loss training:  6.297598797827959 Time :  489
+accuracy train: 0.992123 val: 0.960000 test: 0.986758
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  34 loss training:  6.479479620233178 Time :  503
+accuracy train: 0.992123 val: 0.954545 test: 0.985388
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  35 loss training:  7.27956291846931 Time :  517
+accuracy train: 0.993941 val: 0.965455 test: 0.986301
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  36 loss training:  5.812773443758488 Time :  531
+accuracy train: 0.993739 val: 0.965455 test: 0.988584
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  37 loss training:  6.047683222219348 Time :  545
+accuracy train: 0.993739 val: 0.958182 test: 0.979909
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  38 loss training:  5.060695508494973 Time :  559
+accuracy train: 0.994547 val: 0.961818 test: 0.985388
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  39 loss training:  5.7306810561567545 Time :  573
+accuracy train: 0.994143 val: 0.956364 test: 0.987671
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  40 loss training:  5.074229202233255 Time :  588
+accuracy train: 0.995152 val: 0.967273 test: 0.982648
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  41 loss training:  5.163887497037649 Time :  602
+accuracy train: 0.993133 val: 0.961818 test: 0.979452
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  42 loss training:  5.201644126325846 Time :  616
+accuracy train: 0.994951 val: 0.965455 test: 0.984018
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  43 loss training:  4.421573456027545 Time :  630
+accuracy train: 0.994749 val: 0.960000 test: 0.984932
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  44 loss training:  4.828908701427281 Time :  644
+accuracy train: 0.994951 val: 0.960000 test: 0.983562
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  45 loss training:  3.7405473827384412 Time :  659
+accuracy train: 0.996162 val: 0.965455 test: 0.980365
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  46 loss training:  4.161585273221135 Time :  673
+accuracy train: 0.996364 val: 0.956364 test: 0.982648
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  47 loss training:  3.990369910839945 Time :  687
+accuracy train: 0.995758 val: 0.960000 test: 0.984018
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  48 loss training:  4.363342935685068 Time :  702
+accuracy train: 0.996970 val: 0.958182 test: 0.982648
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  49 loss training:  3.901809263974428 Time :  716
+accuracy train: 0.997778 val: 0.961818 test: 0.982648
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  50 loss training:  3.99821920087561 Time :  731
+accuracy train: 0.996566 val: 0.954545 test: 0.984475
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  51 loss training:  3.8092902917414904 Time :  747
+accuracy train: 0.997172 val: 0.963636 test: 0.985388
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  52 loss training:  3.838182291947305 Time :  762
+accuracy train: 0.996566 val: 0.954545 test: 0.981735
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  53 loss training:  3.8629002943634987 Time :  776
+accuracy train: 0.996364 val: 0.961818 test: 0.980365
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  54 loss training:  3.8419228785205632 Time :  790
+accuracy train: 0.996566 val: 0.958182 test: 0.985845
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  55 loss training:  2.943708126898855 Time :  804
+accuracy train: 0.995354 val: 0.963636 test: 0.983562
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  56 loss training:  3.0635502273216844 Time :  818
+accuracy train: 0.997374 val: 0.956364 test: 0.981279
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  57 loss training:  3.1480104757938534 Time :  832
+accuracy train: 0.997778 val: 0.956364 test: 0.980365
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  58 loss training:  3.4500680761411786 Time :  847
+accuracy train: 0.995758 val: 0.958182 test: 0.986301
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  59 loss training:  3.328572733560577 Time :  860
+accuracy train: 0.996768 val: 0.956364 test: 0.987215
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  60 loss training:  2.7970603560097516 Time :  874
+accuracy train: 0.998182 val: 0.960000 test: 0.984932
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  61 loss training:  2.536082786740735 Time :  889
+accuracy train: 0.997778 val: 0.960000 test: 0.984475
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  62 loss training:  2.7904630596749485 Time :  903
+accuracy train: 0.996364 val: 0.961818 test: 0.984475
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  63 loss training:  3.434576158761047 Time :  917
+accuracy train: 0.996768 val: 0.960000 test: 0.984932
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  64 loss training:  3.0121318539604545 Time :  931
+accuracy train: 0.998182 val: 0.958182 test: 0.983562
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  65 loss training:  2.9535211191978306 Time :  945
+accuracy train: 0.997778 val: 0.961818 test: 0.983105
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  66 loss training:  3.1708768787793815 Time :  960
+accuracy train: 0.996970 val: 0.965455 test: 0.981735
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  67 loss training:  3.1940082183573395 Time :  974
+accuracy train: 0.997374 val: 0.967273 test: 0.983105
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  68 loss training:  2.749416468432173 Time :  988
+accuracy train: 0.996364 val: 0.967273 test: 0.983105
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  69 loss training:  2.8852079436182976 Time :  1002
+accuracy train: 0.997172 val: 0.963636 test: 0.982192
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  70 loss training:  3.9147258608136326 Time :  1016
+accuracy train: 0.996162 val: 0.961818 test: 0.982648
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+Epoch :  71 loss training:  2.9907234597485512 Time :  1030
+accuracy train: 0.996970 val: 0.963636 test: 0.985388
+max validation accuracy : 0.972727 max acc epoch : 20 test accuracy : 0.988584
+
+========================================================================================================================================================================================================
+max acc epoch :  20
+max validation accuracy :  0.9727272727272728
+test accuracy :  0.9885844748858448
+last test_accuracy :  0.9853881278538813
+========================================================================================================================================================================================================
+
+date and time :  Wed Apr 14 11:51:02 2021
+Namespace(batch_size=64, dataset='R8', debug=False, device=0, dropout=0.4, early_stop=50, epochs=400, filename='', hidden_dim=200, lda=True, lr=0.0005, num_layers=4, num_mlp_layers=1, random_vec=False, seed=0, weight_decay=1e-07)
+device :  cuda:0
+Counter({0: 7691})
+HGNNModel(
+  (word_embeddings): Embedding(8232, 300, padding_idx=0)
+  (h_gnn_layers): ModuleList(
+    (0): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=300, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+    (1): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+    (2): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+  )
+  (linears_prediction): ModuleList(
+    (0): Linear(in_features=300, out_features=8, bias=True)
+    (1): Linear(in_features=200, out_features=8, bias=True)
+    (2): Linear(in_features=200, out_features=8, bias=True)
+    (3): Linear(in_features=200, out_features=8, bias=True)
+  )
+  (graph_pool_layer): ModuleList(
+    (0): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=300, out_features=300, bias=False)
+        (1): Linear(in_features=300, out_features=1, bias=False)
+      )
+    )
+    (1): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+    (2): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+    (3): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+  )
+  (dropout): Dropout(p=0.4, inplace=False)
+)
+Epoch :  1 loss training:  76.44459730386734 Time :  18
+accuracy train: 0.926479 val: 0.909091 test: 0.949315
+max validation accuracy : 0.909091 max acc epoch : 1 test accuracy : 0.949315
+
+Epoch :  2 loss training:  29.838207334280014 Time :  36
+accuracy train: 0.949505 val: 0.930909 test: 0.962557
+max validation accuracy : 0.930909 max acc epoch : 2 test accuracy : 0.962557
+
+Epoch :  3 loss training:  21.914894342422485 Time :  54
+accuracy train: 0.966875 val: 0.949091 test: 0.978539
+max validation accuracy : 0.949091 max acc epoch : 3 test accuracy : 0.978539
+
+Epoch :  4 loss training:  18.454689420759678 Time :  74
+accuracy train: 0.973945 val: 0.947273 test: 0.979452
+max validation accuracy : 0.949091 max acc epoch : 3 test accuracy : 0.978539
+
+Epoch :  5 loss training:  14.846748430281878 Time :  86
+accuracy train: 0.977782 val: 0.950909 test: 0.982648
+max validation accuracy : 0.950909 max acc epoch : 5 test accuracy : 0.982648
+
+Epoch :  6 loss training:  13.625516712665558 Time :  96
+accuracy train: 0.978388 val: 0.947273 test: 0.984018
+max validation accuracy : 0.950909 max acc epoch : 5 test accuracy : 0.982648
+
+Epoch :  7 loss training:  12.305347636342049 Time :  108
+accuracy train: 0.981620 val: 0.958182 test: 0.985388
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.985388
+
+Epoch :  8 loss training:  10.554753068834543 Time :  122
+accuracy train: 0.982428 val: 0.941818 test: 0.984475
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.985388
+
+Epoch :  9 loss training:  10.205100297927856 Time :  133
+accuracy train: 0.984852 val: 0.958182 test: 0.988128
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.985388
+
+Epoch :  10 loss training:  11.179984174668789 Time :  144
+accuracy train: 0.983640 val: 0.954545 test: 0.982192
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.985388
+
+Epoch :  11 loss training:  10.300050720572472 Time :  158
+accuracy train: 0.987477 val: 0.956364 test: 0.985845
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.985388
+
+Epoch :  12 loss training:  8.521755252033472 Time :  177
+accuracy train: 0.988689 val: 0.960000 test: 0.982648
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  13 loss training:  9.073084523901343 Time :  200
+accuracy train: 0.987275 val: 0.958182 test: 0.982648
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  14 loss training:  8.599366081878543 Time :  228
+accuracy train: 0.984448 val: 0.949091 test: 0.981279
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  15 loss training:  8.622264213860035 Time :  261
+accuracy train: 0.991113 val: 0.960000 test: 0.987215
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  16 loss training:  6.539694108068943 Time :  291
+accuracy train: 0.990507 val: 0.960000 test: 0.985388
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  17 loss training:  7.8995618391782045 Time :  321
+accuracy train: 0.986669 val: 0.956364 test: 0.975799
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  18 loss training:  7.781538386829197 Time :  349
+accuracy train: 0.957988 val: 0.927273 test: 0.973059
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  19 loss training:  11.603578884154558 Time :  378
+accuracy train: 0.988285 val: 0.958182 test: 0.984932
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  20 loss training:  9.037647619843483 Time :  408
+accuracy train: 0.987477 val: 0.960000 test: 0.985845
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  21 loss training:  7.62782977707684 Time :  437
+accuracy train: 0.990507 val: 0.958182 test: 0.985388
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  22 loss training:  7.440098491497338 Time :  468
+accuracy train: 0.991315 val: 0.958182 test: 0.981735
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  23 loss training:  5.849978696554899 Time :  497
+accuracy train: 0.992123 val: 0.960000 test: 0.977169
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  24 loss training:  6.775076016783714 Time :  525
+accuracy train: 0.993739 val: 0.960000 test: 0.979452
+max validation accuracy : 0.960000 max acc epoch : 12 test accuracy : 0.982648
+
+Epoch :  25 loss training:  5.408833516761661 Time :  557
+accuracy train: 0.993739 val: 0.963636 test: 0.983562
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  26 loss training:  7.560392020270228 Time :  568
+accuracy train: 0.990709 val: 0.961818 test: 0.985388
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  27 loss training:  6.288431704975665 Time :  577
+accuracy train: 0.993335 val: 0.963636 test: 0.982648
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  28 loss training:  5.32412698213011 Time :  588
+accuracy train: 0.995152 val: 0.963636 test: 0.987215
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  29 loss training:  5.858052792958915 Time :  605
+accuracy train: 0.992729 val: 0.949091 test: 0.985845
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  30 loss training:  5.297840573359281 Time :  623
+accuracy train: 0.993941 val: 0.958182 test: 0.980365
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  31 loss training:  5.764715095050633 Time :  641
+accuracy train: 0.994951 val: 0.956364 test: 0.987671
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  32 loss training:  5.015630325302482 Time :  664
+accuracy train: 0.995758 val: 0.960000 test: 0.983105
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  33 loss training:  4.472748436499387 Time :  683
+accuracy train: 0.995556 val: 0.963636 test: 0.986758
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  34 loss training:  5.07114210492 Time :  702
+accuracy train: 0.994345 val: 0.960000 test: 0.982648
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  35 loss training:  6.039384942501783 Time :  721
+accuracy train: 0.995152 val: 0.961818 test: 0.985845
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  36 loss training:  4.212471230886877 Time :  739
+accuracy train: 0.994951 val: 0.960000 test: 0.982648
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  37 loss training:  4.226086447015405 Time :  758
+accuracy train: 0.995152 val: 0.960000 test: 0.980365
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  38 loss training:  3.8123739450238645 Time :  777
+accuracy train: 0.993335 val: 0.950909 test: 0.977169
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  39 loss training:  3.8789773820899427 Time :  796
+accuracy train: 0.996162 val: 0.961818 test: 0.986301
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  40 loss training:  4.886928822845221 Time :  815
+accuracy train: 0.996566 val: 0.963636 test: 0.984932
+max validation accuracy : 0.963636 max acc epoch : 25 test accuracy : 0.983562
+
+Epoch :  41 loss training:  3.9955265973694623 Time :  834
+accuracy train: 0.996970 val: 0.965455 test: 0.984932
+max validation accuracy : 0.965455 max acc epoch : 41 test accuracy : 0.984932
+
+Epoch :  42 loss training:  3.233246215269901 Time :  853
+accuracy train: 0.996566 val: 0.960000 test: 0.986758
+max validation accuracy : 0.965455 max acc epoch : 41 test accuracy : 0.984932
+
+Epoch :  43 loss training:  3.7779822535812855 Time :  872
+accuracy train: 0.995152 val: 0.954545 test: 0.981735
+max validation accuracy : 0.965455 max acc epoch : 41 test accuracy : 0.984932
+
+Epoch :  44 loss training:  4.492892206646502 Time :  891
+accuracy train: 0.991719 val: 0.954545 test: 0.975342
+max validation accuracy : 0.965455 max acc epoch : 41 test accuracy : 0.984932
+
+Epoch :  45 loss training:  4.398079559206963 Time :  910
+accuracy train: 0.996566 val: 0.963636 test: 0.980822
+max validation accuracy : 0.965455 max acc epoch : 41 test accuracy : 0.984932
+
+Epoch :  46 loss training:  3.47815866349265 Time :  928
+accuracy train: 0.997172 val: 0.969091 test: 0.985845
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  47 loss training:  3.278236255282536 Time :  947
+accuracy train: 0.997374 val: 0.967273 test: 0.979909
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  48 loss training:  5.007768211886287 Time :  966
+accuracy train: 0.995354 val: 0.956364 test: 0.980822
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  49 loss training:  3.9429106530733407 Time :  985
+accuracy train: 0.996162 val: 0.960000 test: 0.982648
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  50 loss training:  3.800519194919616 Time :  1004
+accuracy train: 0.997172 val: 0.963636 test: 0.983562
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  51 loss training:  3.7995733141433448 Time :  1022
+accuracy train: 0.994951 val: 0.956364 test: 0.985845
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  52 loss training:  3.6751621114090085 Time :  1041
+accuracy train: 0.991921 val: 0.949091 test: 0.984932
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  53 loss training:  3.3013509535230696 Time :  1060
+accuracy train: 0.997374 val: 0.954545 test: 0.982648
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  54 loss training:  2.8138175741769373 Time :  1079
+accuracy train: 0.996768 val: 0.963636 test: 0.983562
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  55 loss training:  2.733377192518674 Time :  1098
+accuracy train: 0.996364 val: 0.965455 test: 0.986301
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  56 loss training:  2.689118043985218 Time :  1117
+accuracy train: 0.997576 val: 0.961818 test: 0.982648
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  57 loss training:  3.4508180231787264 Time :  1136
+accuracy train: 0.996566 val: 0.958182 test: 0.986758
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  58 loss training:  3.2666918924078345 Time :  1155
+accuracy train: 0.997374 val: 0.963636 test: 0.985845
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  59 loss training:  2.8683281240519136 Time :  1174
+accuracy train: 0.996768 val: 0.961818 test: 0.987671
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  60 loss training:  3.494719764450565 Time :  1192
+accuracy train: 0.997980 val: 0.963636 test: 0.986301
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  61 loss training:  2.3858930584974587 Time :  1212
+accuracy train: 0.997778 val: 0.969091 test: 0.984932
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  62 loss training:  3.652105700224638 Time :  1230
+accuracy train: 0.996566 val: 0.963636 test: 0.984018
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  63 loss training:  4.783733416348696 Time :  1249
+accuracy train: 0.994547 val: 0.954545 test: 0.985388
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  64 loss training:  2.945994187844917 Time :  1270
+accuracy train: 0.997778 val: 0.961818 test: 0.982192
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  65 loss training:  2.9259898137534037 Time :  1308
+accuracy train: 0.996566 val: 0.960000 test: 0.985845
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  66 loss training:  2.674236157676205 Time :  1356
+accuracy train: 0.996364 val: 0.963636 test: 0.985388
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  67 loss training:  2.4800292265135795 Time :  1396
+accuracy train: 0.997778 val: 0.967273 test: 0.983562
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  68 loss training:  2.6585960197262466 Time :  1424
+accuracy train: 0.997980 val: 0.960000 test: 0.981735
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  69 loss training:  3.613594830967486 Time :  1455
+accuracy train: 0.996364 val: 0.967273 test: 0.984475
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  70 loss training:  2.6072858792031184 Time :  1485
+accuracy train: 0.997374 val: 0.954545 test: 0.982648
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  71 loss training:  4.488081708550453 Time :  1513
+accuracy train: 0.996970 val: 0.958182 test: 0.985845
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  72 loss training:  3.2267077455762774 Time :  1544
+accuracy train: 0.996768 val: 0.967273 test: 0.984475
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  73 loss training:  2.9139192132279277 Time :  1573
+accuracy train: 0.997980 val: 0.965455 test: 0.983562
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  74 loss training:  2.717859124066308 Time :  1603
+accuracy train: 0.997980 val: 0.961818 test: 0.986301
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  75 loss training:  5.091652556322515 Time :  1624
+accuracy train: 0.996970 val: 0.961818 test: 0.983562
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  76 loss training:  3.121979761403054 Time :  1633
+accuracy train: 0.996566 val: 0.965455 test: 0.983105
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  77 loss training:  3.1451069484464824 Time :  1643
+accuracy train: 0.997778 val: 0.960000 test: 0.985388
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  78 loss training:  2.6089159769471735 Time :  1653
+accuracy train: 0.997374 val: 0.963636 test: 0.984932
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  79 loss training:  2.4885657061822712 Time :  1662
+accuracy train: 0.997576 val: 0.963636 test: 0.985388
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  80 loss training:  2.776881493628025 Time :  1671
+accuracy train: 0.998384 val: 0.960000 test: 0.986301
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  81 loss training:  2.054040494840592 Time :  1680
+accuracy train: 0.997778 val: 0.960000 test: 0.985845
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  82 loss training:  2.659136227564886 Time :  1689
+accuracy train: 0.997374 val: 0.965455 test: 0.988128
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  83 loss training:  2.5703281412133947 Time :  1698
+accuracy train: 0.998182 val: 0.969091 test: 0.985388
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  84 loss training:  1.9209922784066293 Time :  1707
+accuracy train: 0.997980 val: 0.967273 test: 0.988128
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  85 loss training:  2.6932722257915884 Time :  1716
+accuracy train: 0.997576 val: 0.967273 test: 0.984932
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  86 loss training:  3.6603467664681375 Time :  1725
+accuracy train: 0.997778 val: 0.961818 test: 0.985845
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  87 loss training:  2.362226960249245 Time :  1734
+accuracy train: 0.998384 val: 0.961818 test: 0.986758
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  88 loss training:  2.360637853736989 Time :  1743
+accuracy train: 0.998182 val: 0.958182 test: 0.983105
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  89 loss training:  1.9410508295986801 Time :  1752
+accuracy train: 0.997778 val: 0.960000 test: 0.981735
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  90 loss training:  2.4256064807996154 Time :  1762
+accuracy train: 0.998182 val: 0.965455 test: 0.984475
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  91 loss training:  2.3601410773117095 Time :  1772
+accuracy train: 0.998788 val: 0.965455 test: 0.985845
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  92 loss training:  2.1448443128028885 Time :  1784
+accuracy train: 0.997576 val: 0.965455 test: 0.983105
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  93 loss training:  2.273611034383066 Time :  1794
+accuracy train: 0.996970 val: 0.956364 test: 0.981279
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  94 loss training:  2.204961347975768 Time :  1806
+accuracy train: 0.998182 val: 0.963636 test: 0.982648
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  95 loss training:  1.5685857269272674 Time :  1831
+accuracy train: 0.997980 val: 0.965455 test: 0.983105
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  96 loss training:  2.137028944969643 Time :  1859
+accuracy train: 0.997374 val: 0.960000 test: 0.984932
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+Epoch :  97 loss training:  2.4177387091331184 Time :  1889
+accuracy train: 0.998586 val: 0.961818 test: 0.985388
+max validation accuracy : 0.969091 max acc epoch : 46 test accuracy : 0.985845
+
+========================================================================================================================================================================================================
+max acc epoch :  46
+max validation accuracy :  0.9690909090909091
+test accuracy :  0.9858447488584475
+last test_accuracy :  0.9853881278538813
+========================================================================================================================================================================================================
+
+date and time :  Wed Apr 14 12:22:44 2021
+Namespace(batch_size=64, dataset='R8', debug=False, device=0, dropout=0.4, early_stop=50, epochs=400, filename='', hidden_dim=200, lda=False, lr=0.0005, num_layers=4, num_mlp_layers=1, random_vec=True, seed=0, weight_decay=1e-07)
+device :  cuda:0
+Counter({0: 7691})
+HGNNModel(
+  (word_embeddings): Embedding(8232, 300, padding_idx=0)
+  (h_gnn_layers): ModuleList(
+    (0): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=300, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+    (1): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+    (2): HGNNLayer(
+      (dropout): Dropout(p=0.4, inplace=False)
+      (mlp): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (mlp2): MLP(
+        (linears): ModuleList(
+          (0): Linear(in_features=200, out_features=200, bias=True)
+        )
+        (batch_norms): ModuleList()
+        (dropout): Dropout(p=0.4, inplace=False)
+      )
+      (batch_norms): BatchNorm1d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (gru): GRUCellMod(
+        (W_ir): Linear(in_features=200, out_features=200, bias=True)
+        (W_hr): Linear(in_features=200, out_features=200, bias=True)
+        (W_in): Linear(in_features=200, out_features=200, bias=True)
+        (W_hn): Linear(in_features=200, out_features=200, bias=True)
+        (W_iz): Linear(in_features=200, out_features=200, bias=True)
+        (W_hz): Linear(in_features=200, out_features=200, bias=True)
+      )
+    )
+  )
+  (linears_prediction): ModuleList(
+    (0): Linear(in_features=300, out_features=8, bias=True)
+    (1): Linear(in_features=200, out_features=8, bias=True)
+    (2): Linear(in_features=200, out_features=8, bias=True)
+    (3): Linear(in_features=200, out_features=8, bias=True)
+  )
+  (graph_pool_layer): ModuleList(
+    (0): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=300, out_features=300, bias=False)
+        (1): Linear(in_features=300, out_features=1, bias=False)
+      )
+    )
+    (1): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+    (2): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+    (3): Attention(
+      (linears): ModuleList(
+        (0): Linear(in_features=200, out_features=200, bias=False)
+        (1): Linear(in_features=200, out_features=1, bias=False)
+      )
+    )
+  )
+  (dropout): Dropout(p=0.4, inplace=False)
+)
+Epoch :  1 loss training:  93.71370017528534 Time :  31
+accuracy train: 0.877802 val: 0.847273 test: 0.916438
+max validation accuracy : 0.847273 max acc epoch : 1 test accuracy : 0.916438
+
+Epoch :  2 loss training:  45.35707288980484 Time :  61
+accuracy train: 0.927085 val: 0.898182 test: 0.948402
+max validation accuracy : 0.898182 max acc epoch : 2 test accuracy : 0.948402
+
+Epoch :  3 loss training:  32.17741936445236 Time :  93
+accuracy train: 0.949707 val: 0.927273 test: 0.968493
+max validation accuracy : 0.927273 max acc epoch : 3 test accuracy : 0.968493
+
+Epoch :  4 loss training:  25.755654111504555 Time :  123
+accuracy train: 0.962634 val: 0.940000 test: 0.968037
+max validation accuracy : 0.940000 max acc epoch : 4 test accuracy : 0.968037
+
+Epoch :  5 loss training:  21.96662513911724 Time :  154
+accuracy train: 0.966875 val: 0.938182 test: 0.973059
+max validation accuracy : 0.940000 max acc epoch : 4 test accuracy : 0.968037
+
+Epoch :  6 loss training:  20.64807888865471 Time :  184
+accuracy train: 0.968491 val: 0.945455 test: 0.973973
+max validation accuracy : 0.945455 max acc epoch : 6 test accuracy : 0.973973
+
+Epoch :  7 loss training:  17.92399126291275 Time :  213
+accuracy train: 0.973945 val: 0.958182 test: 0.973516
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  8 loss training:  15.019780158996582 Time :  239
+accuracy train: 0.980206 val: 0.950909 test: 0.975799
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  9 loss training:  14.91030901670456 Time :  248
+accuracy train: 0.980610 val: 0.943636 test: 0.977169
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  10 loss training:  15.094647072255611 Time :  257
+accuracy train: 0.981822 val: 0.950909 test: 0.977169
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  11 loss training:  13.11008682847023 Time :  266
+accuracy train: 0.986669 val: 0.956364 test: 0.980365
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  12 loss training:  11.532411899417639 Time :  276
+accuracy train: 0.985457 val: 0.945455 test: 0.975799
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  13 loss training:  11.379784118384123 Time :  285
+accuracy train: 0.987073 val: 0.956364 test: 0.977626
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  14 loss training:  11.77087902650237 Time :  294
+accuracy train: 0.987275 val: 0.954545 test: 0.977169
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  15 loss training:  10.474188193678856 Time :  303
+accuracy train: 0.990709 val: 0.954545 test: 0.978995
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  16 loss training:  9.325076889246702 Time :  312
+accuracy train: 0.990911 val: 0.949091 test: 0.977626
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  17 loss training:  8.44741152971983 Time :  321
+accuracy train: 0.994143 val: 0.958182 test: 0.981735
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  18 loss training:  7.6979212164878845 Time :  330
+accuracy train: 0.984044 val: 0.945455 test: 0.978539
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  19 loss training:  9.74597722478211 Time :  339
+accuracy train: 0.991517 val: 0.952727 test: 0.979452
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  20 loss training:  8.523955810815096 Time :  349
+accuracy train: 0.990507 val: 0.952727 test: 0.977626
+max validation accuracy : 0.958182 max acc epoch : 7 test accuracy : 0.973516
+
+Epoch :  21 loss training:  7.872221091762185 Time :  363
+accuracy train: 0.994749 val: 0.960000 test: 0.980822
+max validation accuracy : 0.960000 max acc epoch : 21 test accuracy : 0.980822
+
+Epoch :  22 loss training:  7.944878462702036 Time :  379
+accuracy train: 0.995758 val: 0.961818 test: 0.980822
+max validation accuracy : 0.961818 max acc epoch : 22 test accuracy : 0.980822
+
+Epoch :  23 loss training:  6.306996267288923 Time :  395
+accuracy train: 0.995960 val: 0.958182 test: 0.978539
+max validation accuracy : 0.961818 max acc epoch : 22 test accuracy : 0.980822
+
+Epoch :  24 loss training:  6.125008946284652 Time :  409
+accuracy train: 0.995758 val: 0.963636 test: 0.980822
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  25 loss training:  6.594520407728851 Time :  423
+accuracy train: 0.995758 val: 0.958182 test: 0.978539
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  26 loss training:  6.855182830244303 Time :  432
+accuracy train: 0.994345 val: 0.958182 test: 0.978082
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  27 loss training:  6.037267881445587 Time :  441
+accuracy train: 0.996162 val: 0.961818 test: 0.980822
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  28 loss training:  5.741098030470312 Time :  450
+accuracy train: 0.995354 val: 0.954545 test: 0.980822
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  29 loss training:  5.156074871309102 Time :  458
+accuracy train: 0.996162 val: 0.952727 test: 0.977169
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  30 loss training:  4.696277459617704 Time :  465
+accuracy train: 0.996364 val: 0.956364 test: 0.981735
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  31 loss training:  3.6314858263358474 Time :  473
+accuracy train: 0.996768 val: 0.961818 test: 0.980822
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  32 loss training:  4.086076020263135 Time :  480
+accuracy train: 0.996364 val: 0.961818 test: 0.980822
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  33 loss training:  4.0705873453989625 Time :  488
+accuracy train: 0.997374 val: 0.956364 test: 0.981279
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  34 loss training:  3.9856480294838548 Time :  496
+accuracy train: 0.997778 val: 0.963636 test: 0.979909
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  35 loss training:  4.477529673837125 Time :  504
+accuracy train: 0.996566 val: 0.958182 test: 0.979452
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  36 loss training:  3.2465045591816306 Time :  511
+accuracy train: 0.997980 val: 0.960000 test: 0.980822
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  37 loss training:  4.274301419965923 Time :  519
+accuracy train: 0.997778 val: 0.960000 test: 0.979452
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  38 loss training:  3.8832498784177005 Time :  526
+accuracy train: 0.997980 val: 0.960000 test: 0.981735
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  39 loss training:  4.889011644292623 Time :  534
+accuracy train: 0.997576 val: 0.960000 test: 0.980365
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  40 loss training:  4.547551986761391 Time :  542
+accuracy train: 0.998384 val: 0.961818 test: 0.981735
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  41 loss training:  3.6604393483139575 Time :  549
+accuracy train: 0.997980 val: 0.956364 test: 0.979909
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  42 loss training:  4.361769914627075 Time :  557
+accuracy train: 0.997778 val: 0.956364 test: 0.980365
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  43 loss training:  4.365018506534398 Time :  564
+accuracy train: 0.998990 val: 0.954545 test: 0.981735
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  44 loss training:  4.144493509549648 Time :  572
+accuracy train: 0.997980 val: 0.949091 test: 0.978082
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  45 loss training:  3.2678943062201142 Time :  580
+accuracy train: 0.998182 val: 0.950909 test: 0.979452
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  46 loss training:  2.594711669255048 Time :  587
+accuracy train: 0.998990 val: 0.954545 test: 0.978995
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  47 loss training:  2.9139088289812207 Time :  595
+accuracy train: 0.998788 val: 0.954545 test: 0.981735
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  48 loss training:  3.7110225891228765 Time :  602
+accuracy train: 0.996768 val: 0.947273 test: 0.977169
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  49 loss training:  2.9046539030969143 Time :  610
+accuracy train: 0.999192 val: 0.950909 test: 0.979909
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  50 loss training:  1.942979297367856 Time :  618
+accuracy train: 0.998586 val: 0.952727 test: 0.983105
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  51 loss training:  2.4433098607696593 Time :  625
+accuracy train: 0.998586 val: 0.956364 test: 0.982192
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  52 loss training:  2.7541213021613657 Time :  633
+accuracy train: 0.998788 val: 0.947273 test: 0.978082
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  53 loss training:  2.515001057414338 Time :  641
+accuracy train: 0.998990 val: 0.949091 test: 0.979452
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  54 loss training:  2.3662746927002445 Time :  648
+accuracy train: 0.998586 val: 0.960000 test: 0.978995
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  55 loss training:  2.6858456290792674 Time :  656
+accuracy train: 0.997980 val: 0.961818 test: 0.981279
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  56 loss training:  2.8817541310563684 Time :  664
+accuracy train: 0.998788 val: 0.956364 test: 0.978539
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  57 loss training:  2.0981813410762697 Time :  671
+accuracy train: 0.998788 val: 0.952727 test: 0.978539
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  58 loss training:  1.5579353579087183 Time :  679
+accuracy train: 0.998788 val: 0.954545 test: 0.980822
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  59 loss training:  2.4299684707075357 Time :  687
+accuracy train: 0.998384 val: 0.950909 test: 0.982192
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  60 loss training:  2.3938746370840818 Time :  694
+accuracy train: 0.998788 val: 0.956364 test: 0.982192
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  61 loss training:  2.1621082586352713 Time :  702
+accuracy train: 0.998788 val: 0.958182 test: 0.981735
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  62 loss training:  1.7384843716863543 Time :  709
+accuracy train: 0.998788 val: 0.958182 test: 0.980365
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  63 loss training:  2.310338993323967 Time :  717
+accuracy train: 0.998990 val: 0.956364 test: 0.979909
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  64 loss training:  1.9341955797281116 Time :  725
+accuracy train: 0.998788 val: 0.963636 test: 0.977626
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  65 loss training:  1.946679119952023 Time :  732
+accuracy train: 0.998990 val: 0.963636 test: 0.978082
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  66 loss training:  2.4845385793596506 Time :  740
+accuracy train: 0.999192 val: 0.960000 test: 0.978539
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  67 loss training:  3.8430562854046 Time :  748
+accuracy train: 0.998788 val: 0.956364 test: 0.978539
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  68 loss training:  2.272570163710043 Time :  755
+accuracy train: 0.998788 val: 0.956364 test: 0.980822
+max validation accuracy : 0.963636 max acc epoch : 24 test accuracy : 0.980822
+
+Epoch :  69 loss training:  3.2350729622412473 Time :  763
+accuracy train: 0.997576 val: 0.967273 test: 0.977626
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  70 loss training:  1.8830479591852054 Time :  770
+accuracy train: 0.999192 val: 0.956364 test: 0.980822
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  71 loss training:  2.823260756675154 Time :  778
+accuracy train: 0.998788 val: 0.958182 test: 0.977626
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  72 loss training:  1.6904701860621572 Time :  785
+accuracy train: 0.998788 val: 0.960000 test: 0.979452
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  73 loss training:  1.50686413096264 Time :  793
+accuracy train: 0.998788 val: 0.958182 test: 0.978082
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  74 loss training:  1.8853764530504122 Time :  801
+accuracy train: 0.998990 val: 0.956364 test: 0.979909
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  75 loss training:  2.4582408766727895 Time :  808
+accuracy train: 0.998788 val: 0.954545 test: 0.980822
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  76 loss training:  2.742685284698382 Time :  816
+accuracy train: 0.998990 val: 0.954545 test: 0.978082
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  77 loss training:  2.1816035320516676 Time :  824
+accuracy train: 0.998990 val: 0.958182 test: 0.980822
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  78 loss training:  1.8453033849364147 Time :  831
+accuracy train: 0.998788 val: 0.961818 test: 0.982648
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  79 loss training:  1.8647591632325202 Time :  839
+accuracy train: 0.998586 val: 0.956364 test: 0.982192
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  80 loss training:  2.501732054981403 Time :  846
+accuracy train: 0.998788 val: 0.949091 test: 0.978539
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  81 loss training:  1.862797284615226 Time :  854
+accuracy train: 0.997576 val: 0.961818 test: 0.977626
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  82 loss training:  1.8977393701206893 Time :  861
+accuracy train: 0.998990 val: 0.952727 test: 0.979909
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  83 loss training:  2.0370660281623714 Time :  869
+accuracy train: 0.998182 val: 0.960000 test: 0.982648
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  84 loss training:  1.5524270116711705 Time :  877
+accuracy train: 0.998990 val: 0.960000 test: 0.980822
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  85 loss training:  1.4903740969020873 Time :  884
+accuracy train: 0.998384 val: 0.952727 test: 0.978539
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  86 loss training:  1.991190109634772 Time :  892
+accuracy train: 0.998788 val: 0.954545 test: 0.980822
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  87 loss training:  1.2723264263477176 Time :  899
+accuracy train: 0.998586 val: 0.952727 test: 0.979452
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  88 loss training:  1.504770967643708 Time :  907
+accuracy train: 0.998788 val: 0.956364 test: 0.981735
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  89 loss training:  2.09458729904145 Time :  915
+accuracy train: 0.998586 val: 0.960000 test: 0.980365
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  90 loss training:  2.9205608973279595 Time :  922
+accuracy train: 0.998182 val: 0.954545 test: 0.981279
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  91 loss training:  1.9979895976139233 Time :  930
+accuracy train: 0.998788 val: 0.958182 test: 0.981735
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  92 loss training:  1.22463591262931 Time :  938
+accuracy train: 0.999192 val: 0.958182 test: 0.982192
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  93 loss training:  1.6460377312032506 Time :  945
+accuracy train: 0.998586 val: 0.954545 test: 0.980365
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  94 loss training:  1.751724765112158 Time :  953
+accuracy train: 0.998990 val: 0.950909 test: 0.980365
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  95 loss training:  3.2028013716917485 Time :  960
+accuracy train: 0.998788 val: 0.960000 test: 0.982192
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  96 loss training:  2.467227026121691 Time :  968
+accuracy train: 0.998384 val: 0.961818 test: 0.983105
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  97 loss training:  2.0185766243666876 Time :  976
+accuracy train: 0.996970 val: 0.960000 test: 0.980365
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  98 loss training:  1.5277651444775984 Time :  983
+accuracy train: 0.998788 val: 0.954545 test: 0.980365
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  99 loss training:  2.5103450992610306 Time :  991
+accuracy train: 0.997980 val: 0.960000 test: 0.979909
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  100 loss training:  1.6436205204809085 Time :  999
+accuracy train: 0.998788 val: 0.958182 test: 0.978995
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  101 loss training:  2.0773662824649364 Time :  1006
+accuracy train: 0.998586 val: 0.956364 test: 0.981735
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  102 loss training:  1.4714075123192742 Time :  1014
+accuracy train: 0.998586 val: 0.960000 test: 0.979452
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  103 loss training:  1.3660426408750936 Time :  1021
+accuracy train: 0.998990 val: 0.958182 test: 0.981279
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  104 loss training:  1.8938197970855981 Time :  1029
+accuracy train: 0.998990 val: 0.960000 test: 0.978995
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  105 loss training:  1.1231111176020931 Time :  1037
+accuracy train: 0.998990 val: 0.954545 test: 0.980365
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  106 loss training:  0.9516135005978867 Time :  1044
+accuracy train: 0.998990 val: 0.958182 test: 0.983562
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  107 loss training:  1.2781096611870453 Time :  1052
+accuracy train: 0.998788 val: 0.958182 test: 0.984475
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  108 loss training:  1.230155847966671 Time :  1060
+accuracy train: 0.998990 val: 0.960000 test: 0.982648
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  109 loss training:  0.9735459832008928 Time :  1067
+accuracy train: 0.998990 val: 0.965455 test: 0.981279
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  110 loss training:  0.9978524721227586 Time :  1075
+accuracy train: 0.998788 val: 0.963636 test: 0.979452
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  111 loss training:  1.1859808881417848 Time :  1082
+accuracy train: 0.998990 val: 0.956364 test: 0.979452
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  112 loss training:  1.134702872193884 Time :  1090
+accuracy train: 0.998990 val: 0.958182 test: 0.981735
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  113 loss training:  1.2963771172217093 Time :  1098
+accuracy train: 0.998788 val: 0.963636 test: 0.984018
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  114 loss training:  1.386846163768496 Time :  1105
+accuracy train: 0.999192 val: 0.963636 test: 0.979452
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  115 loss training:  1.2452780313324183 Time :  1113
+accuracy train: 0.999192 val: 0.960000 test: 0.980822
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  116 loss training:  1.5735119593155105 Time :  1121
+accuracy train: 0.999394 val: 0.961818 test: 0.982192
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  117 loss training:  1.533359789813403 Time :  1129
+accuracy train: 0.998990 val: 0.960000 test: 0.983105
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  118 loss training:  0.9097349608200602 Time :  1137
+accuracy train: 0.998788 val: 0.956364 test: 0.982648
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  119 loss training:  1.0520355969201773 Time :  1145
+accuracy train: 0.999192 val: 0.965455 test: 0.982192
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+Epoch :  120 loss training:  0.9639039838511962 Time :  1152
+accuracy train: 0.999192 val: 0.956364 test: 0.980365
+max validation accuracy : 0.967273 max acc epoch : 69 test accuracy : 0.977626
+
+========================================================================================================================================================================================================
+max acc epoch :  69
+max validation accuracy :  0.9672727272727273
+test accuracy :  0.9776255707762557
+last test_accuracy :  0.9803652968036529
+========================================================================================================================================================================================================
+
